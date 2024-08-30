@@ -1,2 +1,7 @@
 # IFCEditor
-IFC文件编辑器
+
+IFC 文件编辑器
+
+Deps：
+
+- Qt5.4
