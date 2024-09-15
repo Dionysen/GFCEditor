@@ -2,6 +2,5 @@
 /.vscode/
 /.cache/
 /build/
-/compile_commands.json
-/.clang-format
-/xmake.lua
+
+
