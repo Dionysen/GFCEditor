@@ -524,7 +524,7 @@ QDockWidget {
 
 QDockWidget::title {
   background-color: #1f2020;
-  padding: 5px;
+  padding: 3px;
   text-align: left;
 }
 
@@ -538,6 +538,7 @@ QDockWidget::float-button {
 QDockWidget::close-button:hover,
 QDockWidget::float-button:hover {
   background-color: #3c3c3c;
+  padding: 2px;
 }
 
 QDockWidget::close-button:pressed,
@@ -552,10 +553,6 @@ QTreeView {
   border: 1px solid #1f2020;
 }
 
-QTreeView::item {
-  padding: 5px;
-}
-
 QTreeView::item:hover {
   background-color: #3c3c3c;
 }
@@ -567,6 +564,7 @@ QTreeView::item:selected {
 QTreeView::branch {
   background-color: #2b2b2b;
 }
+
 /* 
 QTreeView::branch:has-siblings:!adjoins-item {
   border-image: url(branch-vline.png) 0;
@@ -597,11 +595,7 @@ QTableView {
   background-color: #2b2b2b;
   color: #d3dae3;
   border: 1px solid #1f2020;
-  gridline-color: #797979;
-}
-
-QTableView::item {
-  padding: 5px;
+  gridline-color: #171717;
 }
 
 QTableView::item:hover {

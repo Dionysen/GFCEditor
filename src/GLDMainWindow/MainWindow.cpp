@@ -6,6 +6,7 @@
 #include "qaction.h"
 #include "qapplication.h"
 #include "qchar.h"
+#include "qdockwidget.h"
 #include "qfileinfo.h"
 #include "qmap.h"
 #include "qnamespace.h"
@@ -13,6 +14,7 @@
 #include "qsizepolicy.h"
 #include "qtextedit.h"
 #include "qtoolbar.h"
+#include "qwidget.h"
 #include "ui_MainWindow.h"
 #include <QSplitter>
 #include <QMessageBox>
@@ -29,6 +31,9 @@ MainWindow::MainWindow(QWidget* parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    this->resize(1200, 800);
+
     QFile file(":/qss/dark.qss");
 
     if (file.open(QFile::ReadOnly))
@@ -36,19 +41,24 @@ MainWindow::MainWindow(QWidget* parent)
         QString style = file.readAll();
         qApp->setStyleSheet(style);
     }
-    // 设置菜单栏图标
-    setMenuBar();
+    // 设置菜单栏
+    setupMenuBar();
+    // 设置工具栏
     p_toolBar = new GLDToolBar();
+
 
     // ========= schema =========
     p_schemaWiddget = new GLDSchemaWidget(ui->centralWidget);
     p_schemaWiddget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     // ========= editor =========
     p_editorWidget = new GLDEditorWidget(ui->centralWidget);
+    p_editorWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     // ========= 辅助区 =========
     p_auxiliaryArea = new GLDAuxiliaryArea(this);
+    p_auxiliaryArea->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     // ========= 属性区 =========
     p_attributeArea = new GLDAttributeArea(this);
+    p_attributeArea->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     QMap<QString, QVariant> propertyData;
     propertyData["Name"]   = "Example";
@@ -56,8 +66,6 @@ MainWindow::MainWindow(QWidget* parent)
     propertyData["Active"] = true;
     p_attributeArea->setProperties(propertyData);
     // ========= 布局管理 ========
-
-    setCentralWidget(p_editorWidget);
 
     schemaDockWidget = new QDockWidget(QStringLiteral("视图区"), this);
     schemaDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::TopDockWidgetArea | Qt::BottomDockWidgetArea);
@@ -70,7 +78,8 @@ MainWindow::MainWindow(QWidget* parent)
     auxiliarydockWidget->setWidget(p_auxiliaryArea);
     addDockWidget(Qt::BottomDockWidgetArea, auxiliarydockWidget);
     auxiliarydockWidget->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
-    auxiliarydockWidget->hide();
+
+    setDockNestingEnabled(true);
 
     attributedockWidget = new QDockWidget(QStringLiteral("属性区"), this);
     attributedockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::TopDockWidgetArea | Qt::BottomDockWidgetArea);
@@ -78,10 +87,19 @@ MainWindow::MainWindow(QWidget* parent)
     addDockWidget(Qt::RightDockWidgetArea, attributedockWidget);
     attributedockWidget->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
 
-    this->addToolBar(p_toolBar);
-    this->resize(1200, 800);
+    // editorDockWidget = new QDockWidget(this);
+    // editorDockWidget->setWidget(p_editorWidget);
+    // editorDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+    // editorDockWidget->setTitleBarWidget(new QWidget());
 
-    connectToolBar();
+    // splitDockWidget(schemaDockWidget, editorDockWidget, Qt::Horizontal);
+    // splitDockWidget(editorDockWidget, attributedockWidget, Qt::Horizontal);
+    // splitDockWidget(editorDockWidget, auxiliarydockWidget, Qt::Vertical);
+
+    setCentralWidget(p_editorWidget);
+
+    this->addToolBar(p_toolBar);
+    setupToolBar();
 
     connect(p_editorWidget, &GLDEditorWidget::signalUpdateStatusBar, this,
             [this](QString cursor, QString fileInfo) { ui->statusBar->showMessage(cursor + QStringLiteral("      ") + fileInfo); });
@@ -97,8 +115,21 @@ MainWindow::MainWindow(QWidget* parent)
 }
 
 // 设置菜单栏样式
-void MainWindow::setMenuBar()
+void MainWindow::setupMenuBar()
 {
+    refresh = new QAction(this);
+    refresh->setText("Refresh");
+
+    connect(refresh, &QAction::triggered, this, [this]() {
+        QFile file(":/qss/dark.qss");
+
+        if (file.open(QFile::ReadOnly))
+        {
+            QString style = file.readAll();
+            qApp->setStyleSheet(style);
+        }
+    });
+
     ui->actionNew->setIcon(QIcon(QString(":/image/new.png")));
     ui->actionOpen->setIcon(QIcon(QString(":/image/open.png")));
     ui->actionSave->setIcon(QIcon(QString(":/image/save.png")));
@@ -194,7 +225,7 @@ void MainWindow::setMenuBar()
     });
 }
 
-void MainWindow::connectToolBar()
+void MainWindow::setupToolBar()
 {
     connect(this->p_toolBar->p_new, &QAction::triggered, this, [this]() { p_editorWidget->newFile(); });
     connect(this->p_toolBar->p_open, &QAction::triggered, this, [this]() { p_editorWidget->openFile(); });
@@ -216,6 +247,15 @@ void MainWindow::connectToolBar()
         {
             QAction* action = new QAction(it, this);
             ui->menuRecent->addAction(action);
+        }
+    });
+
+    connect(this->p_toolBar->p_refresh, &QAction::triggered, this, [this]() {
+        QFile file("vendor/QtCustomTitlebarWindow/assets/qss/dark.qss");
+        if (file.open(QFile::ReadOnly))
+        {
+            QString style = file.readAll();
+            qApp->setStyleSheet(style);
         }
     });
 }

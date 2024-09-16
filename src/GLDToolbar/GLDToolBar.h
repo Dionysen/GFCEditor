@@ -33,6 +33,8 @@ class GLDToolBar : public QToolBar
 
     QAction* p_forward;
     QAction* p_backward;
+
+    QAction* p_refresh;
 };
 
 #endif  // GLDTOOLBAR_H

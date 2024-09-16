@@ -1,5 +1,6 @@
 ﻿#ifndef GLDATTRIBUTEAREA_H
 #define GLDATTRIBUTEAREA_H
+
 #include <QWidget>
 #include <QTableView>
 #include <QStandardItemModel>
@@ -16,7 +17,6 @@ class GLDAttributeArea : public QWidget
 
     // 接收外部传入的数据并更新表格
     void setProperties(const QMap<QString, QVariant>& properties);
-
 
   signals:
     // 点击某一行发送信号传属性值

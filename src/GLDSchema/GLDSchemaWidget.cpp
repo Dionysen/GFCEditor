@@ -18,7 +18,7 @@ GLDSchemaWidget::GLDSchemaWidget(QWidget* parent)
     p_schemaTreeView = new QTreeView(this);
 
     p_schemaTreeView->setHeaderHidden(true);
-
+    p_schemaTreeView->setFocusPolicy(Qt::NoFocus);
     // 创建根节点
     p_schemaModel = new QStandardItemModel(this);
 

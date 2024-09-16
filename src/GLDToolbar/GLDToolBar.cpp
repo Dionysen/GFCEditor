@@ -22,6 +22,9 @@ GLDToolBar::GLDToolBar(QWidget* parent)
     p_forward  = new QAction(QStringLiteral("前进"), this);
     p_backward = new QAction(QStringLiteral("后退"), this);
 
+    p_refresh = new QAction("refresh", this);
+
+
     this->addAction(p_new);
     this->addAction(p_open);
     this->addAction(p_save);
@@ -42,6 +45,9 @@ GLDToolBar::GLDToolBar(QWidget* parent)
     this->addSeparator();
     this->addAction(p_backward);
     this->addAction(p_forward);
+
+    this->addAction(p_refresh);
+
     this->setStyleSheet("QToolBar { icon-size: 20px; }");
 }
 GLDToolBar::~GLDToolBar()

@@ -8,9 +8,14 @@
 #include "GLDEditorWidget.h"
 #include "GLDAttributeArea.h"
 // Qt头文件
+#include "qdockwidget.h"
 #include "qmainwindow.h"
+#include "qwidget.h"
 #include <QMainWindow>
 #include <QSplitter>
+#include <QAction>
+
+
 namespace Ui
 {
     class MainWindow;
@@ -26,9 +31,9 @@ class MainWindow : public QMainWindow
 
   private:
     // 设置菜单栏样式
-    void setMenuBar();
+    void setupMenuBar();
 
-    void connectToolBar();
+    void setupToolBar();
     void connectAux();
 
   private:
@@ -41,15 +46,21 @@ class MainWindow : public QMainWindow
     // 文本编辑区域
     GLDEditorWidget* p_editorWidget;
 
+    // 辅助区域
     GLDAuxiliaryArea* p_auxiliaryArea;
+
+    // 属性区域
     GLDAttributeArea* p_attributeArea;
 
     // 布局
+    QDockWidget* editorDockWidget;
     QDockWidget* attributedockWidget;
     QDockWidget* auxiliarydockWidget;
     QDockWidget* schemaDockWidget;
 
     Ui::MainWindow* ui;
+
+    QAction* refresh;
 
   private slots:
     void on_actionAbout_clicked();
