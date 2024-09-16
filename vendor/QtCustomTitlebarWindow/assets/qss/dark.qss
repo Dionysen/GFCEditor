@@ -114,13 +114,10 @@ QToolButton:pressed {
   padding: 2px;
   background-color: #525252;
 }
-QToolBar::handle {
-  image: none;
-}
 QToolBar::separator {
-  background-color: #a0a0a0;
-  width: 2px;
-  height: 20px;
+  background-color: #595959;
+  width: 1px;
+  height: 1px;
 }
 
 QCalendar {
@@ -562,33 +559,8 @@ QTreeView::item:selected {
 }
 
 QTreeView::branch {
-  background-color: #2b2b2b;
+  color: #ffffff;
 }
-
-/* 
-QTreeView::branch:has-siblings:!adjoins-item {
-  border-image: url(branch-vline.png) 0;
-}
-
-QTreeView::branch:has-siblings:adjoins-item {
-  border-image: url(branch-more.png) 0;
-}
-
-QTreeView::branch:!has-children:!has-siblings:adjoins-item {
-  border-image: url(branch-end.png) 0;
-}
-
-QTreeView::branch:has-children:!has-siblings:closed,
-QTreeView::branch:closed:has-children:has-siblings {
-  border-image: none;
-  image: url(branch-closed.png);
-}
-
-QTreeView::branch:open:has-children:!has-siblings,
-QTreeView::branch:open:has-children:has-siblings {
-  border-image: none;
-  image: url(branch-open.png);
-} */
 
 /* TableView 样式 */
 QTableView {
@@ -659,10 +631,10 @@ QListView {
   color: #d3dae3;
   border: 1px solid #1f2020;
 }
-
+/* 
 QListView::item {
   padding: 5px;
-}
+} */
 
 QListView::item:hover {
   background-color: #3c3c3c;

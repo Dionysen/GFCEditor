@@ -1,9 +1,6 @@
-﻿
-#include "qchar.h"
-#include "qobjectdefs.h"
-#include "qstandarditemmodel.h"
-#include "qtabwidget.h"
-#include "qtreeview.h"
+﻿#include <QStandardItemModel>
+#include <QTabWidget>
+#include <QTreeView>
 #include <QWidget>
 #include <QHBoxLayout>
 #include "GFCReader.h"

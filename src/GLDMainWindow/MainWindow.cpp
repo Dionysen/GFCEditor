@@ -3,10 +3,6 @@
 #include "GLDAuxiliaryArea.h"
 #include "GLDSearchWindow.h"
 #include "GLDToolBar.h"
-#include "ads/API.h"
-#include "ads/ContainerWidget.h"
-#include "ads/SectionContent.h"
-#include "ads/SectionContentWidget.h"
 #include "qaction.h"
 #include "qapplication.h"
 #include "qchar.h"
@@ -17,10 +13,10 @@
 #include "qnamespace.h"
 #include "qobject.h"
 #include "qsizepolicy.h"
+#include "qstatusbar.h"
 #include "qtextedit.h"
 #include "qtoolbar.h"
 #include "qwidget.h"
-#include "ui_MainWindow.h"
 #include <QSplitter>
 #include <QMessageBox>
 #include <QScrollArea>
@@ -32,11 +28,9 @@
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);
-
     GetMainWindow()->resize(1280, 800);
+
 
     // 设置样式
     QFile file(":/qss/dark.qss");
@@ -48,6 +42,9 @@ MainWindow::MainWindow(QWidget* parent)
 
     // 布局
     setupLayout();
+
+    // 状态栏
+    setupStatusBar();
 
     // 设置菜单栏
     setupMenuBar();
@@ -68,10 +65,17 @@ MainWindow::MainWindow(QWidget* parent)
     propertyData["Active"] = true;
     p_attributeArea->setProperties(propertyData);
 }
+
+void MainWindow::setupStatusBar()
+{
+    p_StatusBar = new QStatusBar(this);
+    setStatusBar(p_StatusBar);
+}
+
 void MainWindow::setupEditor()
 {
     connect(p_editorWidget, &GLDEditorWidget::signalUpdateStatusBar, this,
-            [this](QString cursor, QString fileInfo) { ui->statusBar->showMessage(cursor + QStringLiteral("      ") + fileInfo); });
+            [this](QString cursor, QString fileInfo) { p_StatusBar->showMessage(cursor + QStringLiteral("      ") + fileInfo); });
 
     connect(p_editorWidget, &GLDEditorWidget::signalUpdateFileName, this, [this](const QString& filename, bool isModify) {
         if (isModify)
@@ -89,7 +93,7 @@ void MainWindow::setupLayout()
     // ========= schema =========
     p_schemaWiddget = new GLDSchemaWidget(this);
 
-    schemaDockWidget = new QDockWidget(QStringLiteral("视图区"), this);
+    schemaDockWidget = new QDockWidget(QStringLiteral("Schema"), this);
     schemaDockWidget->setAllowedAreas(Qt::AllDockWidgetAreas);
     schemaDockWidget->setWidget(p_schemaWiddget);
     schemaDockWidget->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
@@ -97,7 +101,7 @@ void MainWindow::setupLayout()
     // ========= 辅助区 =========
     p_auxiliaryArea = new GLDAuxiliaryArea(this);
 
-    auxiliarydockWidget = new QDockWidget(QStringLiteral("辅助区"), this);
+    auxiliarydockWidget = new QDockWidget(QStringLiteral("Auxiliary"), this);
     auxiliarydockWidget->setAllowedAreas(Qt::AllDockWidgetAreas);
     auxiliarydockWidget->setWidget(p_auxiliaryArea);
     auxiliarydockWidget->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
@@ -106,7 +110,7 @@ void MainWindow::setupLayout()
     // ========= 属性区 =========
     p_attributeArea = new GLDAttributeArea(this);
 
-    attributedockWidget = new QDockWidget(QStringLiteral("属性区"), this);
+    attributedockWidget = new QDockWidget(QStringLiteral("Attribute"), this);
     attributedockWidget->setAllowedAreas(Qt::AllDockWidgetAreas);
     attributedockWidget->setWidget(p_attributeArea);
     attributedockWidget->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
@@ -139,6 +143,9 @@ void MainWindow::setupLayout()
 // 设置菜单栏样式
 void MainWindow::setupMenuBar()
 {
+    p_menuBar = new GLDMenuBar(this);
+    this->setMenuBar(p_menuBar);
+
     refresh = new QAction(this);
     refresh->setText("Refresh");
 
@@ -152,94 +159,94 @@ void MainWindow::setupMenuBar()
         }
     });
 
-    ui->actionNew->setIcon(QIcon(QString(":/image/new.png")));
-    ui->actionOpen->setIcon(QIcon(QString(":/image/open.png")));
-    ui->actionSave->setIcon(QIcon(QString(":/image/save.png")));
+    p_menuBar->actionNew->setIcon(QIcon(QString(":/image/new.png")));
+    p_menuBar->actionOpen->setIcon(QIcon(QString(":/image/open.png")));
+    p_menuBar->actionSave->setIcon(QIcon(QString(":/image/save.png")));
 
-    ui->actionSaveAs->setIcon(QIcon(QString(":/image/saveas.png")));
-    ui->actionExit->setIcon(QIcon(QString(":/image/exit.png")));
+    p_menuBar->actionSaveAs->setIcon(QIcon(QString(":/image/saveas.png")));
+    p_menuBar->actionExit->setIcon(QIcon(QString(":/image/exit.png")));
 
-    ui->actionSaveAs->setIcon(QIcon(QString(":/image/new.png")));
+    p_menuBar->actionSaveAs->setIcon(QIcon(QString(":/image/new.png")));
 
-    ui->actionExit->setIcon(QIcon(QString(":/image/new.png")));
-    ui->actionRedo->setIcon(QIcon(QString(":/image/redo.png")));
-    ui->actionUndo->setIcon(QIcon(QString(":/image/undo.png")));
-    ui->actionCut->setIcon(QIcon(QString(":/image/cut.png")));
-    ui->actionCopy->setIcon(QIcon(QString(":/image/copy.png")));
-    ui->actionPaste->setIcon(QIcon(QString(":/image/paste.png")));
-    ui->actionFind->setIcon(QIcon(QString(":/image/find.png")));
-    ui->actionFindNext->setIcon(QIcon(QString(":/image/findnext.png")));
-    ui->actionReplace->setIcon(QIcon(QString(":/image/replace.png")));
+    p_menuBar->actionExit->setIcon(QIcon(QString(":/image/new.png")));
+    p_menuBar->actionRedo->setIcon(QIcon(QString(":/image/redo.png")));
+    p_menuBar->actionUndo->setIcon(QIcon(QString(":/image/undo.png")));
+    p_menuBar->actionCut->setIcon(QIcon(QString(":/image/cut.png")));
+    p_menuBar->actionCopy->setIcon(QIcon(QString(":/image/copy.png")));
+    p_menuBar->actionPaste->setIcon(QIcon(QString(":/image/paste.png")));
+    p_menuBar->actionFind->setIcon(QIcon(QString(":/image/find.png")));
+    p_menuBar->actionFindNext->setIcon(QIcon(QString(":/image/findnext.png")));
+    p_menuBar->actionReplace->setIcon(QIcon(QString(":/image/replace.png")));
 
-    ui->actionBackword->setIcon(QIcon(QString(":/image/backward.png")));
-    ui->actionForward->setIcon(QIcon(QString(":/image/forward.png")));
-    ui->actionLocation->setIcon(QIcon(QString(":/image/location.png")));
+    p_menuBar->actionBackword->setIcon(QIcon(QString(":/image/backward.png")));
+    p_menuBar->actionForward->setIcon(QIcon(QString(":/image/forward.png")));
+    p_menuBar->actionLocation->setIcon(QIcon(QString(":/image/location.png")));
 
-    ui->menuView->setIcon(QIcon(QString(":/image/visible.png")));
+    p_menuBar->menuView->setIcon(QIcon(QString(":/image/visible.png")));
 
-    ui->actionColor->setIcon(QIcon(QString(":/image/color.png")));
-    ui->actionCite->setIcon(QIcon(QString(":/image/cite.png")));
-    ui->actionCheck->setIcon(QIcon(QString(":/image/check.png")));
+    p_menuBar->actionColor->setIcon(QIcon(QString(":/image/color.png")));
+    p_menuBar->actionCite->setIcon(QIcon(QString(":/image/cite.png")));
+    p_menuBar->actionCheck->setIcon(QIcon(QString(":/image/check.png")));
 
-    ui->actionHelp->setIcon(QIcon(QString(":/image/help.png")));
-    ui->actionAbout->setIcon(QIcon(QString(":/image/about.png")));
+    p_menuBar->actionHelp->setIcon(QIcon(QString(":/image/help.png")));
+    p_menuBar->actionAbout->setIcon(QIcon(QString(":/image/about.png")));
 
     // TODO: Icons Download
 
-    connect(ui->actionOpen, &QAction::triggered, this, [this]() { p_editorWidget->openFile(); });
-    connect(ui->actionSave, &QAction::triggered, this, [this]() { p_editorWidget->saveFile(); });
-    connect(ui->actionSaveAs, &QAction::triggered, this, [this]() { p_editorWidget->saveAs(); });
+    connect(p_menuBar->actionOpen, &QAction::triggered, this, [this]() { p_editorWidget->openFile(); });
+    connect(p_menuBar->actionSave, &QAction::triggered, this, [this]() { p_editorWidget->saveFile(); });
+    connect(p_menuBar->actionSaveAs, &QAction::triggered, this, [this]() { p_editorWidget->saveAs(); });
 
-    connect(ui->actionCut, &QAction::triggered, this, [this]() { p_editorWidget->getTextEditor()->cut(); });
-    connect(ui->actionPaste, &QAction::triggered, this, [this]() { p_editorWidget->getTextEditor()->paste(); });
-    connect(ui->actionCopy, &QAction::triggered, this, [this]() { p_editorWidget->getTextEditor()->copy(); });
+    connect(p_menuBar->actionCut, &QAction::triggered, this, [this]() { p_editorWidget->getTextEditor()->cut(); });
+    connect(p_menuBar->actionPaste, &QAction::triggered, this, [this]() { p_editorWidget->getTextEditor()->paste(); });
+    connect(p_menuBar->actionCopy, &QAction::triggered, this, [this]() { p_editorWidget->getTextEditor()->copy(); });
 
-    connect(ui->actionRedo, &QAction::triggered, this, [this]() { p_editorWidget->getTextEditor()->redo(); });
-    connect(ui->actionUndo, &QAction::triggered, this, [this]() { p_editorWidget->getTextEditor()->undo(); });
+    connect(p_menuBar->actionRedo, &QAction::triggered, this, [this]() { p_editorWidget->getTextEditor()->redo(); });
+    connect(p_menuBar->actionUndo, &QAction::triggered, this, [this]() { p_editorWidget->getTextEditor()->undo(); });
 
-    connect(ui->actionExit, &QAction::triggered, this, [this]() { QApplication::exit(0); });
+    connect(p_menuBar->actionExit, &QAction::triggered, this, [this]() { QApplication::exit(0); });
 
-    connect(ui->actionAbout, &QAction::triggered, this, &MainWindow::on_actionAbout_clicked);
-    connect(ui->actionHelp, &QAction::triggered, this, &MainWindow::on_actionHelp_clicked);
+    connect(p_menuBar->actionAbout, &QAction::triggered, this, &MainWindow::on_actionAbout_clicked);
+    connect(p_menuBar->actionHelp, &QAction::triggered, this, &MainWindow::on_actionHelp_clicked);
 
-    ui->actionNew->setShortcut(QKeySequence("Ctrl+N"));
-    ui->actionOpen->setShortcut(QKeySequence("Ctrl+O"));
-    ui->actionSave->setShortcut(QKeySequence("Ctrl+S"));
-    ui->actionSaveAs->setShortcut(QKeySequence("Ctrl+Shift+S"));
-    ui->actionExit->setShortcut(QKeySequence("Ctrl+Q"));
-    ui->actionCut->setShortcut(QKeySequence("Ctrl+X"));
-    ui->actionCopy->setShortcut(QKeySequence("Ctrl+C"));
-    ui->actionPaste->setShortcut(QKeySequence("Ctrl+V"));
-    ui->actionFind->setShortcut(QKeySequence("Ctrl+F"));
-    ui->actionFindNext->setShortcut(QKeySequence("Ctrl+Shift+F"));
-    ui->actionReplace->setShortcut(QKeySequence("Ctrl+R"));
+    p_menuBar->actionNew->setShortcut(QKeySequence("Ctrl+N"));
+    p_menuBar->actionOpen->setShortcut(QKeySequence("Ctrl+O"));
+    p_menuBar->actionSave->setShortcut(QKeySequence("Ctrl+S"));
+    p_menuBar->actionSaveAs->setShortcut(QKeySequence("Ctrl+Shift+S"));
+    p_menuBar->actionExit->setShortcut(QKeySequence("Ctrl+Q"));
+    p_menuBar->actionCut->setShortcut(QKeySequence("Ctrl+X"));
+    p_menuBar->actionCopy->setShortcut(QKeySequence("Ctrl+C"));
+    p_menuBar->actionPaste->setShortcut(QKeySequence("Ctrl+V"));
+    p_menuBar->actionFind->setShortcut(QKeySequence("Ctrl+F"));
+    p_menuBar->actionFindNext->setShortcut(QKeySequence("Ctrl+Shift+F"));
+    p_menuBar->actionReplace->setShortcut(QKeySequence("Ctrl+R"));
 
     // 可见性
-    connect(ui->actionAtrtri, &QAction::triggered, this, [this]() {
+    connect(p_menuBar->actionAttribute, &QAction::triggered, this, [this]() {
         if (!attributedockWidget->isHidden())
             attributedockWidget->hide();
         else
             attributedockWidget->show();
     });
-    connect(ui->actionView, &QAction::triggered, this, [this]() {
+    connect(p_menuBar->actionSchema, &QAction::triggered, this, [this]() {
         if (!schemaDockWidget->isHidden())
             schemaDockWidget->hide();
         else
             schemaDockWidget->show();
     });
-    connect(ui->actionAsiss, &QAction::triggered, this, [this]() {
+    connect(p_menuBar->actionAuxiliary, &QAction::triggered, this, [this]() {
         if (!auxiliarydockWidget->isHidden())
             auxiliarydockWidget->hide();
         else
             auxiliarydockWidget->show();
     });
-    connect(ui->actionStatus, &QAction::triggered, this, [this]() {
-        if (!ui->statusBar->isHidden())
-            ui->statusBar->hide();
+    connect(p_menuBar->actionStatusbar, &QAction::triggered, this, [this]() {
+        if (!p_StatusBar->isHidden())
+            p_StatusBar->hide();
         else
-            ui->statusBar->show();
+            p_StatusBar->show();
     });
-    connect(ui->actionToolbar, &QAction::triggered, this, [this]() {
+    connect(p_menuBar->actionToolbar, &QAction::triggered, this, [this]() {
         if (!p_toolBar->isHidden())
             p_toolBar->hide();
         else
@@ -266,11 +273,11 @@ void MainWindow::setupToolBar()
     connect(this->p_toolBar->p_replace, &QAction::triggered, this, [this]() {});
 
     connect(p_editorWidget, &GLDEditorWidget::signalUpdateRecentFiles, this, [this](QQueue<QString>& recentFiles) {
-        ui->menuRecent->clear();
+        p_menuBar->menuRecent->clear();
         for (const auto& it : recentFiles)
         {
             QAction* action = new QAction(it, this);
-            ui->menuRecent->addAction(action);
+            p_menuBar->menuRecent->addAction(action);
         }
     });
 
@@ -286,7 +293,6 @@ void MainWindow::setupToolBar()
 
 MainWindow::~MainWindow()
 {
-    delete ui;
 }
 
 void MainWindow::on_actionAbout_clicked()
@@ -373,7 +379,7 @@ void MainWindow::setupAuxiliary()
                 p_auxiliaryArea->setSearchResults(res);
             });
 
-    connect(ui->actionFind, &QAction::triggered, this, [this]() { auxiliarydockWidget->show(); });
-    connect(ui->actionFindNext, &QAction::triggered, this, [this]() { auxiliarydockWidget->show(); });
-    connect(ui->actionReplace, &QAction::triggered, this, [this]() { auxiliarydockWidget->show(); });
+    connect(p_menuBar->actionFind, &QAction::triggered, this, [this]() { auxiliarydockWidget->show(); });
+    connect(p_menuBar->actionFindNext, &QAction::triggered, this, [this]() { auxiliarydockWidget->show(); });
+    connect(p_menuBar->actionReplace, &QAction::triggered, this, [this]() { auxiliarydockWidget->show(); });
 }

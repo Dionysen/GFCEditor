@@ -1,12 +1,12 @@
 ﻿#ifndef GLDTOOLBAR_H
 #define GLDTOOLBAR_H
 
-#include "qaction.h"
 #include <QToolBar>
 #include <QToolButton>
 #include <QWidget>
 #include <QAction>
 #include <QVBoxLayout>
+
 class GLDToolBar : public QToolBar
 {
 

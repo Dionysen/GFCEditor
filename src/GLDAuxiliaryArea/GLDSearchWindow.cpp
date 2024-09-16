@@ -1,4 +1,5 @@
 ﻿#include "GLDSearchWindow.h"
+#include "qnamespace.h"
 // #include "GLDEditorWidget.h"
 // #include <qDebug>
 
@@ -20,9 +21,7 @@ GLDSearchWindow::GLDSearchWindow(QWidget* parent)
     QPixmap searchIconPixmap("../bigwork/src/find.png");
 
     // 查找文本
-    m_pSearchLabel = new QLabel(QStringLiteral("查找"));
-
-
+    m_pSearchLabel = new QLabel("Find");
 
     // 调整图片大小并保持比例
     QSize fixedSize_searchIcon(10, 10);  // 设置固定大小
@@ -32,20 +31,17 @@ GLDSearchWindow::GLDSearchWindow(QWidget* parent)
     // 搜索框
     m_pSearchEdit = new QLineEdit;
     m_pSearchEdit->setPlaceholderText("Enter text to search...");
-    m_pSearchEdit->setMinimumHeight(30);
 
     // 区分大小写
-    m_pCaseSensitiveCheckBox = new QCheckBox(QStringLiteral("区分大小写"), this);
+    m_pCaseSensitiveCheckBox = new QCheckBox(QStringLiteral("Match Case"), this);
     // 全字匹配
-    m_pWholeWordCheckBox = new QCheckBox(QStringLiteral("全字匹配"), this);
+    m_pWholeWordCheckBox = new QCheckBox(QStringLiteral("Match Whole Word"), this);
 
     // 查找上一个按钮
     m_pPrevButton = new QPushButton("Previous");
 
     // 查找下一个按钮
     m_pNextButton = new QPushButton("Next");
-
-
 
     // 替换图标
     m_pReplaceIcon = new QLabel;
@@ -56,10 +52,11 @@ GLDSearchWindow::GLDSearchWindow(QWidget* parent)
     m_pReplaceIcon->setPixmap(replaceIconPixmap);
 
     // 替换文本
-    m_pReplaceLabel = new QLabel(QStringLiteral("替换"));
+    m_pReplaceLabel = new QLabel(QStringLiteral("Replace"));
     // 替换框
     m_pReplaceEdit = new QLineEdit;
     m_pReplaceEdit->setPlaceholderText("Enter text to replace...");
+
 
     // 替换按钮
     m_pReplaceButton = new QPushButton("Replace");
@@ -72,8 +69,8 @@ GLDSearchWindow::GLDSearchWindow(QWidget* parent)
     searchLayout->addWidget(m_pWholeWordCheckBox);
     searchLayout->addWidget(m_pPrevButton);
     searchLayout->addWidget(m_pNextButton);
-    // searchLayout->setMargin(0);
 
+    searchLayout->setContentsMargins(0, 0, 0, 0);
 
     replaceLayout->addWidget(m_pReplaceIcon);
     replaceLayout->addWidget(m_pReplaceLabel);
@@ -82,6 +79,7 @@ GLDSearchWindow::GLDSearchWindow(QWidget* parent)
 
     // 第三行布局：查找结果列表
     m_pResultList = new QListWidget(this);
+    m_pResultList->setFocusPolicy(Qt::NoFocus);  // 取消鼠标点击时的虚线框
 
 
     // 将布局添加到主布局中
@@ -90,33 +88,10 @@ GLDSearchWindow::GLDSearchWindow(QWidget* parent)
     mainLayout->addLayout(replaceLayout);
     mainLayout->addWidget(m_pResultList);
 
-    // mainLayout->setMargin(0);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
     // 设置主布局
     setLayout(mainLayout);
 
-    //    // 设置窗口标题和大小
-    //    setWindowTitle("Text Searcher");
-    //    resize(600, 400);
-
-    //    // 连接信号和槽函数
-    //    connect(m_pSearchEdit, &QLineEdit::textChanged, this, [=]() {
-    //        m_pResultList->clear();
-
-    //        m_searchText = m_pSearchEdit->text();
-
-    //        if (!searchText.isEmpty() && !m_textToSearch.isEmpty()) {
-    //            QStringList lines = m_textToSearch.split('\n');
-    //            for (int i = 0; i < lines.size(); ++i) {
-    //                if (lines[i].contains(searchText, Qt::CaseInsensitive)) {
-    ////                        QString line = lines[i];
-    ////                        QString highlightTextLine = highlightText(line, searchText);
-    ////                        QListWidgetItem *item = new QListWidgetItem(highlightTextLine);
-    //                    QListWidgetItem *item = new QListWidgetItem(lines[i]);
-    //                    m_pResultList->addItem(item);
-    //                }
-    //            }
-    //        }
-    //    });
 
     // 连接替换按钮的click信号到发送查找文本的信号
     connect(m_pReplaceButton, &QPushButton::clicked, this, [=]() {

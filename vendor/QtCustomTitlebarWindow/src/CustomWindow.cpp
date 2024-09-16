@@ -168,7 +168,6 @@ void CustomWindow::mouseMoveEvent(QMouseEvent* event)
         if (isMaximized() || isMinimized())
         {
             // 计算最大化时鼠标在标题栏的相对位置
-
             int width            = this->screen()->availableSize().width();
             int titleBeforeWidth = width - m_ButtonWidth * 3;
             int beforeCursorX    = event->pos().x();

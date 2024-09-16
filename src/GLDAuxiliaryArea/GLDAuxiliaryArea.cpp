@@ -16,13 +16,12 @@ GLDAuxiliaryArea::GLDAuxiliaryArea(QWidget* parent)
     // 创建错误窗口
     m_errorWindow = new GLDErrorWindow(this);
 
-
     // 创建第三个页面
     m_quoteWindow        = new QWidget(this);
     QVBoxLayout* layout3 = new QVBoxLayout;
     QLabel*      label3  = new QLabel("This is the content of Tab 3");
     layout3->addWidget(label3);
-    // layout3->setMargin(0);
+
     m_quoteWindow->setLayout(layout3);
 
     // 将页面添加到 QTabWidget 中
@@ -33,7 +32,7 @@ GLDAuxiliaryArea::GLDAuxiliaryArea(QWidget* parent)
     // 设置布局
     QVBoxLayout* mainLayout = new QVBoxLayout;
     mainLayout->addWidget(m_tabWidget);
-    // mainLayout->setMargin(0);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
     setLayout(mainLayout);
 }
 

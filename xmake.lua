@@ -8,10 +8,11 @@ target("GFCEditor")
         "src/GLDAuxiliaryArea/*.h",
         "src/GLDEditor/*.h",
         "src/GLDSchema/*.h",
-        "src/GLDToolbar/*.h",
+        "src/GLDToolBar/*.h",
         "src/GLDMainWindow/*.h",
         "src/GLDExpressParser/*.h",
-        "src/GLDGfcReader/*.h"
+        "src/GLDGfcReader/*.h",
+        "src/GLDMenuBar/*.h"
         )
 
     add_includedirs(
@@ -19,10 +20,11 @@ target("GFCEditor")
         "src/GLDAuxiliaryArea",
         "src/GLDEditor",
         "src/GLDSchema",
-        "src/GLDToolbar",
+        "src/GLDToolBar",
         "src/GLDMainWindow",
         "src/GLDExpressParser",
-        "src/GLDGfcReader"
+        "src/GLDGfcReader",
+        "src/GLDMenuBar"
     )
 
     add_files(
@@ -31,13 +33,12 @@ target("GFCEditor")
         "src/GLDAuxiliaryArea/*.cpp",
         "src/GLDEditor/*.cpp",
         "src/GLDSchema/*.cpp",
-        "src/GLDToolbar/*.cpp",
+        "src/GLDToolBar/*.cpp",
         "src/GLDMainWindow/*.cpp",
         "src/GLDExpressParser/*.cpp",
-        "src/GLDGfcReader/*.cpp"
+        "src/GLDGfcReader/*.cpp",
+        "src/GLDMenuBar/*.cpp"
     )
-
-    add_files("src/GLDMainWindow/mainwindow.ui")
 
     -- add files with Q_OBJECT meta (only for qt.moc)
     add_files(
@@ -45,10 +46,11 @@ target("GFCEditor")
         "src/GLDAuxiliaryArea/*.h",
         "src/GLDEditor/*.h",
         "src/GLDSchema/*.h",
-        "src/GLDToolbar/*.h",
+        "src/GLDToolBar/*.h",
         "src/GLDMainWindow/*.h",
         "src/GLDExpressParser/*.h",
-        "src/GLDGfcReader/*.h"
+        "src/GLDGfcReader/*.h",
+        "src/GLDMenuBar/*.h"
     )
 
     set_rundir(".")
@@ -60,11 +62,12 @@ target("GFCEditor")
     includes("vendor/QtCustomTitlebarWindow")
     add_deps("CustomWindow")
     
-    includes("vendor/AdvancedDockingSystem")
-    add_deps("ADS")
+    -- includes("vendor/AdvancedDockingSystem")
+    -- add_deps("ADS")
+    -- 暂不使用ADS库
 
     -- add resources
     add_files("vendor/QtCustomTitlebarWindow/assets/images/image.qrc")
     add_files("vendor/QtCustomTitlebarWindow/assets/qss/qss.qrc")
 
-    add_files("vendor/AdvancedDockingSystem/res/ads.qrc")
+    -- add_files("vendor/AdvancedDockingSystem/res/ads.qrc")

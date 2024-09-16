@@ -48,7 +48,7 @@ void GLDAttributeArea::setProperties(const QMap<QString, QVariant>& properties)
     m_pModel->clear();
 
     // 设置表头
-    m_pModel->setHorizontalHeaderLabels({ "属性", "值" });
+    m_pModel->setHorizontalHeaderLabels({ "Attribute", "Value" });
 
     // 遍历属性映射并添加到模型中
     int row = 0;

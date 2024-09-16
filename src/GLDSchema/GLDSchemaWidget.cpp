@@ -1,17 +1,12 @@
 ﻿#include "GLDSchemaWidget.h"
 #include "ExpressData.h"
-#include "qchar.h"
-#include "qstandarditemmodel.h"
-#include "qtabwidget.h"
-#include "qwidget.h"
 #include <QSizePolicy>
-#include <QStandardItemModel>
 
 GLDSchemaWidget::GLDSchemaWidget(QWidget* parent)
     : QWidget(parent)
 {
     p_GfcReader = new GFCReader;
-    // p_GfcReader->LoadExpressFile("./resources/GFC3X2.exp");
+    p_GfcReader->LoadExpressFile("./res/GFC3X2.exp");
 
     p_tabWidget = new QTabWidget(this);
     // Schema
@@ -25,9 +20,7 @@ GLDSchemaWidget::GLDSchemaWidget(QWidget* parent)
     createSchemaModel();
     p_schemaTreeView->setModel(p_schemaModel);
     p_schemaTreeView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    // p_schemaTreeView->expandToDepth(0);
     p_schemaTreeView->collapseAll();
-    // p_schemaTreeView->setEditTriggers(false);
 
     p_projectModel = new QStandardItemModel(this);
     // Project
@@ -70,7 +63,6 @@ void GLDSchemaWidget::createSchemaModel()
             QStandardItem* entityItem = new QStandardItem(i.GetNumber() + " " + i.GetName());
             parentItem->appendRow(entityItem);
         }
-
 
         // 添加子类
         QStringList subTypes = it.value().dynamicCast<EntityData>()->GetSubTypes();

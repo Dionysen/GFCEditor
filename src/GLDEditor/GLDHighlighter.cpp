@@ -7,9 +7,6 @@
 Highlighter::Highlighter(QTextDocument* parent)
     : QSyntaxHighlighter(parent)
 {
-
-    // QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
-
     // 设置关键字高亮
 
     // 定义对象（如 #6）的格式

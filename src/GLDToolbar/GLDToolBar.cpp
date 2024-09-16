@@ -1,6 +1,4 @@
 ﻿#include "GLDToolBar.h"
-#include "qkeysequence.h"
-#include "qstyle.h"
 #include <QIcon>
 #include <QApplication>
 #include <QStyle>

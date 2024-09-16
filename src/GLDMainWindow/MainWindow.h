@@ -1,32 +1,18 @@
 ﻿#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-// 自定义控件头文件
+// Custom
 #include "GLDAuxiliaryArea.h"
 #include "GLDToolBar.h"
 #include "GLDSchemaWidget.h"
 #include "GLDEditorWidget.h"
 #include "GLDAttributeArea.h"
-// Qt头文件
-#include "ads/SectionContentWidget.h"
-#include "qdockwidget.h"
-#include "qmainwindow.h"
-#include "qwidget.h"
+#include "GLDMenuBar.h"
+// Qt
+#include <QDockWidget>
 #include <QMainWindow>
 #include <QSplitter>
 #include <QAction>
-#include <cassert>
-
-// Docking
-#include "ads/API.h"
-#include "ads/ContainerWidget.h"
-#include "ads/SectionContent.h"
-
-
-namespace Ui
-{
-    class MainWindow;
-}
 
 class MainWindow : public QMainWindow
 {
@@ -40,6 +26,7 @@ class MainWindow : public QMainWindow
     // 设置菜单栏样式
     void setupMenuBar();
     void setupToolBar();
+    void setupStatusBar();
     void setupLayout();
     void setupAuxiliary();
     void setupEditor();
@@ -57,6 +44,9 @@ class MainWindow : public QMainWindow
     // 工具栏widget
     GLDToolBar* p_toolBar;
 
+    GLDMenuBar* p_menuBar;
+
+    QStatusBar* p_StatusBar;
     // schema widget，左右树控件
     GLDSchemaWidget* p_schemaWiddget;
 
@@ -75,11 +65,7 @@ class MainWindow : public QMainWindow
     QDockWidget* auxiliarydockWidget;
     QDockWidget* schemaDockWidget;
 
-    Ui::MainWindow* ui;
-
     QAction* refresh;
-
-    // ADS_NS::ContainerWidget* p_Container;
 
   private slots:
     void on_actionAbout_clicked();
