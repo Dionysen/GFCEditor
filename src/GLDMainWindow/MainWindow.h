@@ -8,12 +8,18 @@
 #include "GLDEditorWidget.h"
 #include "GLDAttributeArea.h"
 // Qt头文件
+#include "ads/SectionContentWidget.h"
 #include "qdockwidget.h"
 #include "qmainwindow.h"
 #include "qwidget.h"
 #include <QMainWindow>
 #include <QSplitter>
 #include <QAction>
+
+// Docking
+#include "ads/API.h"
+#include "ads/ContainerWidget.h"
+#include "ads/SectionContent.h"
 
 
 namespace Ui
@@ -53,15 +59,19 @@ class MainWindow : public QMainWindow
     GLDAttributeArea* p_attributeArea;
 
     // 布局
-    QDockWidget* editorDockWidget;
-    QDockWidget* attributedockWidget;
-    QDockWidget* auxiliarydockWidget;
-    QDockWidget* schemaDockWidget;
+    // QDockWidget* editorDockWidget;
+    // QDockWidget* attributedockWidget;
+    // QDockWidget* auxiliarydockWidget;
+    // QDockWidget* schemaDockWidget;
 
     Ui::MainWindow* ui;
 
     QAction* refresh;
 
+    ADS_NS::ContainerWidget* p_Container;
+
+    ADS_NS::SectionContentWidget*  p_SectionContent;
+    ADS_NS::SectionContent::RefPtr p_Sc2;
   private slots:
     void on_actionAbout_clicked();
     void on_actionHelp_clicked();

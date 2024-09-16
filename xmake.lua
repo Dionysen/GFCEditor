@@ -1,15 +1,5 @@
 add_rules("mode.debug", "mode.release")
 
--- 设置工具链为MSVC2015
--- set_toolchains("msvc", {vs="2015", vs_sdkver="10.0.10240.0"})
-
--- 设置Qt路径
--- option("qt")
---     set_default("C:\\Qt\\Qt5.6.3\\5.6.3\\msvc2015_64")
---     set_showmenu(true)
---     set_description("Qt Path")
--- option_end()
-
 target("GFCEditor")
     add_rules("qt.widgetapp")
     
@@ -66,8 +56,15 @@ target("GFCEditor")
     add_cxxflags("/utf-8", "/std::c++17")
     set_languages("cxx17")
 
+    -- Add Deps
     includes("vendor/QtCustomTitlebarWindow")
     add_deps("CustomWindow")
+    
+    includes("vendor/AdvancedDockingSystem")
+    add_deps("ADS")
+
     -- add resources
     add_files("vendor/QtCustomTitlebarWindow/assets/images/image.qrc")
     add_files("vendor/QtCustomTitlebarWindow/assets/qss/qss.qrc")
+
+    add_files("vendor/AdvancedDockingSystem/res/ads.qrc")
