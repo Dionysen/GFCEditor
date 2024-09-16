@@ -27,7 +27,6 @@
 #include <QLabel>
 #include <QTextStream>
 #include <QFont>
-// #include <QTextCodec>
 #include <QDockWidget>
 #include <QStyle>
 
@@ -37,103 +36,40 @@ MainWindow::MainWindow(QWidget* parent)
 {
     ui->setupUi(this);
 
-    this->resize(1200, 800);
+    GetMainWindow()->resize(1280, 800);
 
+    // 设置样式
     QFile file(":/qss/dark.qss");
-
     if (file.open(QFile::ReadOnly))
     {
         QString style = file.readAll();
         qApp->setStyleSheet(style);
     }
+
+    // 布局
+    setupLayout();
+
     // 设置菜单栏
     setupMenuBar();
+
     // 设置工具栏
-    p_toolBar = new GLDToolBar();
+    setupToolBar();
 
+    // 设置编辑器
+    setupEditor();
 
-    // ========= schema =========
-    p_schemaWiddget = new GLDSchemaWidget(ui->centralWidget);
-    p_schemaWiddget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    // ========= editor =========
-    p_editorWidget = new GLDEditorWidget(ui->centralWidget);
-    p_editorWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    // ========= 辅助区 =========
-    p_auxiliaryArea = new GLDAuxiliaryArea(this);
-    p_auxiliaryArea->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    // ========= 属性区 =========
-    p_attributeArea = new GLDAttributeArea(this);
-    p_attributeArea->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    // 设置辅助区域
+    setupAuxiliary();
 
+    // mockdata
     QMap<QString, QVariant> propertyData;
     propertyData["Name"]   = "Example";
     propertyData["Age"]    = 30;
     propertyData["Active"] = true;
     p_attributeArea->setProperties(propertyData);
-    // ========= 布局管理 ========
-
-    // schemaDockWidget = new QDockWidget(QStringLiteral("视图区"), this);
-    // schemaDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::TopDockWidgetArea | Qt::BottomDockWidgetArea);
-    // schemaDockWidget->setWidget(p_schemaWiddget);
-    // addDockWidget(Qt::LeftDockWidgetArea, schemaDockWidget);
-    // schemaDockWidget->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
-
-    // auxiliarydockWidget = new QDockWidget(QStringLiteral("辅助区"), this);
-    // auxiliarydockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::TopDockWidgetArea | Qt::BottomDockWidgetArea);
-    // auxiliarydockWidget->setWidget(p_auxiliaryArea);
-    // addDockWidget(Qt::BottomDockWidgetArea, auxiliarydockWidget);
-    // auxiliarydockWidget->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
-
-    // setDockNestingEnabled(true);
-
-    // attributedockWidget = new QDockWidget(QStringLiteral("属性区"), this);
-    // attributedockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::TopDockWidgetArea | Qt::BottomDockWidgetArea);
-    // attributedockWidget->setWidget(p_attributeArea);
-    // addDockWidget(Qt::RightDockWidgetArea, attributedockWidget);
-    // attributedockWidget->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
-
-    // editorDockWidget = new QDockWidget(this);
-    // editorDockWidget->setWidget(p_editorWidget);
-    // editorDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-    // editorDockWidget->setTitleBarWidget(new QWidget());
-
-    // splitDockWidget(schemaDockWidget, editorDockWidget, Qt::Horizontal);
-    // splitDockWidget(editorDockWidget, attributedockWidget, Qt::Horizontal);
-    // splitDockWidget(editorDockWidget, auxiliarydockWidget, Qt::Vertical);
-
-    // setCentralWidget(p_editorWidget);
-
-
-    p_Container = new ADS_NS::ContainerWidget();
-    setCentralWidget(p_Container);
-
-    p_SectionContent = new ADS_NS::SectionContentWidget(this);
-
-
-    p_Container->addSectionContent(p_SectionContent, NULL, ADS_NS::CenterDropArea);
-
-
-    p_Sc2 = ADS_NS::SectionContent::newSectionContent("section2", p_Container, new QLabel("Left"), new QLabel("Left"));
-
-    p_Container->addSectionContent(p_Sc2, NULL, ADS_NS::LeftDropArea);
-
-
-    ADS_NS::SectionContent::RefPtr p_Sc3 =
-        ADS_NS::SectionContent::newSectionContent("section3", p_Container, new QLabel("right"), new QLabel("Right"));
-
-    p_Container->addSectionContent(p_Sc3, NULL, ADS_NS::RightDropArea);
-
-
-    ADS_NS::SectionContent::RefPtr p_Sc4 =
-        ADS_NS::SectionContent::newSectionContent("section4", p_Container, new QLabel("right"), new QLabel("Bottom"));
-
-    p_SectionContent->addContent(p_Sc4, NULL, ADS_NS::InvalidDropArea);
-
-
-
-    this->addToolBar(p_toolBar);
-    setupToolBar();
-
+}
+void MainWindow::setupEditor()
+{
     connect(p_editorWidget, &GLDEditorWidget::signalUpdateStatusBar, this,
             [this](QString cursor, QString fileInfo) { ui->statusBar->showMessage(cursor + QStringLiteral("      ") + fileInfo); });
 
@@ -143,8 +79,61 @@ MainWindow::MainWindow(QWidget* parent)
         else
             setWindowTitle(filename);
     });
+}
 
-    connectAux();
+void MainWindow::setupLayout()
+{
+    // ========= 布局管理 ========
+    setDockNestingEnabled(true);
+
+    // ========= schema =========
+    p_schemaWiddget = new GLDSchemaWidget(this);
+
+    schemaDockWidget = new QDockWidget(QStringLiteral("视图区"), this);
+    schemaDockWidget->setAllowedAreas(Qt::AllDockWidgetAreas);
+    schemaDockWidget->setWidget(p_schemaWiddget);
+    schemaDockWidget->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
+
+    // ========= 辅助区 =========
+    p_auxiliaryArea = new GLDAuxiliaryArea(this);
+
+    auxiliarydockWidget = new QDockWidget(QStringLiteral("辅助区"), this);
+    auxiliarydockWidget->setAllowedAreas(Qt::AllDockWidgetAreas);
+    auxiliarydockWidget->setWidget(p_auxiliaryArea);
+    auxiliarydockWidget->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
+
+
+    // ========= 属性区 =========
+    p_attributeArea = new GLDAttributeArea(this);
+
+    attributedockWidget = new QDockWidget(QStringLiteral("属性区"), this);
+    attributedockWidget->setAllowedAreas(Qt::AllDockWidgetAreas);
+    attributedockWidget->setWidget(p_attributeArea);
+    attributedockWidget->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
+
+    // ========= editor =========
+    p_editorWidget = new GLDEditorWidget(this);
+
+    editorDockWidget = new QDockWidget(this);
+    editorDockWidget->setWidget(p_editorWidget);
+    editorDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+    editorDockWidget->setTitleBarWidget(new QWidget());
+
+    // 设置布局
+    addDockWidget(Qt::LeftDockWidgetArea, schemaDockWidget);
+    splitDockWidget(schemaDockWidget, editorDockWidget, Qt::Horizontal);
+    splitDockWidget(editorDockWidget, attributedockWidget, Qt::Horizontal);
+    splitDockWidget(editorDockWidget, auxiliarydockWidget, Qt::Vertical);
+
+    // 设置dock的初始大小
+    resizeDocks({ schemaDockWidget }, { 150 }, Qt::Horizontal);
+    resizeDocks({ attributedockWidget }, { 150 }, Qt::Horizontal);
+    resizeDocks({ auxiliarydockWidget }, { 150 }, Qt::Vertical);
+
+    // 删除centralwidget，所有部件均为dockwidget
+    QWidget* p = takeCentralWidget();
+    if (p)
+        delete p;
 }
 
 // 设置菜单栏样式
@@ -226,24 +215,24 @@ void MainWindow::setupMenuBar()
     ui->actionReplace->setShortcut(QKeySequence("Ctrl+R"));
 
     // 可见性
-    // connect(ui->actionAtrtri, &QAction::triggered, this, [this]() {
-    //     if (!attributedockWidget->isHidden())
-    //         attributedockWidget->hide();
-    //     else
-    //         attributedockWidget->show();
-    // });
-    // connect(ui->actionView, &QAction::triggered, this, [this]() {
-    //     if (!schemaDockWidget->isHidden())
-    //         schemaDockWidget->hide();
-    //     else
-    //         schemaDockWidget->show();
-    // });
-    // connect(ui->actionAsiss, &QAction::triggered, this, [this]() {
-    //     if (!auxiliarydockWidget->isHidden())
-    //         auxiliarydockWidget->hide();
-    //     else
-    //         auxiliarydockWidget->show();
-    // });
+    connect(ui->actionAtrtri, &QAction::triggered, this, [this]() {
+        if (!attributedockWidget->isHidden())
+            attributedockWidget->hide();
+        else
+            attributedockWidget->show();
+    });
+    connect(ui->actionView, &QAction::triggered, this, [this]() {
+        if (!schemaDockWidget->isHidden())
+            schemaDockWidget->hide();
+        else
+            schemaDockWidget->show();
+    });
+    connect(ui->actionAsiss, &QAction::triggered, this, [this]() {
+        if (!auxiliarydockWidget->isHidden())
+            auxiliarydockWidget->hide();
+        else
+            auxiliarydockWidget->show();
+    });
     connect(ui->actionStatus, &QAction::triggered, this, [this]() {
         if (!ui->statusBar->isHidden())
             ui->statusBar->hide();
@@ -260,6 +249,8 @@ void MainWindow::setupMenuBar()
 
 void MainWindow::setupToolBar()
 {
+    p_toolBar = new GLDToolBar();
+    this->addToolBar(p_toolBar);
     connect(this->p_toolBar->p_new, &QAction::triggered, this, [this]() { p_editorWidget->newFile(); });
     connect(this->p_toolBar->p_open, &QAction::triggered, this, [this]() { p_editorWidget->openFile(); });
 
@@ -353,7 +344,7 @@ void MainWindow::on_actionHelp_clicked()
     dialogHelp.exec();
 }
 
-void MainWindow::connectAux()
+void MainWindow::setupAuxiliary()
 {
     connect(p_auxiliaryArea->m_searchWindow, &GLDSearchWindow::signalNextSearch, this,
             [this](const QString& searchText, const bool prevs, const bool caseSensitive, const bool wholeWord) {
@@ -382,8 +373,7 @@ void MainWindow::connectAux()
                 p_auxiliaryArea->setSearchResults(res);
             });
 
-
-    // connect(ui->actionFind, &QAction::triggered, this, [this]() { auxiliarydockWidget->show(); });
-    // connect(ui->actionFindNext, &QAction::triggered, this, [this]() { auxiliarydockWidget->show(); });
-    // connect(ui->actionReplace, &QAction::triggered, this, [this]() { auxiliarydockWidget->show(); });
+    connect(ui->actionFind, &QAction::triggered, this, [this]() { auxiliarydockWidget->show(); });
+    connect(ui->actionFindNext, &QAction::triggered, this, [this]() { auxiliarydockWidget->show(); });
+    connect(ui->actionReplace, &QAction::triggered, this, [this]() { auxiliarydockWidget->show(); });
 }

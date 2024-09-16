@@ -11,7 +11,7 @@ GLDSchemaWidget::GLDSchemaWidget(QWidget* parent)
     : QWidget(parent)
 {
     p_GfcReader = new GFCReader;
-    p_GfcReader->LoadExpressFile("./resources/GFC3X2.exp");
+    // p_GfcReader->LoadExpressFile("./resources/GFC3X2.exp");
 
     p_tabWidget = new QTabWidget(this);
     // Schema

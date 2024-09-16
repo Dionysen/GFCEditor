@@ -12,8 +12,7 @@ int main(int argc, char* argv[])
 
     CustomWindow w;
 
-    MainWindow mainWindow;
-
+    MainWindow mainWindow(&w);
     w.setCentent(&mainWindow);
     w.show();
     return a.exec();

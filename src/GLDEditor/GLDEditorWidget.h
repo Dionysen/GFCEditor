@@ -1,7 +1,6 @@
 ﻿#include "qboxlayout.h"
 #include "qchar.h"
 #include "qcontainerfwd.h"
-#include "qlist.h"
 #include "qobject.h"
 #include "qqueue.h"
 #include "qwidget.h"

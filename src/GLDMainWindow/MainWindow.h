@@ -15,6 +15,7 @@
 #include <QMainWindow>
 #include <QSplitter>
 #include <QAction>
+#include <cassert>
 
 // Docking
 #include "ads/API.h"
@@ -38,9 +39,19 @@ class MainWindow : public QMainWindow
   private:
     // 设置菜单栏样式
     void setupMenuBar();
-
     void setupToolBar();
-    void connectAux();
+    void setupLayout();
+    void setupAuxiliary();
+    void setupEditor();
+
+    QWidget* GetMainWindow()
+    {
+        QWidget* parent = dynamic_cast<QWidget*>(this->parent());
+        if (parent)
+            return parent;
+        else
+            return this;
+    }
 
   private:
     // 工具栏widget
@@ -59,19 +70,17 @@ class MainWindow : public QMainWindow
     GLDAttributeArea* p_attributeArea;
 
     // 布局
-    // QDockWidget* editorDockWidget;
-    // QDockWidget* attributedockWidget;
-    // QDockWidget* auxiliarydockWidget;
-    // QDockWidget* schemaDockWidget;
+    QDockWidget* editorDockWidget;
+    QDockWidget* attributedockWidget;
+    QDockWidget* auxiliarydockWidget;
+    QDockWidget* schemaDockWidget;
 
     Ui::MainWindow* ui;
 
     QAction* refresh;
 
-    ADS_NS::ContainerWidget* p_Container;
+    // ADS_NS::ContainerWidget* p_Container;
 
-    ADS_NS::SectionContentWidget*  p_SectionContent;
-    ADS_NS::SectionContent::RefPtr p_Sc2;
   private slots:
     void on_actionAbout_clicked();
     void on_actionHelp_clicked();
