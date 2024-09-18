@@ -23,7 +23,7 @@ class MainWindow : public QMainWindow
     ~MainWindow();
 
   private:
-    // 设置菜单栏样式
+    // 初始化各个控件
     void setupMenuBar();
     void setupToolBar();
     void setupStatusBar();
@@ -31,22 +31,15 @@ class MainWindow : public QMainWindow
     void setupAuxiliary();
     void setupEditor();
 
-    QWidget* GetMainWindow()
-    {
-        QWidget* parent = dynamic_cast<QWidget*>(this->parent());
-        if (parent)
-            return parent;
-        else
-            return this;
-    }
+    // 使用自定义窗口，返回自定义窗口，否则返回this
+    QWidget* GetMainWindow();
 
   private:
-    // 工具栏widget
+    // 工具栏、菜单栏、状态栏
     GLDToolBar* p_toolBar;
-
     GLDMenuBar* p_menuBar;
-
     QStatusBar* p_StatusBar;
+
     // schema widget，左右树控件
     GLDSchemaWidget* p_schemaWiddget;
 
@@ -59,7 +52,7 @@ class MainWindow : public QMainWindow
     // 属性区域
     GLDAttributeArea* p_attributeArea;
 
-    // 布局
+    // 布局 - Docking
     QDockWidget* editorDockWidget;
     QDockWidget* attributedockWidget;
     QDockWidget* auxiliarydockWidget;

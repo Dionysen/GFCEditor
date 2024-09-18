@@ -8,6 +8,7 @@ Available at: https://github.com/GTRONICK/QSS/blob/master/ManjaroMix.qss
 
 QMainWindow {
   background-color: #333333;
+  /* color: #e0e0e0; */
 }
 
 #CustomWindow-Background {
@@ -92,6 +93,25 @@ QGroupBox::title {
 }
 
 /* ToolBar */
+QToolBar::handle {
+  image: url(":/icon/dark/drag.svg");
+  width: 12px;
+  height: 24px;
+}
+
+QToolBar::handle:vertical {
+  image: url(":/icon/dark/dragVer.svg");
+  width: 24px;
+  height: 12px;
+}
+
+QToolBar::handle:hover {
+  background-color: #3d3d3d;
+}
+
+QToolBar::handle:pressed {
+  background-color: #525252;
+}
 
 QToolBar {
   border: 1px solid #595959;
@@ -546,7 +566,7 @@ QDockWidget::float-button:pressed {
 /* TreeView 样式 */
 QTreeView {
   background-color: #2b2b2b;
-  color: #d3dae3;
+  color: #ddddde;
   border: 1px solid #1f2020;
 }
 
@@ -556,16 +576,29 @@ QTreeView::item:hover {
 
 QTreeView::item:selected {
   background-color: #4a4a4a;
+  color: #ffffff;
 }
 
 QTreeView::branch {
   color: #ffffff;
 }
 
+QTreeView::branch:has-children:!has-siblings:closed,
+QTreeView::branch:closed:has-children:has-siblings {
+  border-image: none;
+  image: url(:/icon/dark/branchClose.svg);
+}
+
+QTreeView::branch:open:has-children:!has-siblings,
+QTreeView::branch:open:has-children:has-siblings {
+  border-image: none;
+  image: url(:/icon/dark/branchOpen.svg);
+}
+
 /* TableView 样式 */
 QTableView {
   background-color: #2b2b2b;
-  color: #d3dae3;
+  color: #ddddde;
   border: 1px solid #1f2020;
   gridline-color: #171717;
 }
@@ -576,6 +609,7 @@ QTableView::item:hover {
 
 QTableView::item:selected {
   background-color: #4a4a4a;
+  color: #ffffff;
 }
 
 QHeaderView {
@@ -631,10 +665,6 @@ QListView {
   color: #d3dae3;
   border: 1px solid #1f2020;
 }
-/* 
-QListView::item {
-  padding: 5px;
-} */
 
 QListView::item:hover {
   background-color: #3c3c3c;

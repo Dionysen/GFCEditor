@@ -71,3 +71,5 @@ target("GFCEditor")
     add_files("vendor/QtCustomTitlebarWindow/assets/qss/qss.qrc")
 
     -- add_files("vendor/AdvancedDockingSystem/res/ads.qrc")
+
+    add_files("assets/images/icon.qrc")

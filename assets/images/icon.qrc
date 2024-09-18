@@ -1,0 +1,63 @@
+<RCC>
+    <qresource prefix="/icon">
+        <!-- dark -->
+        <file>dark/new.svg</file>        
+        <file>dark/open.svg</file>
+        <file>dark/save.svg</file>
+        <file>dark/saveAs.svg</file>
+        <file>dark/copy.svg</file>
+        <file>dark/cut.svg</file>
+        <file>dark/paste.svg</file>
+        <file>dark/undo.svg</file>
+        <file>dark/redo.svg</file>
+        <file>dark/find.svg</file>
+        <file>dark/replace.svg</file>
+        <file>dark/forward.svg</file>
+        <file>dark/backward.svg</file>
+        <file>dark/schema.svg</file>
+        <file>dark/attribute.svg</file>
+        <file>dark/auxiliary.svg</file>
+        <file>dark/findNext.svg</file>
+        <file>dark/location.svg</file>
+        <file>dark/exit.svg</file>
+        <file>dark/cite.svg</file>
+        <file>dark/check.svg</file>
+        <file>dark/color.svg</file>
+        <file>dark/refresh.svg</file>
+        <file>dark/recent.svg</file>
+        <file>dark/branch.svg</file>
+        <file>dark/branchOpen.svg</file>
+        <file>dark/branchClose.svg</file>
+        <file>dark/drag.svg</file>
+        <file>dark/dragVer.svg</file>
+        <file>dark/help.svg</file>
+        <file>dark/about.svg</file>
+        <file>dark/visible.svg</file>
+        <file>dark/statusbar.svg</file>
+        <file>dark/toolbar.svg</file>
+        <!-- light -->
+        <file>light/new.svg</file>        
+        <file>light/open.svg</file>
+        <file>light/save.svg</file>
+        <file>light/saveAs.svg</file>
+        <file>light/copy.svg</file>
+        <file>light/cut.svg</file>
+        <file>light/paste.svg</file>
+        <file>light/undo.svg</file>
+        <file>light/redo.svg</file>
+        <file>light/find.svg</file>
+        <file>light/replace.svg</file>
+        <file>light/forward.svg</file>
+        <file>light/backward.svg</file>
+        <file>light/schema.svg</file>
+        <file>light/attribute.svg</file>
+        <file>light/auxiliary.svg</file>
+        <file>light/findNext.svg</file>
+        <file>light/location.svg</file>
+        <file>light/exit.svg</file>
+        <file>light/cite.svg</file>
+        <file>light/check.svg</file>
+        <file>light/color.svg</file>
+        <file>light/refresh.svg</file>
+    </qresource>
+</RCC>

@@ -31,7 +31,6 @@ MainWindow::MainWindow(QWidget* parent)
 {
     GetMainWindow()->resize(1280, 800);
 
-
     // 设置样式
     QFile file(":/qss/dark.qss");
     if (file.open(QFile::ReadOnly))
@@ -91,16 +90,14 @@ void MainWindow::setupLayout()
     setDockNestingEnabled(true);
 
     // ========= schema =========
-    p_schemaWiddget = new GLDSchemaWidget(this);
-
+    p_schemaWiddget  = new GLDSchemaWidget(this);
     schemaDockWidget = new QDockWidget(QStringLiteral("Schema"), this);
     schemaDockWidget->setAllowedAreas(Qt::AllDockWidgetAreas);
     schemaDockWidget->setWidget(p_schemaWiddget);
     schemaDockWidget->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
 
     // ========= 辅助区 =========
-    p_auxiliaryArea = new GLDAuxiliaryArea(this);
-
+    p_auxiliaryArea     = new GLDAuxiliaryArea(this);
     auxiliarydockWidget = new QDockWidget(QStringLiteral("Auxiliary"), this);
     auxiliarydockWidget->setAllowedAreas(Qt::AllDockWidgetAreas);
     auxiliarydockWidget->setWidget(p_auxiliaryArea);
@@ -108,16 +105,14 @@ void MainWindow::setupLayout()
 
 
     // ========= 属性区 =========
-    p_attributeArea = new GLDAttributeArea(this);
-
+    p_attributeArea     = new GLDAttributeArea(this);
     attributedockWidget = new QDockWidget(QStringLiteral("Attribute"), this);
     attributedockWidget->setAllowedAreas(Qt::AllDockWidgetAreas);
     attributedockWidget->setWidget(p_attributeArea);
     attributedockWidget->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
 
     // ========= editor =========
-    p_editorWidget = new GLDEditorWidget(this);
-
+    p_editorWidget   = new GLDEditorWidget(this);
     editorDockWidget = new QDockWidget(this);
     editorDockWidget->setWidget(p_editorWidget);
     editorDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
@@ -159,37 +154,6 @@ void MainWindow::setupMenuBar()
         }
     });
 
-    p_menuBar->actionNew->setIcon(QIcon(QString(":/image/new.png")));
-    p_menuBar->actionOpen->setIcon(QIcon(QString(":/image/open.png")));
-    p_menuBar->actionSave->setIcon(QIcon(QString(":/image/save.png")));
-
-    p_menuBar->actionSaveAs->setIcon(QIcon(QString(":/image/saveas.png")));
-    p_menuBar->actionExit->setIcon(QIcon(QString(":/image/exit.png")));
-
-    p_menuBar->actionSaveAs->setIcon(QIcon(QString(":/image/new.png")));
-
-    p_menuBar->actionExit->setIcon(QIcon(QString(":/image/new.png")));
-    p_menuBar->actionRedo->setIcon(QIcon(QString(":/image/redo.png")));
-    p_menuBar->actionUndo->setIcon(QIcon(QString(":/image/undo.png")));
-    p_menuBar->actionCut->setIcon(QIcon(QString(":/image/cut.png")));
-    p_menuBar->actionCopy->setIcon(QIcon(QString(":/image/copy.png")));
-    p_menuBar->actionPaste->setIcon(QIcon(QString(":/image/paste.png")));
-    p_menuBar->actionFind->setIcon(QIcon(QString(":/image/find.png")));
-    p_menuBar->actionFindNext->setIcon(QIcon(QString(":/image/findnext.png")));
-    p_menuBar->actionReplace->setIcon(QIcon(QString(":/image/replace.png")));
-
-    p_menuBar->actionBackword->setIcon(QIcon(QString(":/image/backward.png")));
-    p_menuBar->actionForward->setIcon(QIcon(QString(":/image/forward.png")));
-    p_menuBar->actionLocation->setIcon(QIcon(QString(":/image/location.png")));
-
-    p_menuBar->menuView->setIcon(QIcon(QString(":/image/visible.png")));
-
-    p_menuBar->actionColor->setIcon(QIcon(QString(":/image/color.png")));
-    p_menuBar->actionCite->setIcon(QIcon(QString(":/image/cite.png")));
-    p_menuBar->actionCheck->setIcon(QIcon(QString(":/image/check.png")));
-
-    p_menuBar->actionHelp->setIcon(QIcon(QString(":/image/help.png")));
-    p_menuBar->actionAbout->setIcon(QIcon(QString(":/image/about.png")));
 
     // TODO: Icons Download
 
@@ -382,4 +346,14 @@ void MainWindow::setupAuxiliary()
     connect(p_menuBar->actionFind, &QAction::triggered, this, [this]() { auxiliarydockWidget->show(); });
     connect(p_menuBar->actionFindNext, &QAction::triggered, this, [this]() { auxiliarydockWidget->show(); });
     connect(p_menuBar->actionReplace, &QAction::triggered, this, [this]() { auxiliarydockWidget->show(); });
+}
+
+
+QWidget* MainWindow::GetMainWindow()
+{
+    QWidget* parent = dynamic_cast<QWidget*>(this->parent());
+    if (parent)
+        return parent;
+    else
+        return this;
 }

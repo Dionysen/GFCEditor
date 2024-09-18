@@ -1,4 +1,5 @@
 ﻿#include "GLDToolBar.h"
+#include "qicon.h"
 #include <QIcon>
 #include <QApplication>
 #include <QStyle>
@@ -7,21 +8,37 @@ GLDToolBar::GLDToolBar(QWidget* parent)
     : QToolBar(parent)
 {
 
-    p_new      = new QAction(QStringLiteral("新建"), this);
-    p_open     = new QAction(QStringLiteral("打开"), this);
-    p_save     = new QAction(QStringLiteral("保存"), this);
-    p_undo     = new QAction(QStringLiteral("撤销"), this);
-    p_redo     = new QAction(QStringLiteral("重做"), this);
-    p_cut      = new QAction(QStringLiteral("剪切"), this);
-    p_copy     = new QAction(QStringLiteral("复制"), this);
-    p_paste    = new QAction(QStringLiteral("粘贴"), this);
-    p_find     = new QAction(QStringLiteral("查找"), this);
-    p_replace  = new QAction(QStringLiteral("替换"), this);
-    p_forward  = new QAction(QStringLiteral("前进"), this);
-    p_backward = new QAction(QStringLiteral("后退"), this);
+    p_new      = new QAction(this);
+    p_open     = new QAction(this);
+    p_save     = new QAction(this);
+    p_undo     = new QAction(this);
+    p_redo     = new QAction(this);
+    p_cut      = new QAction(this);
+    p_copy     = new QAction(this);
+    p_paste    = new QAction(this);
+    p_find     = new QAction(this);
+    p_replace  = new QAction(this);
+    p_forward  = new QAction(this);
+    p_backward = new QAction(this);
 
-    p_refresh = new QAction("refresh", this);
 
+
+    p_new->setIcon(QIcon(":/icon/dark/new.svg"));
+    p_open->setIcon(QIcon(":/icon/dark/open.svg"));
+    p_save->setIcon(QIcon(":/icon/dark/save.svg"));
+    p_undo->setIcon(QIcon(":/icon/dark/undo.svg"));
+    p_redo->setIcon(QIcon(":/icon/dark/redo.svg"));
+    p_cut->setIcon(QIcon(":/icon/dark/cut.svg"));
+    p_copy->setIcon(QIcon(":/icon/dark/copy.svg"));
+    p_paste->setIcon(QIcon(":/icon/dark/paste.svg"));
+    p_find->setIcon(QIcon(":/icon/dark/find.svg"));
+    p_replace->setIcon(QIcon(":/icon/dark/replace.svg"));
+    p_forward->setIcon(QIcon(":/icon/dark/forward.svg"));
+    p_backward->setIcon(QIcon(":/icon/dark/backward.svg"));
+
+
+    p_refresh = new QAction(this);
+    p_refresh->setIcon(QIcon(":/icon/dark/refresh.svg"));
 
     this->addAction(p_new);
     this->addAction(p_open);
@@ -45,8 +62,6 @@ GLDToolBar::GLDToolBar(QWidget* parent)
     this->addAction(p_forward);
 
     this->addAction(p_refresh);
-
-    this->setStyleSheet("QToolBar { icon-size: 20px; }");
 }
 GLDToolBar::~GLDToolBar()
 {

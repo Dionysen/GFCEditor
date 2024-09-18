@@ -1,4 +1,5 @@
 #include "GLDMenuBar.h"
+#include "qicon.h"
 
 GLDMenuBar::GLDMenuBar(QWidget* parent)
     : QMenuBar(parent)
@@ -16,7 +17,6 @@ GLDMenuBar::GLDMenuBar(QWidget* parent)
     menuRecent   = new QMenu("Recent Files", this);
     actionExit   = new QAction("Exit", this);
     actionNone   = new QAction("None", this);
-
 
     actionUndo     = new QAction("Undo", this);
     actionRedo     = new QAction("Redo", this);
@@ -43,6 +43,39 @@ GLDMenuBar::GLDMenuBar(QWidget* parent)
 
     actionHelp  = new QAction("Help", this);
     actionAbout = new QAction("About", this);
+
+    actionNew->setIcon(QIcon(QString(":/icon/dark/new.svg")));
+    actionOpen->setIcon(QIcon(QString(":/icon/dark/open.svg")));
+    actionSave->setIcon(QIcon(QString(":/icon/dark/save.svg")));
+    actionSaveAs->setIcon(QIcon(QString(":/icon/dark/saveAs.svg")));
+    actionExit->setIcon(QIcon(QString(":/icon/dark/exit.svg")));
+    actionSaveAs->setIcon(QIcon(QString(":/icon/dark/new.svg")));
+    actionExit->setIcon(QIcon(QString(":/icon/dark/new.svg")));
+    actionRedo->setIcon(QIcon(QString(":/icon/dark/redo.svg")));
+    actionUndo->setIcon(QIcon(QString(":/icon/dark/undo.svg")));
+    actionCut->setIcon(QIcon(QString(":/icon/dark/cut.svg")));
+    actionCopy->setIcon(QIcon(QString(":/icon/dark/copy.svg")));
+    actionPaste->setIcon(QIcon(QString(":/icon/dark/paste.svg")));
+    actionFind->setIcon(QIcon(QString(":/icon/dark/find.svg")));
+    actionFindNext->setIcon(QIcon(QString(":/icon/dark/findNext.svg")));
+    actionReplace->setIcon(QIcon(QString(":/icon/dark/replace.svg")));
+    actionBackword->setIcon(QIcon(QString(":/icon/dark/backward.svg")));
+    actionForward->setIcon(QIcon(QString(":/icon/dark/forward.svg")));
+    actionLocation->setIcon(QIcon(QString(":/icon/dark/location.svg")));
+    menuView->setIcon(QIcon(QString(":/icon/dark/visible.svg")));
+    actionAuxiliary->setIcon(QIcon(":/icon/dark/auxiliary.svg"));
+    actionAttribute->setIcon(QIcon(":/icon/dark/attribute.svg"));
+    actionSchema->setIcon(QIcon(":/icon/dark/schema.svg"));
+    actionToolbar->setIcon(QIcon(":/icon/dark/toolbar.svg"));
+    actionStatusbar->setIcon(QIcon(":/icon/dark/statusbar.svg"));
+
+    menuRecent->setIcon(QIcon(QString(":/icon/dark/recent.svg")));
+    actionColor->setIcon(QIcon(QString(":/icon/dark/color.svg")));
+    actionCite->setIcon(QIcon(QString(":/icon/dark/cite.svg")));
+    actionCheck->setIcon(QIcon(QString(":/icon/dark/check.svg")));
+    actionHelp->setIcon(QIcon(QString(":/icon/dark/help.svg")));
+    actionAbout->setIcon(QIcon(QString(":/icon/dark/about.svg")));
+
 
     this->addMenu(menuFile);
     this->addMenu(menuEdit);
