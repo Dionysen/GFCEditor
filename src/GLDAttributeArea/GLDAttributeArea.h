@@ -1,19 +1,20 @@
 ﻿#ifndef GLDATTRIBUTEAREA_H
 #define GLDATTRIBUTEAREA_H
 
-#include <QWidget>
+#include <QDockWidget>
 #include <QTableView>
 #include <QStandardItemModel>
 #include <QVBoxLayout>
 #include "qstandarditemmodel.h"
 
 
-class GLDAttributeArea : public QWidget
+class GLDAttributeArea : public QDockWidget
 {
     Q_OBJECT
 
   public:
-    GLDAttributeArea(QWidget* parent = nullptr);
+    GLDAttributeArea(const QString& title, QWidget* parent = nullptr);
+
 
     // 接收外部传入的数据并更新表格
     void setProperties(const QMap<QString, QVariant>& properties);

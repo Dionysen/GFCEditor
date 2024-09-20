@@ -96,7 +96,6 @@ void CustomWindow::InitWindow()
     p_ThisLayout = new QVBoxLayout;
     p_ThisLayout->addWidget(p_MainWidget);
     p_ThisLayout->setContentsMargins(1, 1, 1, 1);
-    // p_ThisLayout->setContentsMargins(0, 0, 0, 0);
     p_ThisLayout->setSpacing(0);
 
     this->setLayout(p_ThisLayout);
@@ -412,12 +411,6 @@ void CustomWindow::setDarkMode(bool isDark)
 {
     if (isDark)
     {
-        // qDebug() << "qss";
-        // QFile file(":/qss/dark.qss");
-        // file.open(QFile::ReadOnly);
-        // QString styleSheet = file.readAll();
-        // qApp->setStyleSheet(styleSheet);
-
         QFile styleFile(":/qss/dark.qss");
         if (!styleFile.exists())
         {
@@ -434,11 +427,33 @@ void CustomWindow::setDarkMode(bool isDark)
         {
             qWarning() << "Unable to open QSS file";
         }
+
+
+        p_MinimumBtn->setIcon(QIcon(":/image/icon_window_minimize_dark"));
+        p_CloseBtn->setIcon(QIcon(":/image/icon_window_close_dark"));
+        p_MaximumBtn->setIcon(QIcon(":/image/icon_window_maximize_dark"));
     }
     else
     {
-        // TODO: Light mode
-        qApp->setStyleSheet("");
+        QFile styleFile(":/qss/light.qss");
+        if (!styleFile.exists())
+        {
+            qWarning() << "QSS file does not exist!";
+        }
+
+        if (styleFile.open(QFile::ReadOnly))
+        {
+            QString styleSheet = QLatin1String(styleFile.readAll());
+            qApp->setStyleSheet(styleSheet);
+            styleFile.close();
+        }
+        else
+        {
+            qWarning() << "Unable to open QSS file";
+        }
+        p_MinimumBtn->setIcon(QIcon(":/image/icon_window_minimize"));
+        p_CloseBtn->setIcon(QIcon(":/image/icon_window_close"));
+        p_MaximumBtn->setIcon(QIcon(":/image/icon_window_maximize"));
     }
 }
 

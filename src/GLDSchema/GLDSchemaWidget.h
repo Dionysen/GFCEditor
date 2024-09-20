@@ -3,14 +3,17 @@
 #include <QTreeView>
 #include <QWidget>
 #include <QHBoxLayout>
-#include "GFCReader.h"
 
-class GLDSchemaWidget : public QWidget
+#include "GFCReader.h"
+#include "GLDTreeModel.h"
+#include "qdockwidget.h"
+
+class GLDSchemaWidget : public QDockWidget
 {
     Q_OBJECT
 
   public:
-    GLDSchemaWidget(QWidget* parent = nullptr);
+    GLDSchemaWidget(const QString& title, QWidget* parent = nullptr);
     ~GLDSchemaWidget();
 
   private:
@@ -23,10 +26,9 @@ class GLDSchemaWidget : public QWidget
     QTreeView* p_schemaTreeView;
     QTreeView* p_projectTreeView;
 
-    QStandardItemModel* p_schemaModel;
+
+    GLDTreeModel*       p_schemaModel;
     QStandardItemModel* p_projectModel;
 
     GFCReader* p_GfcReader;
-
-    QHBoxLayout* p_mainLayout;
 };

@@ -16,6 +16,10 @@ class GLDToolBar : public QToolBar
     GLDToolBar(QWidget* parent = nullptr);
     ~GLDToolBar();
 
+
+    void setLightIcon();
+    void setDarkIcon();
+
   private:
     QAction* p_new;
     QAction* p_open;

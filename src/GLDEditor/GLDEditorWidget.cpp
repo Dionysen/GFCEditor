@@ -1,6 +1,6 @@
 ﻿#include "GLDEditorWidget.h"
-#include "qboxlayout.h"
 #include "qdatetime.h"
+#include "qdockwidget.h"
 #include "qfileinfo.h"
 #include "qfont.h"
 #include <QStandardPaths>
@@ -20,8 +20,8 @@
 // ========= EditorWidget ===========
 // ==================================
 
-GLDEditorWidget::GLDEditorWidget(QWidget* parent)
-    : QWidget(parent)
+GLDEditorWidget::GLDEditorWidget(const QString& title, QWidget* parent)
+    : QDockWidget(title, parent)
     , currentFilePath("untitled")
     , m_statusBarTextCursor("")
     , m_statusBarTextFileInfo("")
@@ -37,10 +37,10 @@ GLDEditorWidget::GLDEditorWidget(QWidget* parent)
     font.setFamily(QString("Consolas"));
     p_textEditor->setFont(font);
     // Layout
-    p_mainLayout = new QVBoxLayout;
-    p_mainLayout->addWidget(p_textEditor);
-    p_mainLayout->setContentsMargins(0, 0, 0, 0);
-    setLayout(p_mainLayout);
+    setAllowedAreas(Qt::AllDockWidgetAreas);
+    // 添加最小化按钮
+    setWidget(p_textEditor);
+    setTitleBarWidget(new QWidget());
 
     lineNumber.clear();
     currentLine = -1;

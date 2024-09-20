@@ -2,8 +2,8 @@
 #include <QWidget>
 #include <QHeaderView>
 
-GLDAttributeArea::GLDAttributeArea(QWidget* parent)
-    : QWidget(parent)
+GLDAttributeArea::GLDAttributeArea(const QString& title, QWidget* parent)
+    : QDockWidget(title, parent)
 {
     // 创建 QTableView 和 QStandardItemModel
     m_pTableView = new QTableView(this);
@@ -12,11 +12,9 @@ GLDAttributeArea::GLDAttributeArea(QWidget* parent)
     // 设置 QTableView 的模型
     m_pTableView->setModel(m_pModel);
 
-    // 创建布局并添加 QTableView
-    QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->addWidget(m_pTableView);
-    layout->setContentsMargins(0, 0, 0, 0);
-    setLayout(layout);
+    setAllowedAreas(Qt::AllDockWidgetAreas);
+    setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetClosable);
+    setWidget(m_pTableView);
 
     // 设置选择方式为行
     m_pTableView->setSelectionBehavior(QAbstractItemView::SelectRows);

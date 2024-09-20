@@ -1,6 +1,6 @@
-﻿#include "qboxlayout.h"
-#include "qchar.h"
+﻿#include "qchar.h"
 #include "qcontainerfwd.h"
+#include "qdockwidget.h"
 #include "qobject.h"
 #include "qqueue.h"
 #include "qwidget.h"
@@ -12,13 +12,12 @@
 #include "GLDHighlighter.h"
 
 // TODO：懒加载
-class GLDEditorWidget : public QWidget
+class GLDEditorWidget : public QDockWidget
 {
     Q_OBJECT
   public:
-    GLDEditorWidget(QWidget* parent = nullptr);
+    GLDEditorWidget(const QString& title, QWidget* parent = nullptr);
     ~GLDEditorWidget();
-
 
     inline QPlainTextEdit* getTextEditor()
     {
@@ -61,9 +60,7 @@ class GLDEditorWidget : public QWidget
   private:
     QString currentFilePath;
 
-    QVBoxLayout*    p_mainLayout;
     QPlainTextEdit* p_textEditor;
-
 
     QString m_statusBarTextCursor;
     QString m_statusBarTextFileInfo;

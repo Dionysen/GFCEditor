@@ -25,22 +25,22 @@
 #include <QFont>
 #include <QDockWidget>
 #include <QStyle>
+#include <QSizeGrip>
+
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
 {
-    GetMainWindow()->resize(1280, 800);
+    GetCustomWindow()->resize(1280, 800);
+    GetCustomWindow()->setDarkMode(false);
 
-    // 设置样式
-    QFile file(":/qss/dark.qss");
-    if (file.open(QFile::ReadOnly))
-    {
-        QString style = file.readAll();
-        qApp->setStyleSheet(style);
-    }
+    p_schemaWiddget = new GLDSchemaWidget("Schema", this);
+    p_auxiliaryArea = new GLDAuxiliaryArea("Auxiliary", this);
+    p_attributeArea = new GLDAttributeArea("Attribute", this);
+    p_editorWidget  = new GLDEditorWidget("Editor", this);
 
     // 布局
-    setupLayout();
+    setupDockingLayout();
 
     // 状态栏
     setupStatusBar();
@@ -84,55 +84,31 @@ void MainWindow::setupEditor()
     });
 }
 
-void MainWindow::setupLayout()
+void MainWindow::setupDockingLayout()
 {
     // ========= 布局管理 ========
     setDockNestingEnabled(true);
 
-    // ========= schema =========
-    p_schemaWiddget  = new GLDSchemaWidget(this);
-    schemaDockWidget = new QDockWidget(QStringLiteral("Schema"), this);
-    schemaDockWidget->setAllowedAreas(Qt::AllDockWidgetAreas);
-    schemaDockWidget->setWidget(p_schemaWiddget);
-    schemaDockWidget->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
-
-    // ========= 辅助区 =========
-    p_auxiliaryArea     = new GLDAuxiliaryArea(this);
-    auxiliarydockWidget = new QDockWidget(QStringLiteral("Auxiliary"), this);
-    auxiliarydockWidget->setAllowedAreas(Qt::AllDockWidgetAreas);
-    auxiliarydockWidget->setWidget(p_auxiliaryArea);
-    auxiliarydockWidget->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
-
-
-    // ========= 属性区 =========
-    p_attributeArea     = new GLDAttributeArea(this);
-    attributedockWidget = new QDockWidget(QStringLiteral("Attribute"), this);
-    attributedockWidget->setAllowedAreas(Qt::AllDockWidgetAreas);
-    attributedockWidget->setWidget(p_attributeArea);
-    attributedockWidget->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
-
-    // ========= editor =========
-    p_editorWidget   = new GLDEditorWidget(this);
-    editorDockWidget = new QDockWidget(this);
-    editorDockWidget->setWidget(p_editorWidget);
-    editorDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-    editorDockWidget->setTitleBarWidget(new QWidget());
-
     // 设置布局
-    addDockWidget(Qt::LeftDockWidgetArea, schemaDockWidget);
-    splitDockWidget(schemaDockWidget, editorDockWidget, Qt::Horizontal);
-    splitDockWidget(editorDockWidget, attributedockWidget, Qt::Horizontal);
-    splitDockWidget(editorDockWidget, auxiliarydockWidget, Qt::Vertical);
+    addDockWidget(Qt::LeftDockWidgetArea, p_schemaWiddget);
+    splitDockWidget(p_schemaWiddget, p_editorWidget, Qt::Horizontal);
+    splitDockWidget(p_editorWidget, p_attributeArea, Qt::Horizontal);
+    splitDockWidget(p_editorWidget, p_auxiliaryArea, Qt::Vertical);
 
     // 设置dock的初始大小
-    resizeDocks({ schemaDockWidget }, { 150 }, Qt::Horizontal);
-    resizeDocks({ attributedockWidget }, { 150 }, Qt::Horizontal);
-    resizeDocks({ auxiliarydockWidget }, { 150 }, Qt::Vertical);
+    resizeDocks({ p_schemaWiddget }, { 150 }, Qt::Horizontal);
+    resizeDocks({ p_attributeArea }, { 150 }, Qt::Horizontal);
+    resizeDocks({ p_auxiliaryArea }, { 150 }, Qt::Vertical);
 
     // 删除centralwidget，所有部件均为dockwidget
     QWidget* p = takeCentralWidget();
     if (p)
         delete p;
+}
+
+
+void MainWindow::setupNoDockingLayout()
+{
 }
 
 // 设置菜单栏样式
@@ -187,22 +163,22 @@ void MainWindow::setupMenuBar()
 
     // 可见性
     connect(p_menuBar->actionAttribute, &QAction::triggered, this, [this]() {
-        if (!attributedockWidget->isHidden())
-            attributedockWidget->hide();
+        if (!p_attributeArea->isHidden())
+            p_attributeArea->hide();
         else
-            attributedockWidget->show();
+            p_attributeArea->show();
     });
     connect(p_menuBar->actionSchema, &QAction::triggered, this, [this]() {
-        if (!schemaDockWidget->isHidden())
-            schemaDockWidget->hide();
+        if (!p_schemaWiddget->isHidden())
+            p_schemaWiddget->hide();
         else
-            schemaDockWidget->show();
+            p_schemaWiddget->show();
     });
     connect(p_menuBar->actionAuxiliary, &QAction::triggered, this, [this]() {
-        if (!auxiliarydockWidget->isHidden())
-            auxiliarydockWidget->hide();
+        if (!p_auxiliaryArea->isHidden())
+            p_auxiliaryArea->hide();
         else
-            auxiliarydockWidget->show();
+            p_auxiliaryArea->show();
     });
     connect(p_menuBar->actionStatusbar, &QAction::triggered, this, [this]() {
         if (!p_StatusBar->isHidden())
@@ -216,6 +192,10 @@ void MainWindow::setupMenuBar()
         else
             p_toolBar->show();
     });
+
+    // theme
+    connect(p_menuBar->actionLight, &QAction::triggered, this, [this]() { p_toolBar->setLightIcon(); });
+    connect(p_menuBar->actionDark, &QAction::triggered, this, [this]() { p_toolBar->setDarkIcon(); });
 }
 
 void MainWindow::setupToolBar()
@@ -343,9 +323,9 @@ void MainWindow::setupAuxiliary()
                 p_auxiliaryArea->setSearchResults(res);
             });
 
-    connect(p_menuBar->actionFind, &QAction::triggered, this, [this]() { auxiliarydockWidget->show(); });
-    connect(p_menuBar->actionFindNext, &QAction::triggered, this, [this]() { auxiliarydockWidget->show(); });
-    connect(p_menuBar->actionReplace, &QAction::triggered, this, [this]() { auxiliarydockWidget->show(); });
+    connect(p_menuBar->actionFind, &QAction::triggered, this, [this]() { p_auxiliaryArea->show(); });
+    connect(p_menuBar->actionFindNext, &QAction::triggered, this, [this]() { p_auxiliaryArea->show(); });
+    connect(p_menuBar->actionReplace, &QAction::triggered, this, [this]() { p_auxiliaryArea->show(); });
 }
 
 
@@ -356,4 +336,9 @@ QWidget* MainWindow::GetMainWindow()
         return parent;
     else
         return this;
+}
+
+CustomWindow* MainWindow::GetCustomWindow()
+{
+    return dynamic_cast<CustomWindow*>(GetMainWindow());
 }

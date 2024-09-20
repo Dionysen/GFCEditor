@@ -59,5 +59,16 @@
         <file>light/check.svg</file>
         <file>light/color.svg</file>
         <file>light/refresh.svg</file>
+        <file>light/recent.svg</file>
+        <file>light/branch.svg</file>
+        <file>light/branchOpen.svg</file>
+        <file>light/branchClose.svg</file>
+        <file>light/drag.svg</file>
+        <file>light/dragVer.svg</file>
+        <file>light/help.svg</file>
+        <file>light/about.svg</file>
+        <file>light/visible.svg</file>
+        <file>light/statusbar.svg</file>
+        <file>light/toolbar.svg</file>
     </qresource>
 </RCC>

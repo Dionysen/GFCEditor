@@ -8,6 +8,7 @@
 #include "GLDEditorWidget.h"
 #include "GLDAttributeArea.h"
 #include "GLDMenuBar.h"
+#include "CustomWindow.h"
 // Qt
 #include <QDockWidget>
 #include <QMainWindow>
@@ -27,12 +28,19 @@ class MainWindow : public QMainWindow
     void setupMenuBar();
     void setupToolBar();
     void setupStatusBar();
-    void setupLayout();
+    void setupDockingLayout();
+    void setupNoDockingLayout();
     void setupAuxiliary();
     void setupEditor();
 
     // 使用自定义窗口，返回自定义窗口，否则返回this
-    QWidget* GetMainWindow();
+    QWidget*      GetMainWindow();
+    CustomWindow* GetCustomWindow();
+
+    inline GLDToolBar* GetToolBar()
+    {
+        return p_toolBar;
+    }
 
   private:
     // 工具栏、菜单栏、状态栏
@@ -51,12 +59,6 @@ class MainWindow : public QMainWindow
 
     // 属性区域
     GLDAttributeArea* p_attributeArea;
-
-    // 布局 - Docking
-    QDockWidget* editorDockWidget;
-    QDockWidget* attributedockWidget;
-    QDockWidget* auxiliarydockWidget;
-    QDockWidget* schemaDockWidget;
 
     QAction* refresh;
 

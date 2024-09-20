@@ -16,6 +16,9 @@ class GLDMenuBar : public QMenuBar
     ~GLDMenuBar();
 
   private:
+    void setLightIcon();
+    void setDarkIcon();
+
     // ======= Menu ========
     QMenu* menuFile;
     QMenu* menuEdit;
@@ -57,6 +60,10 @@ class GLDMenuBar : public QMenuBar
     QAction* actionSchema;
     QAction* actionToolbar;
     QAction* actionStatusbar;
+
+    QMenu*   menuTheme;
+    QAction* actionLight;
+    QAction* actionDark;
 
     // Help
     QAction* actionHelp;
