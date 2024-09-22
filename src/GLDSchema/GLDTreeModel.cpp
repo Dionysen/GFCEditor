@@ -1,155 +1,271 @@
 #include "GLDTreeModel.h"
-#include "qcontainerfwd.h"
-#include "qobject.h"
+#include "qnamespace.h"
 
-// ========= TreeItem ==============
+GLDTreeNode::GLDTreeNode(GLDTreeNode* pParent)
+    : m_Parent(pParent)
+    , m_Content("")
+{
+}
+
+GLDTreeNode::GLDTreeNode(const QString& content, GLDTreeNode* parent)
+    : m_Parent(parent)
+    , m_Content(content)
+{
+}
+
+void GLDTreeNode::setIcon(const QIcon& icon)
+{
+    m_Icon = icon;
+}
+
+QIcon GLDTreeNode::getIcon() const
+{
+    return m_Icon;
+}
+
+void GLDTreeNode::addNode(GLDTreeNode* pNode)
+{
+    m_Children.append(pNode);
+}
+
+void GLDTreeNode::removeNode(int nRow)
+{
+    if (nRow < 0 || nRow >= m_Children.count())
+    {
+        return;
+    }
+
+    m_Children.remove(nRow);
+}
+
+int GLDTreeNode::row()
+{
+    if (nullptr == m_Parent)
+    {
+        return 0;
+    }
+
+    return m_Parent->m_Children.indexOf(this);
+}
+
+int GLDTreeNode::childCount() const
+{
+    return m_Children.count();
+}
+
+int GLDTreeNode::column()
+{
+    return 1;
+}
+
+GLDTreeNode* GLDTreeNode::child(int nRow) const
+{
+    if (nRow < 0 || nRow >= m_Children.count())
+    {
+        return nullptr;
+    }
+
+    return m_Children.at(nRow);
+}
+
+GLDTreeNode* GLDTreeNode::parent()
+{
+    return m_Parent;
+}
+
+bool GLDTreeNode::insertNode(int nRow, GLDTreeNode* pNode)
+{
+    if (nRow < 0 || nRow > m_Children.count())
+    {
+        return false;
+    }
+
+    m_Children.insert(nRow, pNode);
+    return true;
+}
 
 
-// ========= TreeModel ==============
 GLDTreeModel::GLDTreeModel(QObject* parent)
     : QAbstractItemModel(parent)
+    , m_RootItem(nullptr)
 {
-    QString rootData = "start";
-    rootItem         = new GLDTreeItem(rootData);
-    setupModelData(rootItem);
+    // initModel();
 }
+
 GLDTreeModel::~GLDTreeModel()
 {
 }
 
-
-QVariant GLDTreeModel::data(const QModelIndex& index, int role) const
-{
-    if (!index.isValid())
-        return QVariant();
-
-    if (role != Qt::DisplayRole)
-        return QVariant();
-
-    GLDTreeItem* item = static_cast<GLDTreeItem*>(index.internalPointer());
-
-    return item->data(index.column());
-}
-
-
-QModelIndex GLDTreeModel::index(int row, int column, const QModelIndex& parent) const
-{
-    if (!hasIndex(row, column, parent))
-        return QModelIndex();
-    // 获取父节点
-    GLDTreeItem* parentItem;
-    // 如果父节点无效，则使用根节点
-    if (!parent.isValid())
-        parentItem = rootItem;
-    else
-        parentItem = static_cast<GLDTreeItem*>(parent.internalPointer());
-    // 获取子节点
-    GLDTreeItem* childItem = parentItem->child(row);
-    // 如果子节点有效，则返回子节点的索引
-    if (childItem)
-        return createIndex(row, column, childItem);
-    else
-        return QModelIndex();
-}
-
-QModelIndex GLDTreeModel::parent(const QModelIndex& index) const
-{
-    if (!index.isValid())
-        return QModelIndex();
-
-    GLDTreeItem* childItem  = static_cast<GLDTreeItem*>(index.internalPointer());
-    GLDTreeItem* parentItem = childItem->parentItem();
-
-    if (parentItem == rootItem)
-        return QModelIndex();
-
-    return createIndex(parentItem->row(), 0, parentItem);
-}
-
 int GLDTreeModel::rowCount(const QModelIndex& parent) const
 {
-    if (parent.column() > 0)
-        return 0;
-
-    GLDTreeItem* parentItem;
     if (!parent.isValid())
-        parentItem = rootItem;
-    else
-        parentItem = static_cast<GLDTreeItem*>(parent.internalPointer());
+        return 1;
 
-    if (parentItem == nullptr)
-        return 0;
+    GLDTreeNode* pNode = static_cast<GLDTreeNode*>(parent.internalPointer());
+    if (pNode)
+    {
+        return pNode->childCount();
+    }
 
-    return parentItem->childCount();
+    return 0;
 }
 
 int GLDTreeModel::columnCount(const QModelIndex& parent) const
 {
-    if (parent.isValid())
-        return static_cast<GLDTreeItem*>(parent.internalPointer())->columnCount();
+    if (!parent.isValid())
+        return 1;
+
+    GLDTreeNode* pNode = static_cast<GLDTreeNode*>(parent.internalPointer());
+    if (pNode)
+    {
+        return pNode->column();
+    }
+
+    return 0;
+}
+
+QModelIndex GLDTreeModel::index(int row, int column, const QModelIndex& parent) const
+{
+    if (!parent.isValid())
+    {
+        return createIndex(0, column, m_RootItem);
+    }
+
+    GLDTreeNode* p_ParentNode = static_cast<GLDTreeNode*>(parent.internalPointer());
+    GLDTreeNode* p_Node       = nullptr;
+    if (p_ParentNode)
+    {
+        p_Node = p_ParentNode->child(row);
+    }
+
+    return createIndex(row, column, p_Node);
+}
+
+QModelIndex GLDTreeModel::parent(const QModelIndex& child) const
+{
+    if (!child.isValid())
+    {
+        return QModelIndex();
+    }
+
+    GLDTreeNode* pChildNode  = static_cast<GLDTreeNode*>(child.internalPointer());
+    GLDTreeNode* pParentNode = m_RootItem;
+    if (pChildNode)
+    {
+        pParentNode = pChildNode->parent();
+    }
+
+    if (pParentNode)
+        return createIndex(pParentNode->row(), 0, pParentNode);
     else
-        return rootItem->columnCount();
+        return QModelIndex();
 }
 
-bool GLDTreeModel::hasChildren(const QModelIndex& parent) const
+QVariant GLDTreeModel::data(const QModelIndex& index, int role) const
 {
-    if (!parent.isValid())
-        return true;
+    QVariant varRet;
+    if (!index.isValid())
+        return varRet;
 
-    GLDTreeItem* parentItem = getItem(parent);
-    return !parentItem->isChildrenLoaded() || parentItem->childCount() > 0;
+    GLDTreeNode* pNode = static_cast<GLDTreeNode*>(index.internalPointer());
+
+    if (nullptr == pNode)
+        return varRet;
+
+    switch (role)
+    {
+    case Qt::DisplayRole: {
+        return QVariant::fromValue(pNode->m_Content);
+    }
+    case Qt::DecorationRole: {
+        return QVariant::fromValue(pNode->getIcon());
+    }
+    }
+    return varRet;
 }
 
-bool GLDTreeModel::canFetchMore(const QModelIndex& parent) const
+bool GLDTreeModel::setData(const QModelIndex& index, const QVariant& value, int role)
 {
-    if (!parent.isValid())
+    if (!index.isValid())
         return false;
 
-    GLDTreeItem* parentItem = getItem(parent);
-    return !parentItem->isChildrenLoaded();
+    GLDTreeNode* pNode = static_cast<GLDTreeNode*>(index.internalPointer());
+    if (nullptr == pNode)
+        return false;
+
+    switch (role)
+    {
+    case Qt::DisplayRole: {
+        pNode->m_Content = value.toString();
+    }
+    break;
+    default:
+        return QAbstractItemModel::setData(index, value, role);
+    }
+    emit dataChanged(index, index);
+
+    return QAbstractItemModel::setData(index, value, role);
 }
 
-void GLDTreeModel::fetchMore(const QModelIndex& parent)
+bool GLDTreeModel::insertRows(int row, int count, const QModelIndex& parent)
 {
-    if (!parent.isValid())
-        return;
-
-    GLDTreeItem* parentItem = getItem(parent);
-    if (parentItem->isChildrenLoaded())
-        return;
-
-    // 这里加载子项目
-    beginInsertRows(parent, 0, 4);  // 假设我们要添加5个子项
-    for (int i = 0; i < 5; ++i)
+    beginInsertRows(parent, row, row + count);
+    GLDTreeNode* pParent = m_RootItem;
+    if (parent.isValid())
     {
-        QString data;
-        data = QString("子项 %1").arg(i) + "描述";
-        parentItem->appendChild(new GLDTreeItem(data, parentItem));
+        pParent = static_cast<GLDTreeNode*>(parent.internalPointer());
+    }
+
+    for (int i = 0; i < count; ++i)
+    {
+        GLDTreeNode* pNode = new GLDTreeNode(pParent);
+        pNode->m_Content   = "test";
+        pParent->insertNode(row, pNode);
     }
     endInsertRows();
-
-    parentItem->setChildrenLoaded(true);
+    return true;
 }
 
-void GLDTreeModel::setupModelData(GLDTreeItem* parent)
+bool GLDTreeModel::removeRows(int row, int count, const QModelIndex& parent)
 {
-    // 只加载顶层项目
-    QString data;
-    data = QString("项目1") + "描述1";
-    parent->appendChild(new GLDTreeItem(data, parent));
-
-    QString data2;
-    data = QString("项目2") + "描述2";
-    parent->appendChild(new GLDTreeItem(data, parent));
-}
-
-GLDTreeItem* GLDTreeModel::getItem(const QModelIndex& index) const
-{
-    if (index.isValid())
+    beginRemoveRows(parent, row, row + count);
+    GLDTreeNode* pParent = m_RootItem;
+    if (parent.isValid())
     {
-        GLDTreeItem* item = static_cast<GLDTreeItem*>(index.internalPointer());
-        if (item)
-            return item;
+        pParent = static_cast<GLDTreeNode*>(parent.internalPointer());
     }
-    return rootItem;
+
+    if (pParent)
+    {
+        for (int i = 0; i < count; ++i)
+        {
+            pParent->removeNode(row + i);
+        }
+    }
+    endRemoveRows();
+    return true;
+}
+
+void GLDTreeModel::initModel(GLDTreeNode* root)
+{
+    m_RootItem = root;
+}
+
+
+void GLDTreeModel::initModel()
+{
+    m_RootItem = new GLDTreeNode(nullptr);
+    for (int i = 0; i < 10; ++i)
+    {
+        GLDTreeNode* pNode = new GLDTreeNode(m_RootItem);
+        pNode->m_Content   = QString("Dept");
+        m_RootItem->addNode(pNode);
+
+        for (int j = 0; j < 5; ++j)
+        {
+            GLDTreeNode* pNode1 = new GLDTreeNode(pNode);
+            pNode1->m_Content   = QString("Department");
+            pNode->addNode(pNode1);
+        }
+    }
 }

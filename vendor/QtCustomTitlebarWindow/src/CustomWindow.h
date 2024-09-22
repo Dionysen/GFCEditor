@@ -95,6 +95,8 @@ class CustomWindow : public QWidget
     int          m_borderWidth;
     ResizeRegion m_resizeRegion;
     QPoint       m_lastMousePos;
+
+    bool m_isDark;
 };
 
 #endif  // CustomWindow_H

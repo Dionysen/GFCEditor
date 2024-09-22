@@ -1,4 +1,5 @@
 ﻿#include "MainWindow.h"
+#include "CustomWindow.h"
 #include "GLDAttributeArea.h"
 #include "GLDAuxiliaryArea.h"
 #include "GLDSearchWindow.h"
@@ -31,8 +32,13 @@
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
 {
-    GetCustomWindow()->resize(1280, 800);
-    GetCustomWindow()->setDarkMode(false);
+
+    GetMainWindow()->resize(1200, 800);
+
+    auto win = GetCustomWindow();
+    if (win)
+        win->setDarkMode(true);
+
 
     p_schemaWiddget = new GLDSchemaWidget("Schema", this);
     p_auxiliaryArea = new GLDAuxiliaryArea("Auxiliary", this);
@@ -63,6 +69,14 @@ MainWindow::MainWindow(QWidget* parent)
     propertyData["Age"]    = 30;
     propertyData["Active"] = true;
     p_attributeArea->setProperties(propertyData);
+
+    QFile file(":/qss/dark.qss");
+
+    if (file.open(QFile::ReadOnly))
+    {
+        QString style = file.readAll();
+        qApp->setStyleSheet(style);
+    }
 }
 
 void MainWindow::setupStatusBar()
@@ -340,5 +354,10 @@ QWidget* MainWindow::GetMainWindow()
 
 CustomWindow* MainWindow::GetCustomWindow()
 {
-    return dynamic_cast<CustomWindow*>(GetMainWindow());
+    CustomWindow* win = dynamic_cast<CustomWindow*>(GetMainWindow());
+
+    if (win)
+        return win;
+    else
+        return nullptr;
 }

@@ -2,7 +2,7 @@
 #include "MainWindow.h"
 #include "CustomWindow.h"
 
-#define CUSTOM_WINDOW
+ #define CUSTOM_WINDOW
 
 int main(int argc, char* argv[])
 {

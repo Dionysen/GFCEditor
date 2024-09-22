@@ -26,8 +26,7 @@ class GLDSchemaWidget : public QDockWidget
     QTreeView* p_schemaTreeView;
     QTreeView* p_projectTreeView;
 
-
-    GLDTreeModel*       p_schemaModel;
+    GLDTreeModel*        p_schemaModel;
     QStandardItemModel* p_projectModel;
 
     GFCReader* p_GfcReader;

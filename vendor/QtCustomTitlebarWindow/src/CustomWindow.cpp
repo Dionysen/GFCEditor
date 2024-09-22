@@ -22,6 +22,8 @@ CustomWindow::CustomWindow(QWidget* parent)
     , m_borderWidth(5)
     , m_isResizing(false)
     , m_IsPressedTitleBar(false)
+    , m_isDark(true)
+
 {
     // 初始化部件，设置布局
     InitWindow();
@@ -275,12 +277,12 @@ void CustomWindow::toggleMaximize()
     if (this->isMaximized())
     {
         this->showNormal();
-        p_MaximumBtn->setIcon(QIcon(":/image/icon_window_maximize_dark"));
+        m_isDark ? p_MaximumBtn->setIcon(QIcon(":/image/icon_window_maximize_dark")) : p_MaximumBtn->setIcon(QIcon(":/image/icon_window_maximize"));
     }
     else if (!this->isMaximized())
     {
         this->showMaximized();
-        p_MaximumBtn->setIcon(QIcon(":/image/icon_window_restore_dark"));
+        m_isDark ? p_MaximumBtn->setIcon(QIcon(":/image/icon_window_restore_dark")) : p_MaximumBtn->setIcon(QIcon(":/image/icon_window_restore"));
     }
 }
 
@@ -432,6 +434,8 @@ void CustomWindow::setDarkMode(bool isDark)
         p_MinimumBtn->setIcon(QIcon(":/image/icon_window_minimize_dark"));
         p_CloseBtn->setIcon(QIcon(":/image/icon_window_close_dark"));
         p_MaximumBtn->setIcon(QIcon(":/image/icon_window_maximize_dark"));
+
+        m_isDark = true;
     }
     else
     {
@@ -454,6 +458,8 @@ void CustomWindow::setDarkMode(bool isDark)
         p_MinimumBtn->setIcon(QIcon(":/image/icon_window_minimize"));
         p_CloseBtn->setIcon(QIcon(":/image/icon_window_close"));
         p_MaximumBtn->setIcon(QIcon(":/image/icon_window_maximize"));
+
+        m_isDark = false;
     }
 }
 
