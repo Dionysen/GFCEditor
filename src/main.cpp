@@ -1,11 +1,23 @@
-﻿#include <QApplication>
-#include "MainWindow.h"
-#include "CustomWindow.h"
+﻿
+// #define CUSTOM_WINDOW
 
- #define CUSTOM_WINDOW
+#ifdef CUSTOM_WINDOW
+#include "CustomWindow.h"
+#endif
+
+#include <QApplication>
+#include "MainWindow.h"
+#include <windows.h>
 
 int main(int argc, char* argv[])
 {
+
+#ifdef _DEBUG
+    AllocConsole();
+    freopen("CONOUT$", "w", stdout);
+    freopen("CONOUT$", "w", stderr);
+#endif
+
     QApplication a(argc, argv);
 #ifdef CUSTOM_WINDOW
     CustomWindow w;

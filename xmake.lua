@@ -73,3 +73,4 @@ target("GFCEditor")
     -- add_files("vendor/AdvancedDockingSystem/res/ads.qrc")
 
     add_files("assets/images/icon.qrc")
+    add_files("assets/fonts/font.qrc")

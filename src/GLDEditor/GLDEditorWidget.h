@@ -32,21 +32,35 @@ class GLDEditorWidget : public QDockWidget
 
     // 根据文本pText查找，支持【区分大小写】和【全字匹配】
     void findAllText(QString pText, bool isCaseSensitive, bool isWordMatch);
-    int  findText(QString pText, bool isCaseSensitive, bool isWordMatch);
-    void findNextText();
-    void findPreviousText();
+
+    // 返回下一个匹配到的行号
+    int findNextText();
+
+    // 返回上一个匹配到的行号
+    int findPreviousText();
+
+    // 高亮当前匹配的行
+    void highlightCurrentMatch(int lineNum);
+    void clearAllHighlights();
 
     // 根据pText查找，替换成rText
     void replaceText(QString pText, QString rText);
 
-    QVector<int> lineNumber;   // 所有匹配的文本所在的行号
-    int          currentLine;  // lineNumber不为空时findnext所在的行(索引
+    // 返回匹配到的所有行文本及对应行号
+    QMap<int, QString> getMatchedList();
+    int                getCurrentMatchNumber();
+
+  public slots:
+    bool setFontFamily(const QString& fontFamily);
+    bool setFontSize(int size);
 
   signals:
     bool signalUpdateStatusBar(const QString& cursor, const QString& fileInfo);
     bool signalUpdateFileName(const QString& filename, bool isModify);
     bool signalUpdateRecentFiles(QQueue<QString>& recentFiles);
 
+
+    // =========== Private ===========
   private slots:
     bool handleCloseFile();
     void updateCursorPosition();
@@ -58,6 +72,15 @@ class GLDEditorWidget : public QDockWidget
     void writeRecentFiles();
 
   private:
+    QVector<int> lineNumber;   // 所有匹配的文本所在的行号
+    int          currentLine;  // lineNumber不为空时findnext所在的行(索引
+
+    // 当前查找的文本
+    QString m_currentFindText;
+    bool    m_isCaseSensitive;
+    bool    m_isWordMatch;
+    // -------------------
+
     QString currentFilePath;
 
     QPlainTextEdit* p_textEditor;

@@ -42,6 +42,8 @@ class GFCReader
     }
 
   private:
-    ExpressParser                        m_ExpressParser;
+    ExpressParser m_ExpressParser;
+
+    // Key 为全大写字母的名称
     QHash<QString, QSharedPointer<Data>> m_ExpData;
 };

@@ -2,7 +2,8 @@
 #include "qicon.h"
 #include <QFile>
 #include <QApplication>
-
+#include <QFontDialog>
+#include <QInputDialog>
 GLDMenuBar::GLDMenuBar(QWidget* parent)
     : QMenuBar(parent)
 {
@@ -33,15 +34,18 @@ GLDMenuBar::GLDMenuBar(QWidget* parent)
     actionBackword = new QAction("Backword", this);
     actionLocation = new QAction("Loate", this);
 
-    actionColor     = new QAction("Font Color", this);
-    actionCite      = new QAction("Cited Entity", this);
-    actionCheck     = new QAction("Legitimacy Check", this);
-    menuView        = new QMenu("View", this);
-    actionAuxiliary = new QAction("Auxiliary", this);
-    actionAttribute = new QAction("Attribute", this);
-    actionSchema    = new QAction("Schema", this);
-    actionToolbar   = new QAction("Tool Bar", this);
-    actionStatusbar = new QAction("Status Bar", this);
+    actionColor      = new QAction("Font Color", this);
+    actionCite       = new QAction("Cited Entity", this);
+    actionCheck      = new QAction("Legitimacy Check", this);
+    menuView         = new QMenu("View", this);
+    actionAuxiliary  = new QAction("Auxiliary", this);
+    actionAttribute  = new QAction("Attribute", this);
+    actionSchema     = new QAction("Schema", this);
+    actionToolbar    = new QAction("Tool Bar", this);
+    actionStatusbar  = new QAction("Status Bar", this);
+    actionFontFamily = new QAction("Font Family", this);
+    actionFontSize   = new QAction("Font Size", this);
+    menuFont         = new QMenu("Font", this);
 
     menuTheme   = new QMenu("Theme", this);
     actionLight = new QAction("Light", this);
@@ -94,6 +98,10 @@ GLDMenuBar::GLDMenuBar(QWidget* parent)
     menuTools->addMenu(menuTheme);
     menuTheme->addAction(actionLight);
     menuTheme->addAction(actionDark);
+    menuTools->addSeparator();
+    menuTools->addMenu(menuFont);
+    menuFont->addAction(actionFontFamily);
+    menuFont->addAction(actionFontSize);
 
     menuHelp->addAction(actionHelp);
     menuHelp->addAction(actionAbout);
@@ -115,6 +123,24 @@ GLDMenuBar::GLDMenuBar(QWidget* parent)
             qApp->setStyleSheet(style);
         }
         setDarkIcon();
+    });
+
+    connect(actionFontFamily, &QAction::triggered, this, [this]() {
+        bool  ok;
+        QFont font = QFontDialog::getFont(&ok, this);
+        if (ok)
+        {
+            emit signalSetFontFamily(font.family());
+        }
+    });
+
+    connect(actionFontSize, &QAction::triggered, this, [this]() {
+        bool ok;
+        int  size = QInputDialog::getInt(this, "设置字体大小", "字体大小:", 12, 1, 100, 1, &ok);
+        if (ok)
+        {
+            emit signalSetFontSize(size);
+        }
     });
 
     setDarkIcon();
@@ -152,6 +178,7 @@ void GLDMenuBar::setLightIcon()
     actionCheck->setIcon(QIcon(QString(":/icon/light/check.svg")));
     actionHelp->setIcon(QIcon(QString(":/icon/light/help.svg")));
     actionAbout->setIcon(QIcon(QString(":/icon/light/about.svg")));
+    menuFont->setIcon(QIcon(QString(":/icon/light/font.svg")));
 }
 
 void GLDMenuBar::setDarkIcon()
@@ -186,6 +213,7 @@ void GLDMenuBar::setDarkIcon()
     actionCheck->setIcon(QIcon(QString(":/icon/dark/check.svg")));
     actionHelp->setIcon(QIcon(QString(":/icon/dark/help.svg")));
     actionAbout->setIcon(QIcon(QString(":/icon/dark/about.svg")));
+    menuFont->setIcon(QIcon(QString(":/icon/dark/font.svg")));
 }
 
 GLDMenuBar::~GLDMenuBar()

@@ -115,58 +115,23 @@ GLDSearchWindow::GLDSearchWindow(QWidget* parent)
 
 
     connect(m_pPrevButton, &QPushButton::clicked, this, [=]() {
-        // 在查找页面进行展示
-        int currentRow = m_pResultList->currentRow();
+        // 进行区分大小写的搜索
+        bool caseSensitive = m_pCaseSensitiveCheckBox->isChecked();
+        // 如果选择了“全字匹配”
+        bool wholeWord = m_pWholeWordCheckBox->isChecked();
 
-        int itemCount = m_pResultList->count();
-
-        if (itemCount > 0)
-        {
-            if (currentRow > 0)
-            {
-                m_pResultList->setCurrentRow(currentRow - 1);
-            }
-            else
-            {
-                // 如果到达了第一行，则跳转到最后一行
-                m_pResultList->setCurrentRow(itemCount - 1);
-            }
-        }
+        // 发送信号到文本编辑区
+        emit signalPrevSearch(m_pSearchEdit->text(), caseSensitive, wholeWord);
     });
 
     connect(m_pNextButton, &QPushButton::clicked, this, [=]() {
-        int currentRow = m_pResultList->currentRow();
-        int itemCount  = m_pResultList->count();
-
-        if (itemCount > 0)
-        {
-            if (currentRow < itemCount - 1)
-            {
-                m_pResultList->setCurrentRow(currentRow + 1);
-            }
-            else
-            {
-                // 如果到达了最后一行，则跳转到第一行
-                m_pResultList->setCurrentRow(0);
-            }
-        }
-
-        bool caseSensitive = false;
-        bool wholeWord     = false;
-        if (m_pCaseSensitiveCheckBox->isChecked())
-        {
-            // 进行区分大小写的搜索
-            caseSensitive = true;
-        }
+        // 进行区分大小写的搜索
+        bool caseSensitive = m_pCaseSensitiveCheckBox->isChecked();
         // 如果选择了“全字匹配”
-        if (m_pWholeWordCheckBox->isChecked())
-        {
-            // 进行全字匹配的搜索
-            wholeWord = true;
-        }
+        bool wholeWord = m_pWholeWordCheckBox->isChecked();
 
         // 发送信号到文本编辑区
-        emit signalNextSearch(m_pSearchEdit->text(), false, caseSensitive, wholeWord);
+        emit signalNextSearch(m_pSearchEdit->text(), caseSensitive, wholeWord);
     });
 
     // 设置样式表：突出显示当前行，并发送行号给外部

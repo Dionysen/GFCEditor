@@ -210,6 +210,10 @@ void MainWindow::setupMenuBar()
     // theme
     connect(p_menuBar->actionLight, &QAction::triggered, this, [this]() { p_toolBar->setLightIcon(); });
     connect(p_menuBar->actionDark, &QAction::triggered, this, [this]() { p_toolBar->setDarkIcon(); });
+
+    // Font
+    connect(p_menuBar, &GLDMenuBar::signalSetFontFamily, this->p_editorWidget, &GLDEditorWidget::setFontFamily);
+    connect(p_menuBar, &GLDMenuBar::signalSetFontSize, this->p_editorWidget, &GLDEditorWidget::setFontSize);
 }
 
 void MainWindow::setupToolBar()
@@ -311,31 +315,19 @@ void MainWindow::on_actionHelp_clicked()
 void MainWindow::setupAuxiliary()
 {
     connect(p_auxiliaryArea->m_searchWindow, &GLDSearchWindow::signalNextSearch, this,
-            [this](const QString& searchText, const bool prevs, const bool caseSensitive, const bool wholeWord) {
+            [this](const QString& searchText, const bool caseSensitive, const bool wholeWord) {
                 p_editorWidget->findAllText(searchText, caseSensitive, wholeWord);
-                if (prevs)
-                {
-                    p_editorWidget->findPreviousText();
-                }
-                else
-                {
-                    p_editorWidget->findNextText();
-                }
+                p_editorWidget->findNextText();
 
-                QMap<int, QString> res;
-                QTextDocument*     document = p_editorWidget->getTextEditor()->document();
-
-                // 使用行号获取文本块
-
-                for (const auto& it : p_editorWidget->lineNumber)
-                {
-
-                    QTextBlock block = document->findBlockByLineNumber(it);
-                    res[it]          = block.text();
-                }
-
-                p_auxiliaryArea->setSearchResults(res);
+                p_auxiliaryArea->setSearchResults(p_editorWidget->getMatchedList());
             });
+
+    connect(p_auxiliaryArea->m_searchWindow, &GLDSearchWindow::signalPrevSearch, this,
+            [this](const QString& searchText, const bool caseSensitive, const bool wholeWord) {
+                p_editorWidget->findAllText(searchText, caseSensitive, wholeWord);
+                p_editorWidget->findPreviousText();
+            });
+
 
     connect(p_menuBar->actionFind, &QAction::triggered, this, [this]() { p_auxiliaryArea->show(); });
     connect(p_menuBar->actionFindNext, &QAction::triggered, this, [this]() { p_auxiliaryArea->show(); });

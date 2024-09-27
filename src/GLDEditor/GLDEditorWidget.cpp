@@ -4,6 +4,7 @@
 #include "qfileinfo.h"
 #include "qfont.h"
 #include <QStandardPaths>
+#include "qmap.h"
 #include "qmessagebox.h"
 #include "qobject.h"
 #include "qplaintextedit.h"
@@ -27,24 +28,33 @@ GLDEditorWidget::GLDEditorWidget(const QString& title, QWidget* parent)
     , m_statusBarTextFileInfo("")
     , m_isModify(false)
     , appDataPath(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/RencentFiles")
+    , m_isCaseSensitive(false)
+    , m_isWordMatch(false)
 {
 
     // Init Editor
     p_textEditor = new QPlainTextEdit(this);
     new Highlighter(this->p_textEditor->document());
-    QFont font;
-    font.setPointSize(13);
-    font.setFamily(QString("Consolas"));
-    p_textEditor->setFont(font);
+
+    int fontId = QFontDatabase::addApplicationFont(":/fonts/FiraCode-Regular.ttf");
+    if (fontId != -1)
+    {
+        QString fontFamily = QFontDatabase::applicationFontFamilies(fontId).at(0);
+        QFont   font(fontFamily, 10);
+        p_textEditor->setFont(font);
+    }
+    else
+    {
+        qDebug() << "Load font failed!";
+    }
+
     // Layout
     setAllowedAreas(Qt::AllDockWidgetAreas);
-    // 添加最小化按钮
     setWidget(p_textEditor);
     setTitleBarWidget(new QWidget());
 
     lineNumber.clear();
     currentLine = -1;
-
 
     connect(this->p_textEditor, &QPlainTextEdit::cursorPositionChanged, this, [this]() { updateCursorPosition(); });
 
@@ -166,100 +176,161 @@ void GLDEditorWidget::saveAs()
     }
 }
 
-
 void GLDEditorWidget::findAllText(QString pText, bool isCaseSensitive, bool isWordMatch)
 {
+    highlightCurrentMatch(-1);
+    if (pText.isEmpty())
+    {
+        return;
+    }
+
+    if (pText == m_currentFindText && !lineNumber.isEmpty() && isCaseSensitive == m_isCaseSensitive && isWordMatch == m_isWordMatch)
+    {
+        return;
+    }
+
+    m_isCaseSensitive = isCaseSensitive;
+    m_isWordMatch     = isWordMatch;
+
     lineNumber.clear();
     currentLine       = -1;
-    QString     text  = p_textEditor->toPlainText();
-    QStringList lines = text.split('\n');
+    m_currentFindText = pText;
+    QString text      = p_textEditor->toPlainText();
 
-    // 根据是否区分大小写构建正则表达式
-    QRegularExpression::PatternOptions options = isCaseSensitive ? QRegularExpression::NoPatternOption : QRegularExpression::CaseInsensitiveOption;
-
-    // 根据是否全字匹配构建正则表达式
-    QString            patternStr = isWordMatch ? "\\b" + QRegularExpression::escape(pText) + "\\b" : QRegularExpression::escape(pText);
+    // 根据是否区分大小写和全字匹配构建正则表达式
+    QRegularExpression::PatternOptions options = QRegularExpression::NoPatternOption;
+    if (!isCaseSensitive)
+    {
+        options |= QRegularExpression::CaseInsensitiveOption;
+    }
+    QString patternStr = isWordMatch ? "\\b" + QRegularExpression::escape(m_currentFindText) + "\\b" : QRegularExpression::escape(m_currentFindText);
     QRegularExpression re(patternStr, options);
 
-    for (int i = 0; i < lines.size(); ++i)
+    QTextCursor cursor(p_textEditor->document());
+    while (!cursor.atEnd())
     {
-        if (re.match(lines[i]).hasMatch())
+        cursor = p_textEditor->document()->find(re, cursor);
+        if (cursor.isNull())
         {
-            lineNumber.append(i + 2);  // 行号从1开始计数
-            qDebug() << i + 1 << '\n';
+            break;
         }
+        int lineNum = cursor.blockNumber() + 1;  // 行号从1开始计数
+        lineNumber.append(lineNum);
     }
-
-    qDebug() << lineNumber.size() << '\n';
 }
 
 
-int GLDEditorWidget::findText(QString pText, bool isCaseSensitive, bool isWordMatch)
+int GLDEditorWidget::findNextText()
 {
-    findAllText(pText, isCaseSensitive, isWordMatch);
-    if (!lineNumber.isEmpty())
+    if (lineNumber.isEmpty())
     {
-        ++currentLine;
-        return lineNumber.at(currentLine);
+        return -1;
     }
-    qDebug() << "没有符合的结果！" << '\n';
-    return -1;
-}
 
-void GLDEditorWidget::findNextText()
-{
     ++currentLine;
-    if (currentLine == lineNumber.size())
+    if (currentLine >= lineNumber.size())
     {
-        qDebug() << "已查找到最后一个！" << '\n';
         currentLine = 0;
     }
-    qDebug() << lineNumber.at(currentLine) << '\n';
-    //    return lineNumber.at(currentLine);
+
+    int lineNum = lineNumber.at(currentLine);
+
+    // 高亮显示当前匹配项
+    highlightCurrentMatch(lineNum - 1);
+    return lineNum - 1;
 }
 
-void GLDEditorWidget::findPreviousText()
+int GLDEditorWidget::findPreviousText()
 {
+    if (lineNumber.isEmpty())
+    {
+        return -1;
+    }
+
     --currentLine;
     if (currentLine < 0)
     {
-        qDebug() << "已查找到第一个！" << '\n';
         currentLine = lineNumber.size() - 1;
     }
-    qDebug() << lineNumber.at(currentLine);
-    //    return lineNumber.at(currentLine);
+
+    int lineNum = lineNumber.at(currentLine);
+
+    // 高亮显示当前匹配项
+    highlightCurrentMatch(lineNum - 1);
+    return lineNum - 1;
+}
+
+QMap<int, QString> GLDEditorWidget::getMatchedList()
+{
+    QMap<int, QString> res;
+    QTextDocument*     document = this->p_textEditor->document();
+    // 使用行号获取文本块
+    for (const auto& it : this->lineNumber)
+    {
+        QTextBlock block = document->findBlockByLineNumber(it);
+        res.insert(it, block.text());
+    }
+    return res;
+}
+
+int GLDEditorWidget::getCurrentMatchNumber()
+{
+    return currentLine;
 }
 
 void GLDEditorWidget::replaceText(QString pText, QString rText)
 {
-    if (currentLine < 0 || currentLine >= lineNumber.size())
+    if (lineNumber.isEmpty() || currentLine < 0 || currentLine >= lineNumber.size())
     {
-        qDebug() << "未查找到替换内容！" << '\n';
+        qDebug() << "没有可替换的内容！";
         return;
     }
 
-    QString     text  = p_textEditor->toPlainText();
-    QStringList lines = text.split('\n');
+    QTextCursor cursor = p_textEditor->textCursor();
+    cursor.beginEditBlock();
 
-    int     num     = lineNumber.at(currentLine);
-    QString oldLine = lines.at(num);
-    QString newLine = oldLine.replace(pText, rText);
-    lines[num]      = newLine;
+    int lineNum = lineNumber.at(currentLine);
+    cursor.movePosition(QTextCursor::Start);
+    cursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, lineNum - 1);
+    cursor.select(QTextCursor::LineUnderCursor);
+    QString line = cursor.selectedText();
 
-    QString modifiedText;
-    for (int i = 0; i < lines.size(); ++i)
-    {
-        modifiedText += lines.at(i);
-        if (i < lines.size() - 1)
-        {
-            modifiedText += '\n';  // 除了最后一行外，每行后面都添加换行符
-        }
-    }
-    p_textEditor->setPlainText(modifiedText);
+    // 使用正则表达式替换，以保持与查找逻辑一致
+    QRegularExpression re(QRegularExpression::escape(pText));
+    QString            newLine = line.replace(re, rText);
 
-    qDebug() << num << '\n';
+    cursor.removeSelectedText();
+    cursor.insertText(newLine);
+
+    cursor.endEditBlock();
+
+    // 更新搜索结果
+    findAllText(m_currentFindText, true, false);  // 假设使用区分大小写和非全词匹配
+
+    qDebug() << "已在第" << lineNum << "行完成替换";
 }
 
+// 新增辅助函数
+void GLDEditorWidget::highlightCurrentMatch(int lineNum)
+{
+    if (lineNum == -1)
+    {
+        // 取消高亮
+        QTextCursor cursor = p_textEditor->textCursor();
+        cursor.clearSelection();
+        p_textEditor->setTextCursor(cursor);
+    }
+    else
+    {
+        QTextCursor cursor = p_textEditor->textCursor();
+        cursor.movePosition(QTextCursor::Start);
+        cursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, lineNum);
+        cursor.select(QTextCursor::LineUnderCursor);
+
+        p_textEditor->setTextCursor(cursor);
+        p_textEditor->ensureCursorVisible();
+    }
+}
 
 void GLDEditorWidget::updateCursorPosition()
 {
@@ -365,6 +436,21 @@ void GLDEditorWidget::writeRecentFiles()
         }
         file.close();
     }
+}
+
+bool GLDEditorWidget::setFontFamily(const QString& fontFamily)
+{
+    QFont font(fontFamily);
+    p_textEditor->setFont(font);
+    return true;
+}
+
+bool GLDEditorWidget::setFontSize(int size)
+{
+    QFont font(p_textEditor->font());
+    font.setPointSize(size);
+    p_textEditor->setFont(font);
+    return true;
 }
 
 GLDEditorWidget::~GLDEditorWidget()

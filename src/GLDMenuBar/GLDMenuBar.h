@@ -68,4 +68,13 @@ class GLDMenuBar : public QMenuBar
     // Help
     QAction* actionHelp;
     QAction* actionAbout;
+
+    // 字体菜单
+    QMenu*   menuFont;
+    QAction* actionFontFamily;
+    QAction* actionFontSize;
+
+  signals:
+    void signalSetFontFamily(const QString& fontFamily);
+    void signalSetFontSize(int fontSize);
 };
