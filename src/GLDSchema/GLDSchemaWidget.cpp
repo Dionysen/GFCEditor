@@ -2,15 +2,13 @@
 #include "GLDTreeModel.h"
 #include <QSizePolicy>
 
-GLDSchemaWidget::GLDSchemaWidget(const QString& title, QWidget* parent)
-    : QDockWidget(title, parent)
+GLDSchemaWidget::GLDSchemaWidget(QWidget* parent)
+    : QTabWidget(parent)
 {
     p_GfcReader = new GFCReader;
     p_GfcReader->LoadExpressFile("./res/GFC3X4.exp");
     p_GfcReader->LoadGfcFile("./res/test.gfc");
     // p_GfcReader->PrintGfc();
-
-    p_tabWidget = new QTabWidget(this);
 
 
     p_schemaModel = new GLDTreeModel(this);
@@ -23,7 +21,7 @@ GLDSchemaWidget::GLDSchemaWidget(const QString& title, QWidget* parent)
     p_schemaTreeView->setModel(p_schemaModel);
     p_schemaTreeView->expandToDepth(3);
     p_schemaTreeView->setUniformRowHeights(true);  // 优化性能
-
+    p_schemaTreeView->setAnimated(false);          // 禁止动画
     // Project
     p_projectModel = new GLDTreeModel(this);
     createProjectModel();
@@ -33,15 +31,12 @@ GLDSchemaWidget::GLDSchemaWidget(const QString& title, QWidget* parent)
     p_projectTreeView->setHeaderHidden(true);
     p_projectTreeView->setUniformRowHeights(true);  // 优化性能
     p_projectTreeView->expandToDepth(3);
+    p_projectTreeView->setAnimated(false);  // 禁止动画
 
-    p_tabWidget->addTab(p_schemaTreeView, QString("Schema"));
-    p_tabWidget->addTab(p_projectTreeView, QString("Project"));
-    p_tabWidget->setTabPosition(QTabWidget::South);
-
-    // Docking
-    setAllowedAreas(Qt::AllDockWidgetAreas);
-    setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetClosable);
-    setWidget(p_tabWidget);
+    addTab(p_schemaTreeView, QString("Schema"));
+    addTab(p_projectTreeView, QString("Project"));
+    setTabPosition(QTabWidget::South);
+    setDocumentMode(true);
 }
 
 void GLDSchemaWidget::createSchemaModel()

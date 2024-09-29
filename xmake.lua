@@ -12,7 +12,8 @@ target("GFCEditor")
         "src/GLDMainWindow/*.h",
         "src/GLDExpressParser/*.h",
         "src/GLDGfcReader/*.h",
-        "src/GLDMenuBar/*.h"
+        "src/GLDMenuBar/*.h",
+        "src/GLDUtils/*.h"
         )
 
     add_includedirs(
@@ -24,7 +25,8 @@ target("GFCEditor")
         "src/GLDMainWindow",
         "src/GLDExpressParser",
         "src/GLDGfcReader",
-        "src/GLDMenuBar"
+        "src/GLDMenuBar",
+        "src/GLDUtils"
     )
 
     add_files(
@@ -37,7 +39,8 @@ target("GFCEditor")
         "src/GLDMainWindow/*.cpp",
         "src/GLDExpressParser/*.cpp",
         "src/GLDGfcReader/*.cpp",
-        "src/GLDMenuBar/*.cpp"
+        "src/GLDMenuBar/*.cpp",
+        "src/GLDUtils/*.cpp"
     )
 
     -- add files with Q_OBJECT meta (only for qt.moc)
@@ -50,7 +53,8 @@ target("GFCEditor")
         "src/GLDMainWindow/*.h",
         "src/GLDExpressParser/*.h",
         "src/GLDGfcReader/*.h",
-        "src/GLDMenuBar/*.h"
+        "src/GLDMenuBar/*.h",
+        "src/GLDUtils/*.h"
     )
 
     set_rundir(".")

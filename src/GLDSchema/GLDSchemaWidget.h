@@ -1,19 +1,22 @@
-﻿#include <QStandardItemModel>
+﻿#ifndef GLDSchemaWidget_H
+#define GLDSchemaWidget_H
+#pragma once
+#include <QStandardItemModel>
 #include <QTabWidget>
 #include <QTreeView>
 #include <QWidget>
 #include <QHBoxLayout>
-
+#include <QRubberBand>
 #include "GFCReader.h"
 #include "GLDTreeModel.h"
-#include "qdockwidget.h"
-
-class GLDSchemaWidget : public QDockWidget
+#include <QMouseEvent>
+#include <QDockWidget>
+class GLDSchemaWidget : public QTabWidget
 {
     Q_OBJECT
 
   public:
-    GLDSchemaWidget(const QString& title, QWidget* parent = nullptr);
+    GLDSchemaWidget(QWidget* parent = nullptr);
     ~GLDSchemaWidget();
 
   private:
@@ -21,11 +24,7 @@ class GLDSchemaWidget : public QDockWidget
     void createProjectModel();
     void AddChildNode(QStandardItem* parent, QString item);
 
-
   private:
-  private:
-    QTabWidget* p_tabWidget;
-
     QTreeView* p_schemaTreeView;
     QTreeView* p_projectTreeView;
 
@@ -34,3 +33,5 @@ class GLDSchemaWidget : public QDockWidget
 
     GFCReader* p_GfcReader;
 };
+
+#endif  // GLDSchemaWidget_H

@@ -1,6 +1,8 @@
-﻿#include "qchar.h"
+﻿#ifndef GLDEditorWidget_H
+#define GLDEditorWidget_H
+#pragma once
+#include "qchar.h"
 #include "qcontainerfwd.h"
-#include "qdockwidget.h"
 #include "qobject.h"
 #include "qqueue.h"
 #include "qwidget.h"
@@ -10,19 +12,14 @@
 #include <QTextCharFormat>
 #include <QTextEdit>
 #include "GLDHighlighter.h"
-
+#include <QRubberBand>
 // TODO：懒加载
-class GLDEditorWidget : public QDockWidget
+class GLDEditorWidget : public QPlainTextEdit
 {
     Q_OBJECT
   public:
-    GLDEditorWidget(const QString& title, QWidget* parent = nullptr);
+    GLDEditorWidget(QWidget* parent = nullptr);
     ~GLDEditorWidget();
-
-    inline QPlainTextEdit* getTextEditor()
-    {
-        return p_textEditor;
-    }
 
     // File operator
     void newFile();
@@ -50,8 +47,7 @@ class GLDEditorWidget : public QDockWidget
     QMap<int, QString> getMatchedList();
     int                getCurrentMatchNumber();
 
-  public slots:
-    bool setFontFamily(const QString& fontFamily);
+    bool setEditorFontFamily(const QString& fontFamily);
     bool setFontSize(int size);
 
   signals:
@@ -83,8 +79,6 @@ class GLDEditorWidget : public QDockWidget
 
     QString currentFilePath;
 
-    QPlainTextEdit* p_textEditor;
-
     QString m_statusBarTextCursor;
     QString m_statusBarTextFileInfo;
 
@@ -94,3 +88,5 @@ class GLDEditorWidget : public QDockWidget
     QQueue<QString> m_recentFiles;
     QString         appDataPath;
 };
+
+#endif  // GLDEditorWidget_H

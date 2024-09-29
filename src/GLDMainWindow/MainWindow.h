@@ -1,6 +1,6 @@
 ﻿#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-
+#pragma once
 // Custom
 #include "GLDAuxiliaryArea.h"
 #include "GLDToolBar.h"
@@ -41,6 +41,7 @@ class MainWindow : public QMainWindow
     {
         return p_toolBar;
     }
+
 
   private:
     // 工具栏、菜单栏、状态栏

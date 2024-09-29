@@ -14,6 +14,7 @@
 #include "qnamespace.h"
 #include "qobject.h"
 #include "qsizepolicy.h"
+#include "qsplitter.h"
 #include "qstatusbar.h"
 #include "qtextedit.h"
 #include "qtoolbar.h"
@@ -27,6 +28,7 @@
 #include <QDockWidget>
 #include <QStyle>
 #include <QSizeGrip>
+#include <QTimer>
 
 
 MainWindow::MainWindow(QWidget* parent)
@@ -35,15 +37,14 @@ MainWindow::MainWindow(QWidget* parent)
 
     GetMainWindow()->resize(1200, 800);
 
-    auto win = GetCustomWindow();
-    if (win)
-        win->setDarkMode(true);
+    // auto win = GetCustomWindow();
+    // if (win)
+    //     win->setDarkMode(true);
 
-
-    p_schemaWiddget = new GLDSchemaWidget("Schema", this);
-    p_auxiliaryArea = new GLDAuxiliaryArea("Auxiliary", this);
-    p_attributeArea = new GLDAttributeArea("Attribute", this);
-    p_editorWidget  = new GLDEditorWidget("Editor", this);
+    p_schemaWiddget = new GLDSchemaWidget(this);
+    p_auxiliaryArea = new GLDAuxiliaryArea(this);
+    p_attributeArea = new GLDAttributeArea(this);
+    p_editorWidget  = new GLDEditorWidget(this);
 
     // 布局
     setupDockingLayout();
@@ -100,24 +101,24 @@ void MainWindow::setupEditor()
 
 void MainWindow::setupDockingLayout()
 {
-    // ========= 布局管理 ========
-    setDockNestingEnabled(true);
-
     // 设置布局
-    addDockWidget(Qt::LeftDockWidgetArea, p_schemaWiddget);
-    splitDockWidget(p_schemaWiddget, p_editorWidget, Qt::Horizontal);
-    splitDockWidget(p_editorWidget, p_attributeArea, Qt::Horizontal);
-    splitDockWidget(p_editorWidget, p_auxiliaryArea, Qt::Vertical);
+    QSplitter* vSplitter = new QSplitter(Qt::Vertical, this);
+    vSplitter->addWidget(p_editorWidget);
+    vSplitter->addWidget(p_auxiliaryArea);
+
+
+    QSplitter* splitter = new QSplitter(Qt::Horizontal, this);
+    splitter->addWidget(p_schemaWiddget);
+    splitter->addWidget(vSplitter);
+    splitter->addWidget(p_attributeArea);
+
+    vSplitter->setHandleWidth(0);
+    splitter->setHandleWidth(0);
+
+    this->setCentralWidget(splitter);
 
     // 设置dock的初始大小
-    resizeDocks({ p_schemaWiddget }, { 150 }, Qt::Horizontal);
-    resizeDocks({ p_attributeArea }, { 150 }, Qt::Horizontal);
-    resizeDocks({ p_auxiliaryArea }, { 150 }, Qt::Vertical);
-
-    // 删除centralwidget，所有部件均为dockwidget
-    QWidget* p = takeCentralWidget();
-    if (p)
-        delete p;
+    splitter->setSizes(QList<int>({ 150, 300, 150, 150 }));
 }
 
 
@@ -151,12 +152,12 @@ void MainWindow::setupMenuBar()
     connect(p_menuBar->actionSave, &QAction::triggered, this, [this]() { p_editorWidget->saveFile(); });
     connect(p_menuBar->actionSaveAs, &QAction::triggered, this, [this]() { p_editorWidget->saveAs(); });
 
-    connect(p_menuBar->actionCut, &QAction::triggered, this, [this]() { p_editorWidget->getTextEditor()->cut(); });
-    connect(p_menuBar->actionPaste, &QAction::triggered, this, [this]() { p_editorWidget->getTextEditor()->paste(); });
-    connect(p_menuBar->actionCopy, &QAction::triggered, this, [this]() { p_editorWidget->getTextEditor()->copy(); });
+    connect(p_menuBar->actionCut, &QAction::triggered, this, [this]() { p_editorWidget->cut(); });
+    connect(p_menuBar->actionPaste, &QAction::triggered, this, [this]() { p_editorWidget->paste(); });
+    connect(p_menuBar->actionCopy, &QAction::triggered, this, [this]() { p_editorWidget->copy(); });
 
-    connect(p_menuBar->actionRedo, &QAction::triggered, this, [this]() { p_editorWidget->getTextEditor()->redo(); });
-    connect(p_menuBar->actionUndo, &QAction::triggered, this, [this]() { p_editorWidget->getTextEditor()->undo(); });
+    connect(p_menuBar->actionRedo, &QAction::triggered, this, [this]() { p_editorWidget->redo(); });
+    connect(p_menuBar->actionUndo, &QAction::triggered, this, [this]() { p_editorWidget->undo(); });
 
     connect(p_menuBar->actionExit, &QAction::triggered, this, [this]() { QApplication::exit(0); });
 
@@ -212,8 +213,8 @@ void MainWindow::setupMenuBar()
     connect(p_menuBar->actionDark, &QAction::triggered, this, [this]() { p_toolBar->setDarkIcon(); });
 
     // Font
-    connect(p_menuBar, &GLDMenuBar::signalSetFontFamily, this->p_editorWidget, &GLDEditorWidget::setFontFamily);
-    connect(p_menuBar, &GLDMenuBar::signalSetFontSize, this->p_editorWidget, &GLDEditorWidget::setFontSize);
+    connect(p_menuBar, &GLDMenuBar::signalSetFontFamily, this, [this](const QString& font) { p_editorWidget->setEditorFontFamily(font); });
+    connect(p_menuBar, &GLDMenuBar::signalSetFontSize, this, [this](int fontSize) { p_editorWidget->setFontSize(fontSize); });
 }
 
 void MainWindow::setupToolBar()
@@ -224,11 +225,11 @@ void MainWindow::setupToolBar()
     connect(this->p_toolBar->p_open, &QAction::triggered, this, [this]() { p_editorWidget->openFile(); });
 
     connect(this->p_toolBar->p_save, &QAction::triggered, this, [this]() { p_editorWidget->saveFile(); });
-    connect(this->p_toolBar->p_cut, &QAction::triggered, this, [this]() { p_editorWidget->getTextEditor()->cut(); });
-    connect(this->p_toolBar->p_copy, &QAction::triggered, this, [this]() { p_editorWidget->getTextEditor()->copy(); });
-    connect(this->p_toolBar->p_paste, &QAction::triggered, this, [this]() { p_editorWidget->getTextEditor()->paste(); });
-    connect(this->p_toolBar->p_redo, &QAction::triggered, this, [this]() { p_editorWidget->getTextEditor()->redo(); });
-    connect(this->p_toolBar->p_undo, &QAction::triggered, this, [this]() { p_editorWidget->getTextEditor()->undo(); });
+    connect(this->p_toolBar->p_cut, &QAction::triggered, this, [this]() { p_editorWidget->cut(); });
+    connect(this->p_toolBar->p_copy, &QAction::triggered, this, [this]() { p_editorWidget->copy(); });
+    connect(this->p_toolBar->p_paste, &QAction::triggered, this, [this]() { p_editorWidget->paste(); });
+    connect(this->p_toolBar->p_redo, &QAction::triggered, this, [this]() { p_editorWidget->redo(); });
+    connect(this->p_toolBar->p_undo, &QAction::triggered, this, [this]() { p_editorWidget->undo(); });
 
     // TODO
     connect(this->p_toolBar->p_find, &QAction::triggered, this, [this]() {});

@@ -6,10 +6,9 @@
 #include "GLDSearchWindow.h"
 #include "GLDErrorWindow.h"
 
-GLDAuxiliaryArea::GLDAuxiliaryArea(const QString& title, QWidget* parent)
-    : QDockWidget(title, parent)
+GLDAuxiliaryArea::GLDAuxiliaryArea(QWidget* parent)
+    : QTabWidget(parent)
 {
-    m_tabWidget = new QTabWidget(this);
     // 创建查找窗口
     m_searchWindow = new GLDSearchWindow(this);
 
@@ -25,14 +24,9 @@ GLDAuxiliaryArea::GLDAuxiliaryArea(const QString& title, QWidget* parent)
     m_quoteWindow->setLayout(layout3);
 
     // 将页面添加到 QTabWidget 中
-    m_tabWidget->addTab(m_searchWindow, "Search");
-    m_tabWidget->addTab(m_errorWindow, "Error");
-    m_tabWidget->addTab(m_quoteWindow, "Quote");
-
-    // 设置布局
-    setAllowedAreas(Qt::AllDockWidgetAreas);
-    setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetClosable);
-    setWidget(m_tabWidget);
+    addTab(m_searchWindow, "Search");
+    addTab(m_errorWindow, "Error");
+    addTab(m_quoteWindow, "Quote");
 }
 
 void GLDAuxiliaryArea::setSearchResults(const QMap<int, QString>& results)

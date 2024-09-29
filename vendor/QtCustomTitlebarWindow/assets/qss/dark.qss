@@ -144,7 +144,7 @@ QTextEdit {
   background-color: #1f2020;
   border-width: 1px;
   border-style: solid;
-  border-color: #000000;
+  border-color: #343434;
 }
 
 QLineEdit {
@@ -152,7 +152,7 @@ QLineEdit {
   background-color: #1f2020;
   border-width: 1px;
   border-style: solid;
-  border-color: #000000;
+  border-color: #343434;
 }
 
 QPlainTextEdit {
@@ -160,7 +160,7 @@ QPlainTextEdit {
   background-color: #1f2020;
   border-width: 1px;
   border-style: solid;
-  border-color: #000000;
+  border-color: #343434;
 }
 
 QLabel {
@@ -673,4 +673,19 @@ QListView::item:hover {
 
 QListView::item:selected {
   background-color: #4a4a4a;
+}
+
+QSplitter {
+  background-color: #333333;
+  color: #d3dae3;
+  border: 1px solid #1f2020;
+}
+
+QSplitter::handle {
+  background-color: #333333;
+  border: 1px solid #1f2020;
+}
+
+QSplitter::handle:hover {
+  background-color: #333333;
 }

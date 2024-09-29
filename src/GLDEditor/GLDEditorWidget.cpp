@@ -21,8 +21,8 @@
 // ========= EditorWidget ===========
 // ==================================
 
-GLDEditorWidget::GLDEditorWidget(const QString& title, QWidget* parent)
-    : QDockWidget(title, parent)
+GLDEditorWidget::GLDEditorWidget(QWidget* parent)
+    : QPlainTextEdit(parent)
     , currentFilePath("untitled")
     , m_statusBarTextCursor("")
     , m_statusBarTextFileInfo("")
@@ -33,32 +33,26 @@ GLDEditorWidget::GLDEditorWidget(const QString& title, QWidget* parent)
 {
 
     // Init Editor
-    p_textEditor = new QPlainTextEdit(this);
-    new Highlighter(this->p_textEditor->document());
+    new Highlighter(this->document());
 
     int fontId = QFontDatabase::addApplicationFont(":/fonts/FiraCode-Regular.ttf");
     if (fontId != -1)
     {
         QString fontFamily = QFontDatabase::applicationFontFamilies(fontId).at(0);
         QFont   font(fontFamily, 10);
-        p_textEditor->setFont(font);
+        this->setFont(font);
     }
     else
     {
         qDebug() << "Load font failed!";
     }
 
-    // Layout
-    setAllowedAreas(Qt::AllDockWidgetAreas);
-    setWidget(p_textEditor);
-    setTitleBarWidget(new QWidget());
-
     lineNumber.clear();
     currentLine = -1;
 
-    connect(this->p_textEditor, &QPlainTextEdit::cursorPositionChanged, this, [this]() { updateCursorPosition(); });
+    connect(this, &QPlainTextEdit::cursorPositionChanged, this, [this]() { updateCursorPosition(); });
 
-    connect(this->p_textEditor, &QPlainTextEdit::textChanged, this, [this]() {
+    connect(this, &QPlainTextEdit::textChanged, this, [this]() {
         m_isModify = true;
         emit signalUpdateFileName(currentFilePath, m_isModify);
     });
@@ -74,7 +68,7 @@ void GLDEditorWidget::newFile()
         return;
 
     currentFilePath = "untitled";
-    this->p_textEditor->clear();
+    this->clear();
 
     QString initText = "HEADER;\nFILE_DESCRIPTION(('GFC3X2'),'65001');";
     initText += "\nFILE_NAME('" + currentFilePath + "',";
@@ -82,11 +76,11 @@ void GLDEditorWidget::newFile()
     initText += "(''), ('Glodon'), 'objectbuf', '', '');";
     initText += "\nFILE_SCHEMA(('GFC3X2'));\nENDSEC;\nADS;\nDATA;\n";
     initText += appDataPath;
-    this->p_textEditor->appendPlainText(initText);
+    this->appendPlainText(initText);
 
-    QTextCursor cursor = p_textEditor->textCursor();
+    QTextCursor cursor = textCursor();
     cursor.movePosition(QTextCursor::End);
-    p_textEditor->setTextCursor(cursor);
+    setTextCursor(cursor);
 
     m_isModify = false;
     // Update filename and cursor position
@@ -108,7 +102,7 @@ void GLDEditorWidget::openFile()
         if (file.open(QFile::ReadOnly | QFile::Text))
         {
             QTextStream in(&file);
-            p_textEditor->setPlainText(in.readAll());
+            setPlainText(in.readAll());
             currentFilePath = fileName;
             file.close();
 
@@ -139,7 +133,7 @@ void GLDEditorWidget::saveFile()
         if (file.open(QFile::WriteOnly | QFile::Text))
         {
             QTextStream out(&file);
-            out << p_textEditor->toPlainText();
+            out << toPlainText();
             file.close();
             m_isModify = false;
             emit signalUpdateFileName(currentFilePath, m_isModify);
@@ -161,7 +155,7 @@ void GLDEditorWidget::saveAs()
         if (file.open(QFile::WriteOnly | QFile::Text))
         {
             QTextStream out(&file);
-            out << p_textEditor->toPlainText();
+            out << toPlainText();
             currentFilePath = fileName;
             file.close();
 
@@ -175,7 +169,6 @@ void GLDEditorWidget::saveAs()
         }
     }
 }
-
 void GLDEditorWidget::findAllText(QString pText, bool isCaseSensitive, bool isWordMatch)
 {
     highlightCurrentMatch(-1);
@@ -195,21 +188,22 @@ void GLDEditorWidget::findAllText(QString pText, bool isCaseSensitive, bool isWo
     lineNumber.clear();
     currentLine       = -1;
     m_currentFindText = pText;
-    QString text      = p_textEditor->toPlainText();
+    QString text      = toPlainText();
 
     // 根据是否区分大小写和全字匹配构建正则表达式
     QRegularExpression::PatternOptions options = QRegularExpression::NoPatternOption;
-    if (!isCaseSensitive)
+    if (!m_isCaseSensitive)
     {
+        qDebug() << "不区分大小写";
         options |= QRegularExpression::CaseInsensitiveOption;
     }
     QString patternStr = isWordMatch ? "\\b" + QRegularExpression::escape(m_currentFindText) + "\\b" : QRegularExpression::escape(m_currentFindText);
     QRegularExpression re(patternStr, options);
 
-    QTextCursor cursor(p_textEditor->document());
+    QTextCursor cursor(document());
     while (!cursor.atEnd())
     {
-        cursor = p_textEditor->document()->find(re, cursor);
+        cursor = document()->find(re, cursor);
         if (cursor.isNull())
         {
             break;
@@ -217,6 +211,7 @@ void GLDEditorWidget::findAllText(QString pText, bool isCaseSensitive, bool isWo
         int lineNum = cursor.blockNumber() + 1;  // 行号从1开始计数
         lineNumber.append(lineNum);
     }
+    qDebug() << lineNumber;
 }
 
 
@@ -263,7 +258,7 @@ int GLDEditorWidget::findPreviousText()
 QMap<int, QString> GLDEditorWidget::getMatchedList()
 {
     QMap<int, QString> res;
-    QTextDocument*     document = this->p_textEditor->document();
+    QTextDocument*     document = this->document();
     // 使用行号获取文本块
     for (const auto& it : this->lineNumber)
     {
@@ -286,7 +281,7 @@ void GLDEditorWidget::replaceText(QString pText, QString rText)
         return;
     }
 
-    QTextCursor cursor = p_textEditor->textCursor();
+    QTextCursor cursor = textCursor();
     cursor.beginEditBlock();
 
     int lineNum = lineNumber.at(currentLine);
@@ -316,25 +311,25 @@ void GLDEditorWidget::highlightCurrentMatch(int lineNum)
     if (lineNum == -1)
     {
         // 取消高亮
-        QTextCursor cursor = p_textEditor->textCursor();
+        QTextCursor cursor = textCursor();
         cursor.clearSelection();
-        p_textEditor->setTextCursor(cursor);
+        setTextCursor(cursor);
     }
     else
     {
-        QTextCursor cursor = p_textEditor->textCursor();
+        QTextCursor cursor = textCursor();
         cursor.movePosition(QTextCursor::Start);
         cursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, lineNum);
         cursor.select(QTextCursor::LineUnderCursor);
 
-        p_textEditor->setTextCursor(cursor);
-        p_textEditor->ensureCursorVisible();
+        setTextCursor(cursor);
+        ensureCursorVisible();
     }
 }
 
 void GLDEditorWidget::updateCursorPosition()
 {
-    QTextCursor cursor = p_textEditor->textCursor();
+    QTextCursor cursor = textCursor();
 
     int line   = cursor.blockNumber() + 1;
     int column = cursor.columnNumber() + 1;
@@ -348,7 +343,7 @@ void GLDEditorWidget::updateFileInfo(const QString& filePath)
     QFile file(filePath);
     if (file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        p_textEditor->setPlainText(file.readAll());
+        setPlainText(file.readAll());
         file.close();
 
         // 更新文件大小
@@ -438,18 +433,18 @@ void GLDEditorWidget::writeRecentFiles()
     }
 }
 
-bool GLDEditorWidget::setFontFamily(const QString& fontFamily)
+bool GLDEditorWidget::setEditorFontFamily(const QString& fontFamily)
 {
     QFont font(fontFamily);
-    p_textEditor->setFont(font);
+    setFont(font);
     return true;
 }
 
 bool GLDEditorWidget::setFontSize(int size)
 {
-    QFont font(p_textEditor->font());
+    QFont font(this->font());
     font.setPointSize(size);
-    p_textEditor->setFont(font);
+    setFont(font);
     return true;
 }
 

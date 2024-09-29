@@ -8,12 +8,12 @@
 #include "qstandarditemmodel.h"
 
 
-class GLDAttributeArea : public QDockWidget
+class GLDAttributeArea : public QTableView
 {
     Q_OBJECT
 
   public:
-    GLDAttributeArea(const QString& title, QWidget* parent = nullptr);
+    GLDAttributeArea(QWidget* parent = nullptr);
 
 
     // 接收外部传入的数据并更新表格
@@ -24,7 +24,6 @@ class GLDAttributeArea : public QDockWidget
     void signalClickTableView(const QString& value);
 
   private:
-    QTableView*         m_pTableView;
     QStandardItemModel* m_pModel;
 };
 
