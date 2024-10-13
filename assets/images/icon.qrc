@@ -35,6 +35,7 @@
         <file>dark/visible.svg</file>
         <file>dark/statusbar.svg</file>
         <file>dark/toolbar.svg</file>
+        <file>dark/font.svg</file>
         <!-- light -->
         <file>light/new.svg</file>        
         <file>light/open.svg</file>
@@ -70,5 +71,6 @@
         <file>light/visible.svg</file>
         <file>light/statusbar.svg</file>
         <file>light/toolbar.svg</file>
+        <file>light/font.svg</file>
     </qresource>
 </RCC>

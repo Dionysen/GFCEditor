@@ -327,8 +327,21 @@ void MainWindow::setupAuxiliary()
             [this](const QString& searchText, const bool caseSensitive, const bool wholeWord) {
                 p_editorWidget->findAllText(searchText, caseSensitive, wholeWord);
                 p_editorWidget->findPreviousText();
+
+                p_auxiliaryArea->setSearchResults(p_editorWidget->getMatchedList());
             });
 
+    connect(p_auxiliaryArea->m_searchWindow, &GLDSearchWindow::signalSearchTextChanged, this,
+            [this](const QString& text, const bool caseSensitive, const bool wholeWord) {
+                p_editorWidget->findAllText(text, caseSensitive, wholeWord);
+                p_auxiliaryArea->setSearchResults(p_editorWidget->getMatchedList());
+            });
+
+    connect(p_auxiliaryArea->m_searchWindow, &GLDSearchWindow::signalReplaceTextChanged, this,
+            [this](const QString& text, const bool caseSensitive, const bool wholeWord) {
+                p_editorWidget->findAllText(text, caseSensitive, wholeWord);
+                p_auxiliaryArea->setSearchResults(p_editorWidget->getMatchedList());
+            });
 
     connect(p_menuBar->actionFind, &QAction::triggered, this, [this]() { p_auxiliaryArea->show(); });
     connect(p_menuBar->actionFindNext, &QAction::triggered, this, [this]() { p_auxiliaryArea->show(); });

@@ -1,5 +1,5 @@
 ﻿
-// #define CUSTOM_WINDOW
+#define CUSTOM_WINDOW
 
 #ifdef CUSTOM_WINDOW
 #include "CustomWindow.h"
@@ -8,7 +8,7 @@
 #include <QApplication>
 #include "MainWindow.h"
 #include <windows.h>
-
+#include <gtest/gtest.h>
 int main(int argc, char* argv[])
 {
 
@@ -28,5 +28,12 @@ int main(int argc, char* argv[])
     MainWindow w;
     w.show();
 #endif
+
+#define ENABLE_TEST
+#ifdef ENABLE_TEST
+    ::testing::InitGoogleTest(&argc, argv);
+    int res = RUN_ALL_TESTS();
+#endif
+
     return a.exec();
 }

@@ -28,24 +28,24 @@ class GLDEditorWidget : public QPlainTextEdit
     void saveAs();
 
     // 根据文本pText查找，支持【区分大小写】和【全字匹配】
-    void findAllText(QString pText, bool isCaseSensitive, bool isWordMatch);
+    QPair<int, int> findAllText(QString pText, bool isCaseSensitive, bool isWordMatch);
 
     // 返回下一个匹配到的行号
-    int findNextText();
+    QPair<int, int> findNextText();
 
     // 返回上一个匹配到的行号
-    int findPreviousText();
+    QPair<int, int> findPreviousText();
 
     // 高亮当前匹配的行
-    void highlightCurrentMatch(int lineNum);
+    void highlightCurrentMatch(QPair<int, int> matchIndex);
     void clearAllHighlights();
 
     // 根据pText查找，替换成rText
     void replaceText(QString pText, QString rText);
 
     // 返回匹配到的所有行文本及对应行号
-    QMap<int, QString> getMatchedList();
-    int                getCurrentMatchNumber();
+    QMap<QPair<int, int>, QString> getMatchedList();
+    int                            getCurrentMatchNumber();
 
     bool setEditorFontFamily(const QString& fontFamily);
     bool setFontSize(int size);
@@ -68,8 +68,8 @@ class GLDEditorWidget : public QPlainTextEdit
     void writeRecentFiles();
 
   private:
-    QVector<int> lineNumber;   // 所有匹配的文本所在的行号
-    int          currentLine;  // lineNumber不为空时findnext所在的行(索引
+    QVector<QPair<int, int>> lineNumber;         // 所有匹配的文本所在的行号与索引
+    int                      currentMatchIndex;  // lineNumber不为空时findnext所在的行(索引
 
     // 当前查找的文本
     QString m_currentFindText;

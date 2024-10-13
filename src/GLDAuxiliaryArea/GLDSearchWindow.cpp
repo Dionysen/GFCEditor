@@ -1,7 +1,4 @@
 ﻿#include "GLDSearchWindow.h"
-#include "qnamespace.h"
-// #include "GLDEditorWidget.h"
-// #include <qDebug>
 
 GLDSearchWindow::GLDSearchWindow(QWidget* parent)
     : QWidget(parent)
@@ -18,7 +15,7 @@ GLDSearchWindow::GLDSearchWindow(QWidget* parent)
 
     // 放大镜图标
     m_pSearchIcon = new QLabel;
-    QPixmap searchIconPixmap("../bigwork/src/find.png");
+    QPixmap searchIconPixmap(":icon/dark/find.svg");
 
     // 查找文本
     m_pSearchLabel = new QLabel("Find");
@@ -45,7 +42,7 @@ GLDSearchWindow::GLDSearchWindow(QWidget* parent)
 
     // 替换图标
     m_pReplaceIcon = new QLabel;
-    QPixmap replaceIconPixmap("../bigwork/src/find.png");
+    QPixmap replaceIconPixmap(":icon/dark/replace.svg");
     // 调整图片大小并保持比例
     QSize fixedSize_replaceIcon(10, 10);  // 设置固定大小
     replaceIconPixmap = replaceIconPixmap.scaled(fixedSize_replaceIcon, Qt::KeepAspectRatio, Qt::SmoothTransformation);
@@ -150,38 +147,31 @@ GLDSearchWindow::GLDSearchWindow(QWidget* parent)
 
         emit signalClickRow(m_RowsList[currentRow]);
     });
+
+
+    connect(m_pSearchEdit, &QLineEdit::textChanged, this, [=](const QString& text) {
+        emit signalSearchTextChanged(text, m_pCaseSensitiveCheckBox->isChecked(), m_pWholeWordCheckBox->isChecked());
+    });
+
+    connect(m_pReplaceEdit, &QLineEdit::textChanged, this, [=](const QString& text) {
+        emit signalReplaceTextChanged(text, m_pCaseSensitiveCheckBox->isChecked(), m_pWholeWordCheckBox->isChecked());
+    });
 }
 
-
-void GLDSearchWindow::setSearchResults(const QMap<int, QString>& results)
+void GLDSearchWindow::setSearchResults(const QMap<QPair<int, int>, QString>& results)
 {
     delete m_pResultList;
     m_pResultList = new QListWidget(this);
     mainLayout->addWidget(m_pResultList);
 
-    //    m_pResultList->clear();  // 清除之前的结果
     m_RowsList.clear();
 
     for (auto it = results.begin(); it != results.end(); ++it)
     {
-        m_RowsList.append(it.key());  // 收集行号
-        QListWidgetItem* item = new QListWidgetItem(it.value());
+        m_RowsList.append(it.key().first);  // 收集行号
+
+        QListWidgetItem* item = new QListWidgetItem();
         m_pResultList->addItem(item);
+        item->setText(it.value());
     }
-}
-
-
-
-// 高亮文本
-QString GLDSearchWindow::highlightText(const QString& line, const QString& searchText)
-{
-    QString highlightedLine = line;
-    int     startIndex      = highlightedLine.indexOf(searchText, 0, Qt::CaseInsensitive);
-    while (startIndex != -1)
-    {
-        highlightedLine = highlightedLine.left(startIndex) + "<font color='red'>" + highlightedLine.mid(startIndex, searchText.length()) + "</font>" +
-                          highlightedLine.mid(startIndex + searchText.length());
-        startIndex = highlightedLine.indexOf(searchText, startIndex + searchText.length(), Qt::CaseInsensitive);
-    }
-    return highlightedLine;
 }

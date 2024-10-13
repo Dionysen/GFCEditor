@@ -14,7 +14,7 @@ class GLDAuxiliaryArea : public QTabWidget
     GLDAuxiliaryArea(QWidget* parent = nullptr);
 
     // 更新搜索结果的函数（供外部调用）
-    void setSearchResults(const QMap<int, QString>& results);
+    void setSearchResults(const QMap<QPair<int, int>, QString>& results);
 
     // 发送内部信号到最外层TODO
     // private:

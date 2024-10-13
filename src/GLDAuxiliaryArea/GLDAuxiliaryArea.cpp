@@ -5,6 +5,7 @@
 #include <QLabel>
 #include "GLDSearchWindow.h"
 #include "GLDErrorWindow.h"
+#include "qcontainerfwd.h"
 
 GLDAuxiliaryArea::GLDAuxiliaryArea(QWidget* parent)
     : QTabWidget(parent)
@@ -29,7 +30,7 @@ GLDAuxiliaryArea::GLDAuxiliaryArea(QWidget* parent)
     addTab(m_quoteWindow, "Quote");
 }
 
-void GLDAuxiliaryArea::setSearchResults(const QMap<int, QString>& results)
+void GLDAuxiliaryArea::setSearchResults(const QMap<QPair<int, int>, QString>& results)
 {
     m_searchWindow->setSearchResults(results);
 }

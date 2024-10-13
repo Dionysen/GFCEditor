@@ -21,25 +21,26 @@ class GLDSearchWindow : public QWidget
   public:
     GLDSearchWindow(QWidget* parent = nullptr);
 
-    // 高亮文本
-    QString highlightText(const QString& line, const QString& searchText);
-
     // 更新搜索结果的槽函数（供外部调用）
-    void setSearchResults(const QMap<int, QString>& results);
+    void setSearchResults(const QMap<QPair<int, int>, QString>& results);
 
-    // 搜索框文本变化信号
+
+
   signals:
     // 参数列表（搜索文本， 是否向前搜索， 是否选择区分大小写， 是否选择全字匹配）
     void signalPrevSearch(const QString& searchText, const bool caseSensitive, const bool wholeWord);
     void signalNextSearch(const QString& searchText, const bool caseSensitive, const bool wholeWord);
     void signalReplace(const QString& searchText, const QString& replaceText, const bool caseSensitive, const bool wholeWord);
-
+    // 搜索框文本变化信号
+    void signalSearchTextChanged(const QString& text, const bool caseSensitive, const bool wholeWord);
+    // 替换框文本变化信号
+    void signalReplaceTextChanged(const QString& text, const bool caseSensitive, const bool wholeWord);
     // 双击条目在编辑框中定位
     void signalClickRow(const int row);
 
+
   private:
     QString m_searchText;  // 要搜索的文本
-
 
     QLabel* m_pSearchIcon;
     QLabel* m_pSearchLabel;
