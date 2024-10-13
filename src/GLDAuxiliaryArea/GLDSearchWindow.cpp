@@ -1,4 +1,5 @@
 ﻿#include "GLDSearchWindow.h"
+#include "qcheckbox.h"
 
 GLDSearchWindow::GLDSearchWindow(QWidget* parent)
     : QWidget(parent)
@@ -156,6 +157,13 @@ GLDSearchWindow::GLDSearchWindow(QWidget* parent)
     connect(m_pReplaceEdit, &QLineEdit::textChanged, this, [=](const QString& text) {
         emit signalReplaceTextChanged(text, m_pCaseSensitiveCheckBox->isChecked(), m_pWholeWordCheckBox->isChecked());
     });
+
+    connect(m_pCaseSensitiveCheckBox, &QCheckBox::checkStateChanged, this,
+            [=]() { emit signalSearchTextChanged(m_pSearchEdit->text(), m_pCaseSensitiveCheckBox->isChecked(), m_pWholeWordCheckBox->isChecked()); });
+
+
+    connect(m_pWholeWordCheckBox, &QCheckBox::checkStateChanged, this,
+            [=]() { emit signalSearchTextChanged(m_pSearchEdit->text(), m_pCaseSensitiveCheckBox->isChecked(), m_pWholeWordCheckBox->isChecked()); });
 }
 
 void GLDSearchWindow::setSearchResults(const QMap<QPair<int, int>, QString>& results)

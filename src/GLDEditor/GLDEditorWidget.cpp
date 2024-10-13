@@ -60,6 +60,23 @@ GLDEditorWidget::GLDEditorWidget(QWidget* parent)
     readRecentFiles();
 
     newFile();
+
+    // QFile file("res/test.gfc");
+    // if (file.open(QFile::ReadOnly | QFile::Text))
+    // {
+    //     QTextStream in(&file);
+    //     setPlainText(in.readAll());
+    //     currentFilePath = "./res/test.gfc";
+    //     file.close();
+
+    //     updateFileInfo(currentFilePath);
+    //     addRecentFiles();
+    //     m_isModify = false;
+    // }
+    // else
+    // {
+    //     QMessageBox::warning(nullptr, "Error", "Could not open file.");
+    // }
 }
 
 void GLDEditorWidget::newFile()
