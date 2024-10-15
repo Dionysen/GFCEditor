@@ -101,24 +101,64 @@ void MainWindow::setupEditor()
 
 void MainWindow::setupDockingLayout()
 {
+    // =============== Enable DockWidget ==============
+    setDockNestingEnabled(true);
+
+    QDockWidget* p_schemaDockWidget = new QDockWidget(this);
+    p_schemaDockWidget->setWidget(p_schemaWiddget);
+    p_schemaDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    addDockWidget(Qt::LeftDockWidgetArea, p_schemaDockWidget);
+
+    QDockWidget* p_editorDockWidget = new QDockWidget(this);
+    p_editorDockWidget->setWidget(p_editorWidget);
+    p_editorDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    addDockWidget(Qt::LeftDockWidgetArea, p_editorDockWidget);
+
+    QDockWidget* p_attributeDockWidget = new QDockWidget(this);
+    p_attributeDockWidget->setWidget(p_attributeArea);
+    p_attributeDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    addDockWidget(Qt::LeftDockWidgetArea, p_attributeDockWidget);
+
+    QDockWidget* p_auxiliaryDockWidget = new QDockWidget(this);
+    p_auxiliaryDockWidget->setWidget(p_auxiliaryArea);
+    p_auxiliaryDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    addDockWidget(Qt::LeftDockWidgetArea, p_auxiliaryDockWidget);
+
     // 设置布局
-    QSplitter* vSplitter = new QSplitter(Qt::Vertical, this);
-    vSplitter->addWidget(p_editorWidget);
-    vSplitter->addWidget(p_auxiliaryArea);
-
-
-    QSplitter* splitter = new QSplitter(Qt::Horizontal, this);
-    splitter->addWidget(p_schemaWiddget);
-    splitter->addWidget(vSplitter);
-    splitter->addWidget(p_attributeArea);
-
-    vSplitter->setHandleWidth(0);
-    splitter->setHandleWidth(0);
-
-    this->setCentralWidget(splitter);
+    addDockWidget(Qt::LeftDockWidgetArea, p_schemaDockWidget);
+    splitDockWidget(p_schemaDockWidget, p_editorDockWidget, Qt::Horizontal);
+    splitDockWidget(p_editorDockWidget, p_attributeDockWidget, Qt::Horizontal);
+    splitDockWidget(p_editorDockWidget, p_auxiliaryDockWidget, Qt::Vertical);
 
     // 设置dock的初始大小
-    splitter->setSizes(QList<int>({ 150, 300, 150, 150 }));
+    resizeDocks({ p_schemaDockWidget }, { 150 }, Qt::Horizontal);
+    resizeDocks({ p_attributeDockWidget }, { 150 }, Qt::Horizontal);
+    resizeDocks({ p_auxiliaryDockWidget }, { 150 }, Qt::Vertical);
+    // 删除centralwidget，所有部件均为dockwidget
+    QWidget* p = takeCentralWidget();
+    if (p)
+        delete p;
+
+
+    // =============== Disable DockWidget ==============
+    // // 设置布局
+    // QSplitter* vSplitter = new QSplitter(Qt::Vertical, this);
+    // vSplitter->addWidget(p_editorWidget);
+    // vSplitter->addWidget(p_auxiliaryArea);
+
+
+    // QSplitter* splitter = new QSplitter(Qt::Horizontal, this);
+    // splitter->addWidget(p_schemaWiddget);
+    // splitter->addWidget(vSplitter);
+    // splitter->addWidget(p_attributeArea);
+
+    // vSplitter->setHandleWidth(0);
+    // splitter->setHandleWidth(0);
+
+    // this->setCentralWidget(splitter);
+
+    // // 设置dock的初始大小
+    // splitter->setSizes(QList<int>({ 150, 300, 150, 150 }));
 }
 
 
