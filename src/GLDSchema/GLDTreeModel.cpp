@@ -1,5 +1,5 @@
 #include "GLDTreeModel.h"
-#include "qnamespace.h"
+
 
 GLDTreeNode::GLDTreeNode(GLDTreeNode* pParent)
     : m_Parent(pParent)

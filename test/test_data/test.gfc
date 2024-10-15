@@ -15,12 +15,6 @@ DATA;
 #8=GFCFLOOR('2305870771882300434','建筑4F',5000,1,9000,6,$);
 #9=GFCFLOOR('2305870771882300417','建筑5F',6000,1,14000,7,$);
 GfcFloor is a floor class
-#10=GFCRELAGGREGATES($,#2,(#3,#4,#5,#6,#7,#8,#9));
-#11=GFCRELAGGREGATES($,#1,(#2));
-#12=GFCELEMENTTYPE('{1a53785d-4769-4183-8bff-7b63acf8218c}','Grid','14-06.81.02');
-#13=GFCVECTOR3D(0,0,-5500);
-#14=GFCVECTOR3D(1,0,0);
-#15=GFCVECTOR3D(0,1,0);
-#16=GFCVECTOR3D(0,0,1);
-
-
+It is this intellectual activity of inquiry, seeking, rather than summative answers, that make one a philosopher, because summative answers can easily be reduced to unthinking dogmas and slogans that require no thought or understanding at all.
+Our daily life has become inseparable from computers. Whether you are using computers or not, you are using computers consciously or unconsciously, or using the services that computers provide for you. When we are in the use of computer, we are all in the use of computer has some software, so we will go to find the APP, if you searched all the APPs on the market, is there no have the functionality of the APP you want, then you have to write their own one, if you want to do something special, you can’t find the right software, will still have to write their own one.
+Learning programming is not about writing software for yourself. It is about learning programming to understand how computers work, what they can or are good at doing, what they can’t or aren’t good at doing, and how computers solve problems.

@@ -1,18 +1,15 @@
 ﻿#ifndef GLDEditorWidget_H
 #define GLDEditorWidget_H
 #pragma once
-#include "qchar.h"
-#include "qcontainerfwd.h"
-#include "qobject.h"
-#include "qqueue.h"
-#include "qwidget.h"
+#include "GLDHighlighter.h"
+
+#include <QChar>
+#include <QQueue>
 #include <QFileInfo>
 #include <QPlainTextEdit>
 #include <QQueue>
 #include <QTextCharFormat>
 #include <QTextEdit>
-#include "GLDHighlighter.h"
-#include <QRubberBand>
 // TODO：懒加载
 class GLDEditorWidget : public QPlainTextEdit
 {
@@ -29,7 +26,10 @@ class GLDEditorWidget : public QPlainTextEdit
 
     // 根据文本pText查找，支持【区分大小写】和【全字匹配】
     QPair<int, int> findAllText(QString pText, bool isCaseSensitive, bool isWordMatch);
-
+    bool            isNewSearch()
+    {
+        return m_isNewSearch;
+    }
     // 返回下一个匹配到的行号
     QPair<int, int> findNextText();
 
@@ -75,6 +75,7 @@ class GLDEditorWidget : public QPlainTextEdit
     QString m_currentFindText;
     bool    m_isCaseSensitive;
     bool    m_isWordMatch;
+    bool    m_isNewSearch;
     // -------------------
 
     QString currentFilePath;

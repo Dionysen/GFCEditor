@@ -1,7 +1,7 @@
 
 #include <QRegularExpression>
-
 #include <QSyntaxHighlighter>
+
 class Highlighter : public QSyntaxHighlighter
 {
   public:

@@ -1,13 +1,14 @@
 ﻿#include "GLDEditorWidget.h"
-#include "qdatetime.h"
-#include "qfileinfo.h"
-#include "qfont.h"
+
+#include <QDateTime>
+#include <QFileInfo>
+#include <QFont>
 #include <QStandardPaths>
-#include "qmap.h"
-#include "qmessagebox.h"
-#include "qobject.h"
-#include "qplaintextedit.h"
-#include "qregularexpression.h"
+#include <QMap>
+#include <QMessageBox>
+#include <QObject>
+#include <QPlainTextEdit>
+#include <QRegularExpression>
 #include <QFileDialog>
 #include <QTextStream>
 #include <QMessageBox>
@@ -30,6 +31,7 @@ GLDEditorWidget::GLDEditorWidget(QWidget* parent)
     , appDataPath(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/RencentFiles")
     , m_isCaseSensitive(false)
     , m_isWordMatch(false)
+    , m_isNewSearch(true)
 {
 
     // Init Editor
@@ -61,22 +63,23 @@ GLDEditorWidget::GLDEditorWidget(QWidget* parent)
 
     newFile();
 
-    // QFile file("res/test.gfc");
-    // if (file.open(QFile::ReadOnly | QFile::Text))
-    // {
-    //     QTextStream in(&file);
-    //     setPlainText(in.readAll());
-    //     currentFilePath = "./res/test.gfc";
-    //     file.close();
+    // 测试用，默认打开test.gfc文件，最好在release环境下使用
+    QFile file("res/test.gfc");
+    if (file.open(QFile::ReadOnly | QFile::Text))
+    {
+        QTextStream in(&file);
+        setPlainText(in.readAll());
+        currentFilePath = "./res/test.gfc";
+        file.close();
 
-    //     updateFileInfo(currentFilePath);
-    //     addRecentFiles();
-    //     m_isModify = false;
-    // }
-    // else
-    // {
-    //     QMessageBox::warning(nullptr, "Error", "Could not open file.");
-    // }
+        updateFileInfo(currentFilePath);
+        addRecentFiles();
+        m_isModify = false;
+    }
+    else
+    {
+        QMessageBox::warning(nullptr, "Error", "Could not open file.");
+    }
 }
 
 void GLDEditorWidget::newFile()
@@ -133,6 +136,7 @@ void GLDEditorWidget::openFile()
         }
     }
 }
+
 void GLDEditorWidget::saveFile()
 {
     if (currentFilePath.isEmpty())
@@ -198,6 +202,7 @@ QPair<int, int> GLDEditorWidget::findAllText(QString pText, bool isCaseSensitive
 
     if (pText == m_currentFindText && !lineNumber.isEmpty() && isCaseSensitive == m_isCaseSensitive && isWordMatch == m_isWordMatch)
     {
+        m_isNewSearch = false;
         return lineNumber.at(currentMatchIndex);
     }
 
@@ -317,6 +322,8 @@ int GLDEditorWidget::getCurrentMatchNumber()
 
 void GLDEditorWidget::replaceText(QString pText, QString rText)
 {
+    // TODO: 替换文本，因为替换的逻辑还没有想清楚，所以还没做
+
     // if (lineNumber.isEmpty() || currentLine < 0 || currentLine >= lineNumber.size())
     // {
     //     qDebug() << "没有可替换的内容！";
@@ -377,7 +384,7 @@ void GLDEditorWidget::updateCursorPosition()
     int line   = cursor.blockNumber() + 1;
     int column = cursor.columnNumber() + 1;
 
-    m_statusBarTextCursor = (QStringLiteral("行: %1, 列: %2").arg(line).arg(column));
+    m_statusBarTextCursor = (QStringLiteral("Row: %1, Column: %2").arg(line).arg(column));
     emit signalUpdateStatusBar(m_statusBarTextCursor, m_statusBarTextFileInfo);
 }
 
@@ -393,7 +400,7 @@ void GLDEditorWidget::updateFileInfo(const QString& filePath)
         QFileInfo fileInfo(filePath);
         qint64    fileSize      = fileInfo.size();    // 文件大小（字节）
         double    fileSizeKB    = fileSize / 1024.0;  // 转换为 KB
-        m_statusBarTextFileInfo = QStringLiteral("文件大小: %1 KB").arg(fileSizeKB, 0, 'f', 2);
+        m_statusBarTextFileInfo = QStringLiteral("Size: %1 KB").arg(fileSizeKB, 0, 'f', 2);
         emit signalUpdateStatusBar(m_statusBarTextCursor, m_statusBarTextFileInfo);
     }
 }

@@ -1,5 +1,5 @@
 ﻿#include "GLDAttributeArea.h"
-#include <QWidget>
+
 #include <QHeaderView>
 
 GLDAttributeArea::GLDAttributeArea(QWidget* parent)

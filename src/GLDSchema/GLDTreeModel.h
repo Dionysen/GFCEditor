@@ -55,8 +55,6 @@ class GLDTreeModel : public QAbstractItemModel
     virtual bool insertRows(int row, int count, const QModelIndex& parent = QModelIndex());
     virtual bool removeRows(int row, int count, const QModelIndex& parent = QModelIndex());
 
-
-
   public:
     void initModel();
     void initModel(GLDTreeNode* root);

@@ -1,11 +1,12 @@
 ﻿#ifndef GLDAUXILIARYAREA_H
 #define GLDAUXILIARYAREA_H
 #pragma once
-#include <QDockWidget>
-#include <QTabWidget>
+
 #include "GLDSearchWindow.h"
 #include "GLDErrorWindow.h"
 
+#include <QDockWidget>
+#include <QTabWidget>
 
 class GLDAuxiliaryArea : public QTabWidget
 {

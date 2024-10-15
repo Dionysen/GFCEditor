@@ -1,16 +1,13 @@
 ﻿#ifndef GLDSchemaWidget_H
 #define GLDSchemaWidget_H
 #pragma once
-#include <QStandardItemModel>
-#include <QTabWidget>
-#include <QTreeView>
-#include <QWidget>
-#include <QHBoxLayout>
-#include <QRubberBand>
 #include "GFCReader.h"
 #include "GLDTreeModel.h"
-#include <QMouseEvent>
-#include <QDockWidget>
+
+#include <QTabWidget>
+#include <QTreeView>
+#include <QStandardItemModel>
+
 class GLDSchemaWidget : public QTabWidget
 {
     Q_OBJECT

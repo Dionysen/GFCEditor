@@ -1,5 +1,8 @@
 ﻿
 #define CUSTOM_WINDOW
+#define ENABLE_TEST
+
+
 
 #ifdef CUSTOM_WINDOW
 #include "CustomWindow.h"
@@ -29,7 +32,6 @@ int main(int argc, char* argv[])
     w.show();
 #endif
 
-#define ENABLE_TEST
 #ifdef ENABLE_TEST
     ::testing::InitGoogleTest(&argc, argv);
     int res = RUN_ALL_TESTS();

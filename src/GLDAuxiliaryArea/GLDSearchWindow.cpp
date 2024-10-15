@@ -1,5 +1,5 @@
 ﻿#include "GLDSearchWindow.h"
-#include "qcheckbox.h"
+#include <QCheckBox>
 
 GLDSearchWindow::GLDSearchWindow(QWidget* parent)
     : QWidget(parent)

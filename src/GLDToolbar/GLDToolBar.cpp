@@ -1,5 +1,5 @@
 ﻿#include "GLDToolBar.h"
-#include "qicon.h"
+
 #include <QIcon>
 #include <QApplication>
 #include <QStyle>

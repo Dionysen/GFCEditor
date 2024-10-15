@@ -1,12 +1,8 @@
 ﻿#ifndef GLDATTRIBUTEAREA_H
 #define GLDATTRIBUTEAREA_H
 
-#include <QDockWidget>
 #include <QTableView>
 #include <QStandardItemModel>
-#include <QVBoxLayout>
-#include "qstandarditemmodel.h"
-
 
 class GLDAttributeArea : public QTableView
 {

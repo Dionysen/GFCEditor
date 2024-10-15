@@ -1,9 +1,10 @@
 #include "GLDMenuBar.h"
-#include "qicon.h"
+
 #include <QFile>
 #include <QApplication>
 #include <QFontDialog>
 #include <QInputDialog>
+
 GLDMenuBar::GLDMenuBar(QWidget* parent)
     : QMenuBar(parent)
 {

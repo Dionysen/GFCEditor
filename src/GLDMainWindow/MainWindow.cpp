@@ -1,24 +1,25 @@
-﻿#include "MainWindow.h"
+﻿// GLD header
+#include "MainWindow.h"
 #include "CustomWindow.h"
 #include "GLDAttributeArea.h"
 #include "GLDAuxiliaryArea.h"
 #include "GLDSearchWindow.h"
 #include "GLDToolBar.h"
-#include "qaction.h"
-#include "qapplication.h"
-#include "qchar.h"
-#include "qdockwidget.h"
-#include "qfileinfo.h"
-#include "qlabel.h"
-#include "qmap.h"
-#include "qnamespace.h"
-#include "qobject.h"
-#include "qsizepolicy.h"
-#include "qsplitter.h"
-#include "qstatusbar.h"
-#include "qtextedit.h"
-#include "qtoolbar.h"
-#include "qwidget.h"
+
+// Qt header
+#include <QAction>
+#include <QApplication>
+#include <QChar>
+#include <QDockWidget>
+#include <QFileInfo>
+#include <QMap>
+#include <QObject>
+#include <QSizePolicy>
+#include <QSplitter>
+#include <QStatusBar>
+#include <QTextEdit>
+#include <QToolBar>
+#include <QWidget>
 #include <QSplitter>
 #include <QMessageBox>
 #include <QScrollArea>
@@ -29,7 +30,6 @@
 #include <QStyle>
 #include <QSizeGrip>
 #include <QTimer>
-
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
@@ -161,8 +161,8 @@ void MainWindow::setupMenuBar()
 
     connect(p_menuBar->actionExit, &QAction::triggered, this, [this]() { QApplication::exit(0); });
 
-    connect(p_menuBar->actionAbout, &QAction::triggered, this, &MainWindow::on_actionAbout_clicked);
-    connect(p_menuBar->actionHelp, &QAction::triggered, this, &MainWindow::on_actionHelp_clicked);
+    connect(p_menuBar->actionAbout, &QAction::triggered, this, &MainWindow::showAbout);
+    connect(p_menuBar->actionHelp, &QAction::triggered, this, &MainWindow::showHelp);
 
     p_menuBar->actionNew->setShortcut(QKeySequence("Ctrl+N"));
     p_menuBar->actionOpen->setShortcut(QKeySequence("Ctrl+O"));
@@ -258,7 +258,7 @@ MainWindow::~MainWindow()
 {
 }
 
-void MainWindow::on_actionAbout_clicked()
+void MainWindow::showAbout()
 {
     // 创建一个QMessageBox对象，显示About相关信息
     QMessageBox messageAbout;
@@ -266,51 +266,20 @@ void MainWindow::on_actionAbout_clicked()
     messageAbout.setText(QStringLiteral("<h2>C++大作业</h2>"
                                         "<p>版权所有 © 20240830 [TOT24 C++班 第五组]。</p>"));
 
-    messageAbout.setIcon(QMessageBox::NoIcon);                        // 先移除默认图标
+    messageAbout.setIcon(QMessageBox::Information);                   // 先移除默认图标
     messageAbout.setWindowIcon(QIcon(QString(":/image/about.png")));  // 设置自定义图标
     messageAbout.exec();
 }
 
-void MainWindow::on_actionHelp_clicked()
+void MainWindow::showHelp()
 {
-    QDialog dialogHelp;
-    dialogHelp.setWindowIcon(QIcon(QString(":/image/help.png")));  // 设置自定义图标
+    // 创建一个QMessageBox对象，显示About相关信息
+    QMessageBox messageAbout;
+    messageAbout.setWindowTitle(QStringLiteral("Help"));
+    messageAbout.setText(QStringLiteral("Only yourself can help you.\t\t\nOr ask for the God!"));
 
-    // 设置对话框标题
-    dialogHelp.setWindowTitle(QStringLiteral("帮助文档"));
-
-    // 滚动区域
-    QScrollArea* scrollArea = new QScrollArea(&dialogHelp);
-    scrollArea->setWidgetResizable(true);
-
-    // 显示帮助文档
-    // QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
-    QWidget*   contentWidget = new QWidget(scrollArea);
-    QTextEdit* textEdit      = new QTextEdit(contentWidget);
-
-    QString fileName = QStringLiteral("../帮助文档.txt");
-    QFile   file(fileName);
-    if (!file.open(QFile::ReadOnly | QFile::Text))
-    {
-        textEdit->setPlainText((QStringLiteral("这是帮助信息\n")));
-    }
-    else
-    {
-        QTextStream in(&file);
-        textEdit->setPlainText(in.readAll());
-    }
-    scrollArea->setWidget(contentWidget);
-
-    // 将QTextEdit添加到布局中
-    QVBoxLayout* layout = new QVBoxLayout(contentWidget);
-    layout->addWidget(textEdit);
-
-    QLabel* labelHelp = new QLabel(QStringLiteral("<p>版权所有 © 20240830 [TOT24 C++班 第五组]。</p>"));
-    layout->addWidget(labelHelp);
-
-    // 显示对话框
-    dialogHelp.resize(400, 320);
-    dialogHelp.exec();
+    messageAbout.setIcon(QMessageBox::Warning);  // 先移除默认图标
+    messageAbout.exec();
 }
 
 void MainWindow::setupAuxiliary()
@@ -319,16 +288,16 @@ void MainWindow::setupAuxiliary()
             [this](const QString& searchText, const bool caseSensitive, const bool wholeWord) {
                 p_editorWidget->findAllText(searchText, caseSensitive, wholeWord);
                 p_editorWidget->findNextText();
-
-                p_auxiliaryArea->setSearchResults(p_editorWidget->getMatchedList());
+                if (p_editorWidget->isNewSearch())
+                    p_auxiliaryArea->setSearchResults(p_editorWidget->getMatchedList());
             });
 
     connect(p_auxiliaryArea->m_searchWindow, &GLDSearchWindow::signalPrevSearch, this,
             [this](const QString& searchText, const bool caseSensitive, const bool wholeWord) {
                 p_editorWidget->findAllText(searchText, caseSensitive, wholeWord);
                 p_editorWidget->findPreviousText();
-
-                p_auxiliaryArea->setSearchResults(p_editorWidget->getMatchedList());
+                if (p_editorWidget->isNewSearch())
+                    p_auxiliaryArea->setSearchResults(p_editorWidget->getMatchedList());
             });
 
     connect(p_auxiliaryArea->m_searchWindow, &GLDSearchWindow::signalSearchTextChanged, this,

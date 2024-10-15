@@ -1,10 +1,5 @@
 #include "ExpressData.h"
 #include "GFCReader.h"
-#include "qcontainerfwd.h"
-#include "qlist.h"
-#include "qlogging.h"
-#include "qobject.h"
-#include "qsharedpointer.h"
 #include <QFile>
 #include <QRegularExpression>
 

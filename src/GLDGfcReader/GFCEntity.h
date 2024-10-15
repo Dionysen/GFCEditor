@@ -1,5 +1,5 @@
+#pragma once
 
-#include "qchar.h"
 #include <QString>
 #include <QVector>
 

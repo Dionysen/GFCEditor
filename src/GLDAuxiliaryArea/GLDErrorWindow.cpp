@@ -1,4 +1,5 @@
 ﻿#include "GLDErrorWindow.h"
+
 #include <QVBoxLayout>
 #include <QListWidget>
 #include <qDebug>
@@ -31,7 +32,7 @@ GLDErrorWindow::GLDErrorWindow(QWidget* parent)
         }
 
         // 发送行号
-        for(int i=0; i<m_RowsList.size(); i++)
+        for (int i = 0; i < m_RowsList.size(); i++)
         {
             qDebug() << "The value is:" << m_RowsList[i];
         }
@@ -42,15 +43,13 @@ GLDErrorWindow::GLDErrorWindow(QWidget* parent)
 
 void GLDErrorWindow::updateSearchResults(const QMap<int, QString>& results)
 {
-    m_pResultList->clear(); // 清除之前的结果
+    m_pResultList->clear();  // 清除之前的结果
     m_RowsList.clear();
 
-    for(auto it = results.begin(); it != results.end(); ++it)
+    for (auto it = results.begin(); it != results.end(); ++it)
     {
         m_RowsList.append(it.key());  // 收集行号
-        QListWidgetItem *item = new QListWidgetItem(QIcon("../bigwork/src/error.png"), it.value());
+        QListWidgetItem* item = new QListWidgetItem(QIcon("../bigwork/src/error.png"), it.value());
         m_pResultList->addItem(item);
     }
 }
-
-

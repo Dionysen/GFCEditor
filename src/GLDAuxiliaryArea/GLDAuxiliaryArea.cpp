@@ -1,11 +1,11 @@
 ﻿#include "GLDAuxiliaryArea.h"
-#include <QWidget>
+#include "GLDSearchWindow.h"
+#include "GLDErrorWindow.h"
+
 #include <QTabWidget>
 #include <QVBoxLayout>
 #include <QLabel>
-#include "GLDSearchWindow.h"
-#include "GLDErrorWindow.h"
-#include "qcontainerfwd.h"
+
 
 GLDAuxiliaryArea::GLDAuxiliaryArea(QWidget* parent)
     : QTabWidget(parent)

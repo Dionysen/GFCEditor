@@ -1,6 +1,5 @@
 ﻿#include "GLDSchemaWidget.h"
 #include "GLDTreeModel.h"
-#include <QSizePolicy>
 
 GLDSchemaWidget::GLDSchemaWidget(QWidget* parent)
     : QTabWidget(parent)
@@ -19,7 +18,7 @@ GLDSchemaWidget::GLDSchemaWidget(QWidget* parent)
     p_schemaTreeView->setFocusPolicy(Qt::NoFocus);
     p_schemaTreeView->setIndentation(15);
     p_schemaTreeView->setModel(p_schemaModel);
-    p_schemaTreeView->expandToDepth(3);
+    p_schemaTreeView->expandToDepth(0);
     p_schemaTreeView->setUniformRowHeights(true);  // 优化性能
     p_schemaTreeView->setAnimated(false);          // 禁止动画
     // Project

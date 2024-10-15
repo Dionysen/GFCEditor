@@ -1,7 +1,5 @@
 ﻿#ifndef GLDSEARCHWINDOW_H
 #define GLDSEARCHWINDOW_H
-#include <QApplication>
-#include <QMainWindow>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLineEdit>

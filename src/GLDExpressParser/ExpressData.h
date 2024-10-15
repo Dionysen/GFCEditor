@@ -1,12 +1,10 @@
 #pragma once
-#include "qcontainerfwd.h"
+#include "GFCEntity.h"
+
 #include <QString>
 #include <QStringList>
-#include <qDebug>
+#include <QDebug>
 #include <QHash>
-#include "GFCEntity.h"
-#include "qdebug.h"
-#include "qlogging.h"
 
 enum class Type
 {

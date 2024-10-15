@@ -1,7 +1,7 @@
 ﻿#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 #pragma once
-// Custom
+// GLD
 #include "GLDAuxiliaryArea.h"
 #include "GLDToolBar.h"
 #include "GLDSchemaWidget.h"
@@ -64,8 +64,8 @@ class MainWindow : public QMainWindow
     QAction* refresh;
 
   private slots:
-    void on_actionAbout_clicked();
-    void on_actionHelp_clicked();
+    void showHelp();
+    void showAbout();
 };
 
 #endif  // MAINWINDOW_H
