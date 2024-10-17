@@ -8,6 +8,15 @@ GFC：GFC（global foundation classes）是一种建筑信息数据交换标准�
 
 ![image-20241015172628491](https://cdn.jsdelivr.net/gh/Dionysen/BlogCDN@main/imgimage-20241015172628491.png)
 
+![image-20241017173556275](https://cdn.jsdelivr.net/gh/Dionysen/BlogCDN@main/imgimage-20241017173556275.png)
+
+## Dependences
+
+1. [Qt 6.7.2](https://www.qt.io/)
+2. [Qt-Advanced-Docking-System](https://github.com/mfreiholz/Qt-Advanced-Docking-System)
+3. [QtCustomTitlebarWindow](https://github.com/Dionysen/QtCustomTitlebarWindow)
+4. [googletest](https://github.com/google/googletest)
+
 ## Requires
 
 1. Qt >= v6.7.2
@@ -50,7 +59,7 @@ xmake r
 ### 使用Visual Studio构建
 
 ```bash
-xmake project -k vs2022
+xmake project -k vsxmake2022
 ```
 
 会在根目录生成vs解决方案。
@@ -108,3 +117,117 @@ xmake project -k cmake
 | 29   | 界面 | 辅助区           | ● 显示文本搜索匹配的全部结果，每个结果单独一行显示，双击时文本区定位到匹配结果的位置。1分                ● 合法性校验检测出的所有错误，每个错误单独一行显示，双击时文本区定位到错误的位置。1分                ● 显示当前实例被引用的实例列表，以树形式展现，同“Schema视图”实例节点。双击时需同步在“文本区”定位该实例，并在“属性区”显示其属性。2分 | ❌    |
 | 30   | 界面 | 状态栏           | 显示文本区当前光标所在的行、列位置；显示文件大小，单位KB；   | ✅    |
 
+## 注意
+
+### 构建模式
+
+debug模式下由于保留许多debug信息且没有进行高度优化，读取大文件时性能较差，性能测试应当在release模式下进行。
+
+### 窗口布局
+
+目前有三种布局方式：
+
+1. 使用Splitter
+
+```cpp
+void MainWindow::setupDockingLayout()
+{
+    QSplitter* vSplitter = new QSplitter(Qt::Vertical, this);
+    vSplitter->addWidget(p_editorWidget);
+    vSplitter->addWidget(p_auxiliaryArea);
+
+    QSplitter* splitter = new QSplitter(Qt::Horizontal, this);
+    splitter->addWidget(p_schemaWiddget);
+    splitter->addWidget(vSplitter);
+    splitter->addWidget(p_attributeArea);
+
+    vSplitter->setHandleWidth(0);
+    splitter->setHandleWidth(0);
+
+    this->setCentralWidget(splitter);
+
+    // 设置dock的初始大小
+    splitter->setSizes(QList<int>({ 150, 300, 150, 150 }));
+}
+```
+
+2. 使用QDockWidget
+
+```cpp
+void MainWindow::setupDockingLayout()
+{
+    setDockNestingEnabled(true);
+
+    QDockWidget* p_schemaDockWidget = new QDockWidget(this);
+    p_schemaDockWidget->setWidget(p_schemaWiddget);
+    p_schemaDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    addDockWidget(Qt::LeftDockWidgetArea, p_schemaDockWidget);
+
+    QDockWidget* p_editorDockWidget = new QDockWidget(this);
+    p_editorDockWidget->setWidget(p_editorWidget);
+    p_editorDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    addDockWidget(Qt::LeftDockWidgetArea, p_editorDockWidget);
+
+    QDockWidget* p_attributeDockWidget = new QDockWidget(this);
+    p_attributeDockWidget->setWidget(p_attributeArea);
+    p_attributeDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    addDockWidget(Qt::LeftDockWidgetArea, p_attributeDockWidget);
+
+    QDockWidget* p_auxiliaryDockWidget = new QDockWidget(this);
+    p_auxiliaryDockWidget->setWidget(p_auxiliaryArea);
+    p_auxiliaryDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    addDockWidget(Qt::LeftDockWidgetArea, p_auxiliaryDockWidget);
+
+    // 设置布局
+    addDockWidget(Qt::LeftDockWidgetArea, p_schemaDockWidget);
+    splitDockWidget(p_schemaDockWidget, p_editorDockWidget, Qt::Horizontal);
+    splitDockWidget(p_editorDockWidget, p_attributeDockWidget, Qt::Horizontal);
+    splitDockWidget(p_editorDockWidget, p_auxiliaryDockWidget, Qt::Vertical);
+
+    // 设置dock的初始大小
+    resizeDocks({ p_schemaDockWidget }, { 150 }, Qt::Horizontal);
+    resizeDocks({ p_attributeDockWidget }, { 150 }, Qt::Horizontal);
+    resizeDocks({ p_auxiliaryDockWidget }, { 150 }, Qt::Vertical);
+    // 删除centralwidget，所有部件均为dockwidget
+    QWidget* p = takeCentralWidget();
+    if (p)
+        delete p;
+}
+```
+
+3. 使用[Qt-Advanced-Docking-System](https://github.com/mfreiholz/Qt-Advanced-Docking-System)
+
+
+```cpp
+void MainWindow::setupDockingLayout()
+{
+	p_container = new ADS_NS::ContainerWidget();
+    setCentralWidget(p_container);
+
+    ADS_NS::SectionContent::RefPtr p_EditorContent =
+        ADS_NS::SectionContent::newSectionContent(QString("Editor"), p_container, new QLabel("Editor"), p_editorWidget);
+    p_container->addSectionContent(p_EditorContent, NULL, ADS_NS::CenterDropArea);
+
+
+    ADS_NS::SectionContent::RefPtr p_AuxiliaryContent =
+        ADS_NS::SectionContent::newSectionContent(QString("Auxiliary"), p_container, new QLabel("Auxiliary"), p_auxiliaryArea);
+
+    p_container->addSectionContent(p_AuxiliaryContent, NULL, ADS_NS::BottomDropArea);
+
+    ADS_NS::SectionContent::RefPtr p_AttributeContent =
+        ADS_NS::SectionContent::newSectionContent(QString("Attribute"), p_container, new QLabel("Attribute"), p_attributeArea);
+    p_container->addSectionContent(p_AttributeContent, NULL, ADS_NS::RightDropArea);
+
+    ADS_NS::SectionContent::RefPtr p_SchemaContent =
+        ADS_NS::SectionContent::newSectionContent(QString("Schema"), p_container, new QLabel("Schema"), p_schemaWiddget);
+    p_container->addSectionContent(p_SchemaContent, NULL, ADS_NS::LeftDropArea);
+}
+```
+
+其中1、3性能比较好，3功能更多，但还未完成（魔改）。
+
+### 单元测试
+
+单元测试目前能通过，但测试内容可能并不完全正确。
+
+测试代码应该完善。
