@@ -2,7 +2,7 @@
 #define FLOATINGWIDGET_H
 
 #include <QWidget>
-class QBoxLayout;
+class QHBoxLayout;
 
 #include "ads/API.h"
 #include "ads/SectionContent.h"
@@ -17,29 +17,33 @@ class InternalContentData;
 // It can be resized, moved and dropped back into a SectionWidget.
 class FloatingWidget : public QWidget
 {
-	Q_OBJECT
+    Q_OBJECT
 
-	friend class ContainerWidget;
+    friend class ContainerWidget;
 
-public:
-	FloatingWidget(ContainerWidget* container, SectionContent::RefPtr sc, SectionTitleWidget* titleWidget, SectionContentWidget* contentWidget, QWidget* parent = NULL);
-	virtual ~FloatingWidget();
+  public:
+    FloatingWidget(ContainerWidget* container, SectionContent::RefPtr sc, SectionTitleWidget* titleWidget, SectionContentWidget* contentWidget,
+                   QWidget* parent = NULL);
+    virtual ~FloatingWidget();
 
-	SectionContent::RefPtr content() const { return _content; }
+    SectionContent::RefPtr content() const
+    {
+        return _content;
+    }
 
-public://private:
-	bool takeContent(InternalContentData& data);
+  public:  // private:
+    bool takeContent(InternalContentData& data);
 
-private slots:
-	void onCloseButtonClicked();
+  private slots:
+    void onCloseButtonClicked();
 
-private:
-	ContainerWidget* _container;
-	SectionContent::RefPtr _content;
-	SectionTitleWidget* _titleWidget;
-	SectionContentWidget* _contentWidget;
+  private:
+    ContainerWidget*       _container;
+    SectionContent::RefPtr _content;
+    SectionTitleWidget*    _titleWidget;
+    SectionContentWidget*  _contentWidget;
 
-	QBoxLayout* _titleLayout;
+    QHBoxLayout* _titleLayout;
 };
 
 ADS_NAMESPACE_END

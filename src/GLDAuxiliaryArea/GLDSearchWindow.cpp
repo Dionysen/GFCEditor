@@ -1,5 +1,7 @@
 ﻿#include "GLDSearchWindow.h"
 #include <QCheckBox>
+#include "GLDStyleManager.h"
+#include <QPixmap>
 
 GLDSearchWindow::GLDSearchWindow(QWidget* parent)
     : QWidget(parent)
@@ -16,15 +18,9 @@ GLDSearchWindow::GLDSearchWindow(QWidget* parent)
 
     // 放大镜图标
     m_pSearchIcon = new QLabel;
-    QPixmap searchIconPixmap(":icon/dark/find.svg");
 
     // 查找文本
     m_pSearchLabel = new QLabel("Find");
-
-    // 调整图片大小并保持比例
-    QSize fixedSize_searchIcon(10, 10);  // 设置固定大小
-    searchIconPixmap = searchIconPixmap.scaled(fixedSize_searchIcon, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-    m_pSearchIcon->setPixmap(searchIconPixmap);
 
     // 搜索框
     m_pSearchEdit = new QLineEdit;
@@ -43,18 +39,13 @@ GLDSearchWindow::GLDSearchWindow(QWidget* parent)
 
     // 替换图标
     m_pReplaceIcon = new QLabel;
-    QPixmap replaceIconPixmap(":icon/dark/replace.svg");
-    // 调整图片大小并保持比例
-    QSize fixedSize_replaceIcon(10, 10);  // 设置固定大小
-    replaceIconPixmap = replaceIconPixmap.scaled(fixedSize_replaceIcon, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-    m_pReplaceIcon->setPixmap(replaceIconPixmap);
+
 
     // 替换文本
     m_pReplaceLabel = new QLabel(QStringLiteral("Replace"));
     // 替换框
     m_pReplaceEdit = new QLineEdit;
     m_pReplaceEdit->setPlaceholderText("Enter text to replace...");
-
 
     // 替换按钮
     m_pReplaceButton = new QPushButton("Replace");
@@ -164,6 +155,18 @@ GLDSearchWindow::GLDSearchWindow(QWidget* parent)
 
     connect(m_pWholeWordCheckBox, &QCheckBox::checkStateChanged, this,
             [=]() { emit signalSearchTextChanged(m_pSearchEdit->text(), m_pCaseSensitiveCheckBox->isChecked(), m_pWholeWordCheckBox->isChecked()); });
+
+
+    connect(GLDStyleManager::StyleManager(), &GLDStyleManager::themeChanged, this, &GLDSearchWindow::setIcon);
+}
+
+
+void GLDSearchWindow::setIcon()
+{
+    QPixmap searchIconPixmap(GLDStyleManager::StyleManager()->getIcon("find").pixmap(10, 10));
+    m_pSearchIcon->setPixmap(searchIconPixmap);
+    QPixmap replaceIconPixmap(GLDStyleManager::StyleManager()->getIcon("replace").pixmap(10, 10));
+    m_pReplaceIcon->setPixmap(replaceIconPixmap);
 }
 
 void GLDSearchWindow::setSearchResults(const QMap<QPair<int, int>, QString>& results)

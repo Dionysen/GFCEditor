@@ -3,6 +3,7 @@
 #include <QIcon>
 #include <QApplication>
 #include <QStyle>
+#include "GLDStyleManager.h"
 
 GLDToolBar::GLDToolBar(QWidget* parent)
     : QToolBar(parent)
@@ -22,7 +23,6 @@ GLDToolBar::GLDToolBar(QWidget* parent)
     p_backward = new QAction(this);
 
     p_refresh = new QAction(this);
-    p_refresh->setIcon(QIcon(":/icon/dark/refresh.svg"));
 
     this->addAction(p_new);
     this->addAction(p_open);
@@ -45,7 +45,7 @@ GLDToolBar::GLDToolBar(QWidget* parent)
     this->addAction(p_backward);
     this->addAction(p_forward);
 
-    // this->addAction(p_refresh);
+    this->addAction(p_refresh);
 
     const int hight = 32;
     // 设置工具栏的固定高度和宽度
@@ -65,39 +65,27 @@ GLDToolBar::GLDToolBar(QWidget* parent)
         }
     });
 
-    setDarkIcon();
+    setIcon();
+    connect(GLDStyleManager::StyleManager(), &GLDStyleManager::themeChanged, this, &GLDToolBar::setIcon);
 }
 
-void GLDToolBar::setLightIcon()
-{
-    p_new->setIcon(QIcon(":/icon/light/new.svg"));
-    p_open->setIcon(QIcon(":/icon/light/open.svg"));
-    p_save->setIcon(QIcon(":/icon/light/save.svg"));
-    p_undo->setIcon(QIcon(":/icon/light/undo.svg"));
-    p_redo->setIcon(QIcon(":/icon/light/redo.svg"));
-    p_cut->setIcon(QIcon(":/icon/light/cut.svg"));
-    p_copy->setIcon(QIcon(":/icon/light/copy.svg"));
-    p_paste->setIcon(QIcon(":/icon/light/paste.svg"));
-    p_find->setIcon(QIcon(":/icon/light/find.svg"));
-    p_replace->setIcon(QIcon(":/icon/light/replace.svg"));
-    p_forward->setIcon(QIcon(":/icon/light/forward.svg"));
-    p_backward->setIcon(QIcon(":/icon/light/backward.svg"));
-}
 
-void GLDToolBar::setDarkIcon()
+void GLDToolBar::setIcon()
 {
-    p_new->setIcon(QIcon(":/icon/dark/new.svg"));
-    p_open->setIcon(QIcon(":/icon/dark/open.svg"));
-    p_save->setIcon(QIcon(":/icon/dark/save.svg"));
-    p_undo->setIcon(QIcon(":/icon/dark/undo.svg"));
-    p_redo->setIcon(QIcon(":/icon/dark/redo.svg"));
-    p_cut->setIcon(QIcon(":/icon/dark/cut.svg"));
-    p_copy->setIcon(QIcon(":/icon/dark/copy.svg"));
-    p_paste->setIcon(QIcon(":/icon/dark/paste.svg"));
-    p_find->setIcon(QIcon(":/icon/dark/find.svg"));
-    p_replace->setIcon(QIcon(":/icon/dark/replace.svg"));
-    p_forward->setIcon(QIcon(":/icon/dark/forward.svg"));
-    p_backward->setIcon(QIcon(":/icon/dark/backward.svg"));
+    p_new->setIcon(GLDStyleManager::StyleManager()->getIcon("new"));
+    p_open->setIcon(GLDStyleManager::StyleManager()->getIcon("open"));
+    p_save->setIcon(GLDStyleManager::StyleManager()->getIcon("save"));
+    p_undo->setIcon(GLDStyleManager::StyleManager()->getIcon("undo"));
+    p_redo->setIcon(GLDStyleManager::StyleManager()->getIcon("redo"));
+    p_cut->setIcon(GLDStyleManager::StyleManager()->getIcon("cut"));
+    p_copy->setIcon(GLDStyleManager::StyleManager()->getIcon("copy"));
+    p_paste->setIcon(GLDStyleManager::StyleManager()->getIcon("paste"));
+    p_find->setIcon(GLDStyleManager::StyleManager()->getIcon("find"));
+    p_replace->setIcon(GLDStyleManager::StyleManager()->getIcon("replace"));
+    p_forward->setIcon(GLDStyleManager::StyleManager()->getIcon("forward"));
+    p_backward->setIcon(GLDStyleManager::StyleManager()->getIcon("backward"));
+
+    p_refresh->setIcon(GLDStyleManager::StyleManager()->getIcon("refresh"));
 }
 
 GLDToolBar::~GLDToolBar()

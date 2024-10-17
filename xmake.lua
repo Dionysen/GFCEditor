@@ -35,6 +35,17 @@ function add_files_recursively(dir)
     end
 end
 
+-- Recursively traverse all folders under the folder, find .qrc files and add them to the project.
+function add_qrc_files_recursively(dir)
+    for _, filepath in ipairs(os.files(path.join(dir, "**.qrc"))) do
+        add_files(filepath, {unique = true})
+    end
+    -- Recursively traverse subfolders
+    for _, subdir in ipairs(os.dirs(path.join(dir, "*"))) do
+        add_qrc_files_recursively(subdir)
+    end
+end
+
 -- Include all deps under the folder
 function include_deps(dir)
     for _, file in ipairs(os.files(path.join(dir, "*/xmake.lua"))) do
@@ -73,9 +84,10 @@ target("GFCEditor")
     includes("vendor/QtCustomTitlebarWindow")
     add_deps("CustomWindow")
 
-    -- add resources
-    add_files("vendor/QtCustomTitlebarWindow/assets/images/image.qrc")
-    add_files("vendor/QtCustomTitlebarWindow/assets/qss/qss.qrc")
+    includes("vendor/AdvancedDockingSystem")
+    add_deps("ADS")
 
-    add_files("assets/images/icon.qrc")
-    add_files("assets/fonts/font.qrc")
+    -- add resources
+    add_qrc_files_recursively("assets")
+
+

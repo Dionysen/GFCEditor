@@ -1,5 +1,6 @@
 #include "CustomWindow.h"
 #include "qlogging.h"
+#include "qwidget.h"
 
 #include <QIcon>
 #include <QLayout>
@@ -23,7 +24,9 @@ CustomWindow::CustomWindow(QWidget* parent)
     , m_isResizing(false)
     , m_IsPressedTitleBar(false)
     , m_isDark(true)
-
+    , m_windowBorderWidth(1)
+    , m_windowBorderColor(QColor("#616161"))
+    , m_isEnableWindowBorder(true)
 {
     // 初始化部件，设置布局
     InitWindow();
@@ -35,7 +38,6 @@ void CustomWindow::InitWindow()
 {
     this->setWindowFlags(Qt::FramelessWindowHint);
     this->resize(800, 600);
-    this->setObjectName("CustomWindow-Background");
 
     // 标题栏
     p_TitleBar = new QWidget(this);
@@ -71,9 +73,9 @@ void CustomWindow::InitWindow()
     p_TitleLayout->addWidget(p_MaximumBtn);
     p_TitleLayout->addWidget(p_CloseBtn);
 
-    p_TitleLayout->setContentsMargins(0, 0, 0, 0);
+    p_TitleLayout->setContentsMargins(10, 0, 0, 0);
     p_TitleLayout->setAlignment(Qt::AlignRight);
-    p_TitleLayout->setSpacing(0);
+    p_TitleLayout->setSpacing(10);
 
     p_TitleBar->setLayout(p_TitleLayout);
 
@@ -97,13 +99,15 @@ void CustomWindow::InitWindow()
     // 窗口布局
     p_ThisLayout = new QVBoxLayout;
     p_ThisLayout->addWidget(p_MainWidget);
-    p_ThisLayout->setContentsMargins(1, 1, 1, 1);
     p_ThisLayout->setSpacing(0);
 
     this->setLayout(p_ThisLayout);
 
     this->setMouseTracking(true);
     setAllChildrenMouseTracking(this);
+
+    // 初始化窗口边框
+    updateWindowBorder(false);
 }
 
 void CustomWindow::setAllChildrenMouseTracking(QWidget* parent)
@@ -278,11 +282,17 @@ void CustomWindow::toggleMaximize()
     {
         this->showNormal();
         m_isDark ? p_MaximumBtn->setIcon(QIcon(":/image/icon_window_maximize_dark")) : p_MaximumBtn->setIcon(QIcon(":/image/icon_window_maximize"));
+        if (m_isEnableWindowBorder)
+            updateWindowBorder(false);
     }
-    else if (!this->isMaximized())
+    else
     {
         this->showMaximized();
         m_isDark ? p_MaximumBtn->setIcon(QIcon(":/image/icon_window_restore_dark")) : p_MaximumBtn->setIcon(QIcon(":/image/icon_window_restore"));
+        // 最大化时隐藏边框
+        qDebug() << "maximized";
+        if (m_isEnableWindowBorder)
+            updateWindowBorder(true);
     }
 }
 
@@ -462,6 +472,50 @@ void CustomWindow::setDarkMode(bool isDark)
         m_isDark = false;
     }
 }
+
+void CustomWindow::setWindowTitle(const QString& title)
+{
+    p_TitleText->setText(title);
+}
+
+void CustomWindow::setWindowIcon(const QIcon& icon)
+{
+    p_TitleIcon->setPixmap(icon.pixmap(16, 16));
+}
+
+void CustomWindow::setEnableWindowBorder(bool isBorder)
+{
+    m_isEnableWindowBorder = isBorder;
+}
+
+bool CustomWindow::isEnableWindowBorder()
+{
+    return m_isEnableWindowBorder;
+}
+
+void CustomWindow::setWindowBorderStyle(uint32_t width, QColor color)
+{
+    m_windowBorderWidth = width;
+    m_windowBorderColor = color;
+}
+
+void CustomWindow::updateWindowBorder(bool isMaximized)
+{
+    if (isMaximized)
+    {
+        p_ThisLayout->setContentsMargins(0, 0, 0, 0);
+    }
+    else
+    {
+        p_ThisLayout->setContentsMargins(m_windowBorderWidth, m_windowBorderWidth, m_windowBorderWidth, m_windowBorderWidth);
+        QPalette palette = this->palette();
+        palette.setColor(QPalette::Window, m_windowBorderColor);
+        this->setAutoFillBackground(true);
+        this->setPalette(palette);
+    }
+}
+
+
 
 CustomWindow::~CustomWindow()
 {

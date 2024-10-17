@@ -25,78 +25,83 @@ class SectionContentWidget;
 // the contents associated to the title when clicked.
 class ADS_EXPORT_API SectionWidget : public QFrame
 {
-	Q_OBJECT
-	friend class ContainerWidget;
+    Q_OBJECT
+    friend class ContainerWidget;
 
-	explicit SectionWidget(ContainerWidget* parent);
+    explicit SectionWidget(ContainerWidget* parent);
 
-public:
-	virtual ~SectionWidget();
+  public:
+    virtual ~SectionWidget();
 
-	int uid() const;
-	ContainerWidget* containerWidget() const;
+    int              uid() const;
+    ContainerWidget* containerWidget() const;
 
-	QRect titleAreaGeometry() const;
-	QRect contentAreaGeometry() const;
+    QRect titleAreaGeometry() const;
+    QRect contentAreaGeometry() const;
 
-	const QList<SectionContent::RefPtr>& contents() const { return _contents; }
-	void addContent(const SectionContent::RefPtr& c);
-	void addContent(const InternalContentData& data, bool autoActivate);
-	bool takeContent(int uid, InternalContentData& data);
-	int indexOfContent(const SectionContent::RefPtr& c) const;
-	int indexOfContentByUid(int uid) const;
-	int indexOfContentByTitlePos(const QPoint& pos, QWidget* exclude = NULL) const;
+    const QList<SectionContent::RefPtr>& contents() const
+    {
+        return _contents;
+    }
+    void addContent(const SectionContent::RefPtr& c);
+    void addContent(const InternalContentData& data, bool autoActivate);
+    bool takeContent(int uid, InternalContentData& data);
+    int  indexOfContent(const SectionContent::RefPtr& c) const;
+    int  indexOfContentByUid(int uid) const;
+    int  indexOfContentByTitlePos(const QPoint& pos, QWidget* exclude = NULL) const;
 
-	int currentIndex() const;
-	void moveContent(int from, int to);
+    int  currentIndex() const;
+    void moveContent(int from, int to);
 
-protected:
-	virtual void showEvent(QShowEvent*);
+    QPushButton* getTabsMenuButton() const;
+    QPushButton* getCloseButton() const;
 
-public slots:
-	void setCurrentIndex(int index);
+  protected:
+    virtual void showEvent(QShowEvent*);
 
-private slots:
-	void onSectionTitleClicked();
-	void onCloseButtonClicked();
-	void onTabsMenuActionTriggered(bool);
-	void updateTabsMenu();
+  public slots:
+    void setCurrentIndex(int index);
 
+  private slots:
+    void onSectionTitleClicked();
+    void onCloseButtonClicked();
+    void onTabsMenuActionTriggered(bool);
+    void updateTabsMenu();
 
-private:
-	const int _uid;
+  private:
+    const int _uid;
 
-	QPointer<ContainerWidget> _container;
-	QList<SectionContent::RefPtr> _contents;
-	QList<SectionTitleWidget*> _sectionTitles;
-	QList<SectionContentWidget*> _sectionContents;
+    QPointer<ContainerWidget>     _container;
+    QList<SectionContent::RefPtr> _contents;
+    QList<SectionTitleWidget*>    _sectionTitles;
+    QList<SectionContentWidget*>  _sectionContents;
 
-	QBoxLayout* _topLayout;
-	QScrollArea* _tabsScrollArea;
-	QWidget* _tabsContainerWidget;
-	QBoxLayout* _tabsLayout;
-	QPushButton* _tabsMenuButton;
-	QPushButton* _closeButton;
-	int _tabsLayoutInitCount; // used for calculations on _tabsLayout modification calls.
+    QBoxLayout*  _topLayout;
+    QScrollArea* _tabsScrollArea;
+    QWidget*     _tabsContainerWidget;
+    QBoxLayout*  _tabsLayout;
+    QPushButton* _tabsMenuButton;
+    QPushButton* _closeButton;
+    int          _tabsLayoutInitCount;  // used for calculations on _tabsLayout modification calls.
 
-	QStackedLayout *_contentsLayout;
+    QStackedLayout* _contentsLayout;
 
-	QPoint _mousePressPoint;
-	SectionContent::RefPtr _mousePressContent;
-	SectionTitleWidget* _mousePressTitleWidget;
+    QPoint                 _mousePressPoint;
+    SectionContent::RefPtr _mousePressContent;
+    SectionTitleWidget*    _mousePressTitleWidget;
 
-	static int GetNextUid();
+    static int GetNextUid();
 };
 
 /* Custom scrollable implementation for tabs */
 class SectionWidgetTabsScrollArea : public QScrollArea
 {
-public:
-	SectionWidgetTabsScrollArea(SectionWidget* sectionWidget, QWidget* parent = NULL);
-	virtual ~SectionWidgetTabsScrollArea();
+  public:
+    SectionWidgetTabsScrollArea(SectionWidget* sectionWidget, QWidget* parent = NULL);
+    virtual ~SectionWidgetTabsScrollArea();
 
-protected:
-	virtual void wheelEvent(QWheelEvent*);
+  protected:
+    virtual void wheelEvent(QWheelEvent*);
 };
 
 ADS_NAMESPACE_END

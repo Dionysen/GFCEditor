@@ -1,6 +1,7 @@
 #ifndef ADS_CONTAINERWIDGET_H
 #define ADS_CONTAINERWIDGET_H
 
+#include "qlist.h"
 #include <QList>
 #include <QHash>
 #include <QPointer>
@@ -116,6 +117,8 @@ class ADS_EXPORT_API ContainerWidget : public QFrame
      * \return List of known SectionContent for this ContainerWidget.
      */
     QList<SectionContent::RefPtr> contents() const;
+
+    QList<SectionWidget*> sections() const;
 
     QPointer<DropOverlay> dropOverlay() const;
 

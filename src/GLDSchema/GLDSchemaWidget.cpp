@@ -44,8 +44,8 @@ void GLDSchemaWidget::createSchemaModel()
     GLDTreeNode* root = new GLDTreeNode("Root", nullptr);
 
     // 预先加载图标
-    QIcon attributeIcon(":/icon/dark/attribute.svg");
-    QIcon entityIcon(":/icon/dark/schema.svg");
+    QIcon attributeIcon(":/icon_dark/attribute");
+    QIcon entityIcon(":/icon_dark/schema");
 
     for (auto it = data.begin(); it != data.end(); ++it)
     {

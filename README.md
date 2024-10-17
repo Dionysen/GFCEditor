@@ -1,12 +1,71 @@
 # GFCEditor
 
-## 简介
+## Introduction
 
 GFC Editor是一款浏览和编辑GFC文件的PC端工具。
 
 GFC：GFC（global foundation classes）是一种建筑信息数据交换标准，旨在实现不同软件平台之间的数据互通和共享。目前已成为中关村数字建筑绿色发展联盟团标。参考文档《[GFC标准](https://doc.weixin.qq.com/doc/w3_AMUAwwYRACQGbLZjcW1RMWS4yBE7h?scode=ALgASQcQABI4BAENkiAMUAwwYRACQ)》
 
 ![image-20241015172628491](https://cdn.jsdelivr.net/gh/Dionysen/BlogCDN@main/imgimage-20241015172628491.png)
+
+## Requires
+
+1. Qt >= v6.7.2
+2. XMake >= v2.9.3
+
+## Build
+
+使用[xmake](https://xmake.io/#/zh-cn/)构建项目。
+
+**确保已经安装Qt6以及对应的C++编译器。**
+
+### 安装xmake
+
+Linux
+
+```bash
+curl -fsSL https://xmake.io/shget.text | bash
+```
+
+Windows
+
+```powershell
+Invoke-Expression (Invoke-Webrequest 'https://xmake.io/psget.text' -UseBasicParsing).Content
+```
+
+### 构建
+
+在根目录打开命令行：
+
+```bash
+xmake b
+```
+
+### 运行
+
+```bash
+xmake r
+```
+
+### 使用Visual Studio构建
+
+```bash
+xmake project -k vs2022
+```
+
+会在根目录生成vs解决方案。
+
+### 生成CMake
+
+```bash
+xmake project -k cmake
+```
+
+会在根目录生成vs解决方案。
+
+---
+
+> XMake更多使用方法见[使用xmake构建c++项目](https://dionysen.github.io/2023/06/23/note/Programming/tools/xmake/)、[xmake](https://xmake.io/#/zh-cn/)。
 
 ## 功能表
 
@@ -48,8 +107,4 @@ GFC：GFC（global foundation classes）是一种建筑信息数据交换标准�
 | 28   | 界面 | 属性区           | 选中某条属性时，需同步在“文本区”中将当前属性高亮显示。       | ❌    |
 | 29   | 界面 | 辅助区           | ● 显示文本搜索匹配的全部结果，每个结果单独一行显示，双击时文本区定位到匹配结果的位置。1分                ● 合法性校验检测出的所有错误，每个错误单独一行显示，双击时文本区定位到错误的位置。1分                ● 显示当前实例被引用的实例列表，以树形式展现，同“Schema视图”实例节点。双击时需同步在“文本区”定位该实例，并在“属性区”显示其属性。2分 | ❌    |
 | 30   | 界面 | 状态栏           | 显示文本区当前光标所在的行、列位置；显示文件大小，单位KB；   | ✅    |
-
-
-
-
 

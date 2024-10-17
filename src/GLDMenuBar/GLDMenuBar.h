@@ -16,9 +16,7 @@ class GLDMenuBar : public QMenuBar
     ~GLDMenuBar();
 
   private:
-    void setLightIcon();
-    void setDarkIcon();
-
+    void setIcon();
     // ======= Menu ========
     QMenu* menuFile;
     QMenu* menuEdit;

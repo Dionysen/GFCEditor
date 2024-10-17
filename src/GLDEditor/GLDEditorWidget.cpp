@@ -64,22 +64,22 @@ GLDEditorWidget::GLDEditorWidget(QWidget* parent)
     newFile();
 
     // 测试用，默认打开test.gfc文件，最好在release环境下使用
-    QFile file("res/test.gfc");
-    if (file.open(QFile::ReadOnly | QFile::Text))
-    {
-        QTextStream in(&file);
-        setPlainText(in.readAll());
-        currentFilePath = "./res/test.gfc";
-        file.close();
+    // QFile file("res/test.gfc");
+    // if (file.open(QFile::ReadOnly | QFile::Text))
+    // {
+    //     QTextStream in(&file);
+    //     setPlainText(in.readAll());
+    //     currentFilePath = "./res/test.gfc";
+    //     file.close();
 
-        updateFileInfo(currentFilePath);
-        addRecentFiles();
-        m_isModify = false;
-    }
-    else
-    {
-        QMessageBox::warning(nullptr, "Error", "Could not open file.");
-    }
+    //     updateFileInfo(currentFilePath);
+    //     addRecentFiles();
+    //     m_isModify = false;
+    // }
+    // else
+    // {
+    //     QMessageBox::warning(nullptr, "Error", "Could not open file.");
+    // }
 }
 
 void GLDEditorWidget::newFile()

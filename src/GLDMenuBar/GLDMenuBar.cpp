@@ -1,9 +1,11 @@
 #include "GLDMenuBar.h"
+#include "GLDStyleManager.h"
 
 #include <QFile>
 #include <QApplication>
 #include <QFontDialog>
 #include <QInputDialog>
+
 
 GLDMenuBar::GLDMenuBar(QWidget* parent)
     : QMenuBar(parent)
@@ -114,7 +116,7 @@ GLDMenuBar::GLDMenuBar(QWidget* parent)
             QString style = file.readAll();
             qApp->setStyleSheet(style);
         }
-        setLightIcon();
+        GLDStyleManager::StyleManager()->setTheme("light");
     });
     connect(actionDark, &QAction::triggered, this, [this]() {
         QFile file(":/qss/dark.qss");
@@ -123,7 +125,7 @@ GLDMenuBar::GLDMenuBar(QWidget* parent)
             QString style = file.readAll();
             qApp->setStyleSheet(style);
         }
-        setDarkIcon();
+        GLDStyleManager::StyleManager()->setTheme("dark");
     });
 
     connect(actionFontFamily, &QAction::triggered, this, [this]() {
@@ -144,77 +146,43 @@ GLDMenuBar::GLDMenuBar(QWidget* parent)
         }
     });
 
-    setDarkIcon();
+    connect(GLDStyleManager::StyleManager(), &GLDStyleManager::themeChanged, this, &GLDMenuBar::setIcon);
+    setIcon();
 }
 
-void GLDMenuBar::setLightIcon()
+void GLDMenuBar::setIcon()
 {
-    actionNew->setIcon(QIcon(QString(":/icon/light/new.svg")));
-    actionOpen->setIcon(QIcon(QString(":/icon/light/open.svg")));
-    actionSave->setIcon(QIcon(QString(":/icon/light/save.svg")));
-    actionSaveAs->setIcon(QIcon(QString(":/icon/light/saveAs.svg")));
-    actionExit->setIcon(QIcon(QString(":/icon/light/exit.svg")));
-    actionSaveAs->setIcon(QIcon(QString(":/icon/light/new.svg")));
-    actionExit->setIcon(QIcon(QString(":/icon/light/new.svg")));
-    actionRedo->setIcon(QIcon(QString(":/icon/light/redo.svg")));
-    actionUndo->setIcon(QIcon(QString(":/icon/light/undo.svg")));
-    actionCut->setIcon(QIcon(QString(":/icon/light/cut.svg")));
-    actionCopy->setIcon(QIcon(QString(":/icon/light/copy.svg")));
-    actionPaste->setIcon(QIcon(QString(":/icon/light/paste.svg")));
-    actionFind->setIcon(QIcon(QString(":/icon/light/find.svg")));
-    actionFindNext->setIcon(QIcon(QString(":/icon/light/findNext.svg")));
-    actionReplace->setIcon(QIcon(QString(":/icon/light/replace.svg")));
-    actionBackword->setIcon(QIcon(QString(":/icon/light/backward.svg")));
-    actionForward->setIcon(QIcon(QString(":/icon/light/forward.svg")));
-    actionLocation->setIcon(QIcon(QString(":/icon/light/location.svg")));
-    menuView->setIcon(QIcon(QString(":/icon/light/visible.svg")));
-    actionAuxiliary->setIcon(QIcon(":/icon/dark/light.svg"));
-    actionAttribute->setIcon(QIcon(":/icon/dark/light.svg"));
-    actionSchema->setIcon(QIcon(":/icon/dark/light.svg"));
-    actionToolbar->setIcon(QIcon(":/icon/dark/light.svg"));
-    actionStatusbar->setIcon(QIcon(":/icon/dark/light.svg"));
-    menuRecent->setIcon(QIcon(QString(":/icon/light/recent.svg")));
-    actionColor->setIcon(QIcon(QString(":/icon/light/color.svg")));
-    actionCite->setIcon(QIcon(QString(":/icon/light/cite.svg")));
-    actionCheck->setIcon(QIcon(QString(":/icon/light/check.svg")));
-    actionHelp->setIcon(QIcon(QString(":/icon/light/help.svg")));
-    actionAbout->setIcon(QIcon(QString(":/icon/light/about.svg")));
-    menuFont->setIcon(QIcon(QString(":/icon/light/font.svg")));
-}
-
-void GLDMenuBar::setDarkIcon()
-{
-    actionNew->setIcon(QIcon(QString(":/icon/dark/new.svg")));
-    actionOpen->setIcon(QIcon(QString(":/icon/dark/open.svg")));
-    actionSave->setIcon(QIcon(QString(":/icon/dark/save.svg")));
-    actionSaveAs->setIcon(QIcon(QString(":/icon/dark/saveAs.svg")));
-    actionExit->setIcon(QIcon(QString(":/icon/dark/exit.svg")));
-    actionSaveAs->setIcon(QIcon(QString(":/icon/dark/new.svg")));
-    actionExit->setIcon(QIcon(QString(":/icon/dark/new.svg")));
-    actionRedo->setIcon(QIcon(QString(":/icon/dark/redo.svg")));
-    actionUndo->setIcon(QIcon(QString(":/icon/dark/undo.svg")));
-    actionCut->setIcon(QIcon(QString(":/icon/dark/cut.svg")));
-    actionCopy->setIcon(QIcon(QString(":/icon/dark/copy.svg")));
-    actionPaste->setIcon(QIcon(QString(":/icon/dark/paste.svg")));
-    actionFind->setIcon(QIcon(QString(":/icon/dark/find.svg")));
-    actionFindNext->setIcon(QIcon(QString(":/icon/dark/findNext.svg")));
-    actionReplace->setIcon(QIcon(QString(":/icon/dark/replace.svg")));
-    actionBackword->setIcon(QIcon(QString(":/icon/dark/backward.svg")));
-    actionForward->setIcon(QIcon(QString(":/icon/dark/forward.svg")));
-    actionLocation->setIcon(QIcon(QString(":/icon/dark/location.svg")));
-    menuView->setIcon(QIcon(QString(":/icon/dark/visible.svg")));
-    actionAuxiliary->setIcon(QIcon(":/icon/dark/auxiliary.svg"));
-    actionAttribute->setIcon(QIcon(":/icon/dark/attribute.svg"));
-    actionSchema->setIcon(QIcon(":/icon/dark/schema.svg"));
-    actionToolbar->setIcon(QIcon(":/icon/dark/toolbar.svg"));
-    actionStatusbar->setIcon(QIcon(":/icon/dark/statusbar.svg"));
-    menuRecent->setIcon(QIcon(QString(":/icon/dark/recent.svg")));
-    actionColor->setIcon(QIcon(QString(":/icon/dark/color.svg")));
-    actionCite->setIcon(QIcon(QString(":/icon/dark/cite.svg")));
-    actionCheck->setIcon(QIcon(QString(":/icon/dark/check.svg")));
-    actionHelp->setIcon(QIcon(QString(":/icon/dark/help.svg")));
-    actionAbout->setIcon(QIcon(QString(":/icon/dark/about.svg")));
-    menuFont->setIcon(QIcon(QString(":/icon/dark/font.svg")));
+    actionNew->setIcon(GLDStyleManager::StyleManager()->getIcon("new"));
+    actionOpen->setIcon(GLDStyleManager::StyleManager()->getIcon("open"));
+    actionSave->setIcon(GLDStyleManager::StyleManager()->getIcon("save"));
+    actionSaveAs->setIcon(GLDStyleManager::StyleManager()->getIcon("saveAs"));
+    actionExit->setIcon(GLDStyleManager::StyleManager()->getIcon("exit"));
+    actionSaveAs->setIcon(GLDStyleManager::StyleManager()->getIcon("new"));
+    actionExit->setIcon(GLDStyleManager::StyleManager()->getIcon("new"));
+    actionRedo->setIcon(GLDStyleManager::StyleManager()->getIcon("redo"));
+    actionUndo->setIcon(GLDStyleManager::StyleManager()->getIcon("undo"));
+    actionCut->setIcon(GLDStyleManager::StyleManager()->getIcon("cut"));
+    actionCopy->setIcon(GLDStyleManager::StyleManager()->getIcon("copy"));
+    actionPaste->setIcon(GLDStyleManager::StyleManager()->getIcon("paste"));
+    actionFind->setIcon(GLDStyleManager::StyleManager()->getIcon("find"));
+    actionFindNext->setIcon(GLDStyleManager::StyleManager()->getIcon("findNext"));
+    actionReplace->setIcon(GLDStyleManager::StyleManager()->getIcon("replace"));
+    actionBackword->setIcon(GLDStyleManager::StyleManager()->getIcon("backward"));
+    actionForward->setIcon(GLDStyleManager::StyleManager()->getIcon("forward"));
+    actionLocation->setIcon(GLDStyleManager::StyleManager()->getIcon("location"));
+    menuView->setIcon(GLDStyleManager::StyleManager()->getIcon("visible"));
+    actionAuxiliary->setIcon(GLDStyleManager::StyleManager()->getIcon("light"));
+    actionAttribute->setIcon(GLDStyleManager::StyleManager()->getIcon("light"));
+    actionSchema->setIcon(GLDStyleManager::StyleManager()->getIcon("light"));
+    actionToolbar->setIcon(GLDStyleManager::StyleManager()->getIcon("light"));
+    actionStatusbar->setIcon(GLDStyleManager::StyleManager()->getIcon("light"));
+    menuRecent->setIcon(GLDStyleManager::StyleManager()->getIcon("recent"));
+    actionColor->setIcon(GLDStyleManager::StyleManager()->getIcon("color"));
+    actionCite->setIcon(GLDStyleManager::StyleManager()->getIcon("cite"));
+    actionCheck->setIcon(GLDStyleManager::StyleManager()->getIcon("check"));
+    actionHelp->setIcon(GLDStyleManager::StyleManager()->getIcon("help"));
+    actionAbout->setIcon(GLDStyleManager::StyleManager()->getIcon("about"));
+    menuFont->setIcon(GLDStyleManager::StyleManager()->getIcon("font"));
 }
 
 GLDMenuBar::~GLDMenuBar()

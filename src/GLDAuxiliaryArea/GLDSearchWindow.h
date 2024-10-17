@@ -36,6 +36,8 @@ class GLDSearchWindow : public QWidget
     // 双击条目在编辑框中定位
     void signalClickRow(const int row);
 
+  private:
+    void setIcon();
 
   private:
     QString m_searchText;  // 要搜索的文本

@@ -14,7 +14,7 @@
 #include <QMainWindow>
 #include <QSplitter>
 #include <QAction>
-
+#include "ads/API.h"
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -42,12 +42,15 @@ class MainWindow : public QMainWindow
         return p_toolBar;
     }
 
+    void setStyle();
 
   private:
     // 工具栏、菜单栏、状态栏
     GLDToolBar* p_toolBar;
     GLDMenuBar* p_menuBar;
     QStatusBar* p_StatusBar;
+
+    QLabel* p_label;
 
     // schema widget，左右树控件
     GLDSchemaWidget* p_schemaWiddget;
@@ -62,6 +65,9 @@ class MainWindow : public QMainWindow
     GLDAttributeArea* p_attributeArea;
 
     QAction* refresh;
+
+    // ADS
+    ADS_NS::ContainerWidget* p_container;
 
   private slots:
     void showHelp();

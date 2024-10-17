@@ -5,7 +5,7 @@
 #include "GLDAuxiliaryArea.h"
 #include "GLDSearchWindow.h"
 #include "GLDToolBar.h"
-
+#include "GLDStyleManager.h"
 // Qt header
 #include <QAction>
 #include <QApplication>
@@ -30,6 +30,9 @@
 #include <QStyle>
 #include <QSizeGrip>
 #include <QTimer>
+#include "ads/API.h"
+#include "ads/ContainerWidget.h"
+#include "ads/SectionWidget.h"
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
@@ -37,9 +40,10 @@ MainWindow::MainWindow(QWidget* parent)
 
     GetMainWindow()->resize(1200, 800);
 
-    // auto win = GetCustomWindow();
-    // if (win)
-    //     win->setDarkMode(true);
+    // Title
+    auto win = GetCustomWindow();
+    if (win)
+        win->setWindowTitle("GFCEditor");
 
     p_schemaWiddget = new GLDSchemaWidget(this);
     p_auxiliaryArea = new GLDAuxiliaryArea(this);
@@ -71,12 +75,28 @@ MainWindow::MainWindow(QWidget* parent)
     propertyData["Active"] = true;
     p_attributeArea->setProperties(propertyData);
 
-    QFile file(":/qss/dark.qss");
+    // 设置主题
+    GLDStyleManager::StyleManager()->setTheme("dark");
+    setStyle();
+    connect(GLDStyleManager::StyleManager(), &GLDStyleManager::themeChanged, this, &MainWindow::setStyle);
+}
 
-    if (file.open(QFile::ReadOnly))
+// 所有与主题相关的设置，方便切换主题
+void MainWindow::setStyle()
+{
+    qApp->setStyleSheet(GLDStyleManager::StyleManager()->getStyleSheet());
+    auto win = GetCustomWindow();
+    if (win)
+        win->setWindowIcon(GLDStyleManager::StyleManager()->getIcon("editor"));
+
+    // 设置所有section的图标
+    for (auto it : p_container->sections())
     {
-        QString style = file.readAll();
-        qApp->setStyleSheet(style);
+        if (it)
+        {
+            it->getCloseButton()->setIcon(GLDStyleManager::StyleManager()->getIcon("close"));
+            it->getTabsMenuButton()->setIcon(GLDStyleManager::StyleManager()->getIcon("branchOpen"));
+        }
     }
 }
 
@@ -101,43 +121,70 @@ void MainWindow::setupEditor()
 
 void MainWindow::setupDockingLayout()
 {
+    // ================= Use Advanced Docking System =================
+    p_container = new ADS_NS::ContainerWidget();
+    setCentralWidget(p_container);
+
+    ADS_NS::SectionContent::RefPtr p_EditorContent =
+        ADS_NS::SectionContent::newSectionContent(QString("Editor"), p_container, new QLabel("Editor"), p_editorWidget);
+    p_container->addSectionContent(p_EditorContent, NULL, ADS_NS::CenterDropArea);
+
+
+    ADS_NS::SectionContent::RefPtr p_AuxiliaryContent =
+        ADS_NS::SectionContent::newSectionContent(QString("Auxiliary"), p_container, new QLabel("Auxiliary"), p_auxiliaryArea);
+
+    p_container->addSectionContent(p_AuxiliaryContent, NULL, ADS_NS::BottomDropArea);
+
+    ADS_NS::SectionContent::RefPtr p_AttributeContent =
+        ADS_NS::SectionContent::newSectionContent(QString("Attribute"), p_container, new QLabel("Attribute"), p_attributeArea);
+    p_container->addSectionContent(p_AttributeContent, NULL, ADS_NS::RightDropArea);
+
+    ADS_NS::SectionContent::RefPtr p_SchemaContent =
+        ADS_NS::SectionContent::newSectionContent(QString("Schema"), p_container, new QLabel("Schema"), p_schemaWiddget);
+    p_container->addSectionContent(p_SchemaContent, NULL, ADS_NS::LeftDropArea);
+
+
+    // 初始化content的大小
+
+
+
     // =============== Enable DockWidget ==============
-    setDockNestingEnabled(true);
+    // setDockNestingEnabled(true);
 
-    QDockWidget* p_schemaDockWidget = new QDockWidget(this);
-    p_schemaDockWidget->setWidget(p_schemaWiddget);
-    p_schemaDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    addDockWidget(Qt::LeftDockWidgetArea, p_schemaDockWidget);
+    // QDockWidget* p_schemaDockWidget = new QDockWidget(this);
+    // p_schemaDockWidget->setWidget(p_schemaWiddget);
+    // p_schemaDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    // addDockWidget(Qt::LeftDockWidgetArea, p_schemaDockWidget);
 
-    QDockWidget* p_editorDockWidget = new QDockWidget(this);
-    p_editorDockWidget->setWidget(p_editorWidget);
-    p_editorDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    addDockWidget(Qt::LeftDockWidgetArea, p_editorDockWidget);
+    // QDockWidget* p_editorDockWidget = new QDockWidget(this);
+    // p_editorDockWidget->setWidget(p_editorWidget);
+    // p_editorDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    // addDockWidget(Qt::LeftDockWidgetArea, p_editorDockWidget);
 
-    QDockWidget* p_attributeDockWidget = new QDockWidget(this);
-    p_attributeDockWidget->setWidget(p_attributeArea);
-    p_attributeDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    addDockWidget(Qt::LeftDockWidgetArea, p_attributeDockWidget);
+    // QDockWidget* p_attributeDockWidget = new QDockWidget(this);
+    // p_attributeDockWidget->setWidget(p_attributeArea);
+    // p_attributeDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    // addDockWidget(Qt::LeftDockWidgetArea, p_attributeDockWidget);
 
-    QDockWidget* p_auxiliaryDockWidget = new QDockWidget(this);
-    p_auxiliaryDockWidget->setWidget(p_auxiliaryArea);
-    p_auxiliaryDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    addDockWidget(Qt::LeftDockWidgetArea, p_auxiliaryDockWidget);
+    // QDockWidget* p_auxiliaryDockWidget = new QDockWidget(this);
+    // p_auxiliaryDockWidget->setWidget(p_auxiliaryArea);
+    // p_auxiliaryDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    // addDockWidget(Qt::LeftDockWidgetArea, p_auxiliaryDockWidget);
 
-    // 设置布局
-    addDockWidget(Qt::LeftDockWidgetArea, p_schemaDockWidget);
-    splitDockWidget(p_schemaDockWidget, p_editorDockWidget, Qt::Horizontal);
-    splitDockWidget(p_editorDockWidget, p_attributeDockWidget, Qt::Horizontal);
-    splitDockWidget(p_editorDockWidget, p_auxiliaryDockWidget, Qt::Vertical);
+    // // 设置布局
+    // addDockWidget(Qt::LeftDockWidgetArea, p_schemaDockWidget);
+    // splitDockWidget(p_schemaDockWidget, p_editorDockWidget, Qt::Horizontal);
+    // splitDockWidget(p_editorDockWidget, p_attributeDockWidget, Qt::Horizontal);
+    // splitDockWidget(p_editorDockWidget, p_auxiliaryDockWidget, Qt::Vertical);
 
-    // 设置dock的初始大小
-    resizeDocks({ p_schemaDockWidget }, { 150 }, Qt::Horizontal);
-    resizeDocks({ p_attributeDockWidget }, { 150 }, Qt::Horizontal);
-    resizeDocks({ p_auxiliaryDockWidget }, { 150 }, Qt::Vertical);
-    // 删除centralwidget，所有部件均为dockwidget
-    QWidget* p = takeCentralWidget();
-    if (p)
-        delete p;
+    // // 设置dock的初始大小
+    // resizeDocks({ p_schemaDockWidget }, { 150 }, Qt::Horizontal);
+    // resizeDocks({ p_attributeDockWidget }, { 150 }, Qt::Horizontal);
+    // resizeDocks({ p_auxiliaryDockWidget }, { 150 }, Qt::Vertical);
+    // // 删除centralwidget，所有部件均为dockwidget
+    // QWidget* p = takeCentralWidget();
+    // if (p)
+    //     delete p;
 
 
     // =============== Disable DockWidget ==============
@@ -145,7 +192,6 @@ void MainWindow::setupDockingLayout()
     // QSplitter* vSplitter = new QSplitter(Qt::Vertical, this);
     // vSplitter->addWidget(p_editorWidget);
     // vSplitter->addWidget(p_auxiliaryArea);
-
 
     // QSplitter* splitter = new QSplitter(Qt::Horizontal, this);
     // splitter->addWidget(p_schemaWiddget);
@@ -249,8 +295,8 @@ void MainWindow::setupMenuBar()
     });
 
     // theme
-    connect(p_menuBar->actionLight, &QAction::triggered, this, [this]() { p_toolBar->setLightIcon(); });
-    connect(p_menuBar->actionDark, &QAction::triggered, this, [this]() { p_toolBar->setDarkIcon(); });
+    // connect(p_menuBar->actionLight, &QAction::triggered, this, [this]() { p_toolBar->setLightIcon(); });
+    // connect(p_menuBar->actionDark, &QAction::triggered, this, [this]() { p_toolBar->setDarkIcon(); });
 
     // Font
     connect(p_menuBar, &GLDMenuBar::signalSetFontFamily, this, [this](const QString& font) { p_editorWidget->setEditorFontFamily(font); });

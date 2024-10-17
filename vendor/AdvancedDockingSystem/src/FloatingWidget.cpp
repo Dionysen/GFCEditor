@@ -13,72 +13,74 @@
 
 ADS_NAMESPACE_BEGIN
 
-FloatingWidget::FloatingWidget(ContainerWidget* container, SectionContent::RefPtr sc, SectionTitleWidget* titleWidget, SectionContentWidget* contentWidget, QWidget* parent) :
-	QWidget(parent, Qt::CustomizeWindowHint | Qt::Tool),
-	_container(container),
-	_content(sc),
-	_titleWidget(titleWidget),
-	_contentWidget(contentWidget)
+FloatingWidget::FloatingWidget(ContainerWidget* container, SectionContent::RefPtr sc, SectionTitleWidget* titleWidget,
+                               SectionContentWidget* contentWidget, QWidget* parent)
+    : QWidget(parent, Qt::CustomizeWindowHint | Qt::Tool)
+    , _container(container)
+    , _content(sc)
+    , _titleWidget(titleWidget)
+    , _contentWidget(contentWidget)
 {
-	QBoxLayout* l = new QBoxLayout(QBoxLayout::TopToBottom);
-	l->setContentsMargins(0, 0, 0, 0);
-	l->setSpacing(0);
-	setLayout(l);
 
-	// Title + Controls
-	_titleLayout = new QBoxLayout(QBoxLayout::LeftToRight);
-	_titleLayout->addWidget(titleWidget, 1);
-	l->addLayout(_titleLayout, 0);
-	titleWidget->setActiveTab(false);
+    qDebug() << "FloatingWidget";
+    QVBoxLayout* l = new QVBoxLayout();
+    l->setContentsMargins(0, 0, 0, 0);
+    l->setSpacing(0);
+    setLayout(l);
 
-	if (sc->flags().testFlag(SectionContent::Closeable))
-	{
-		QPushButton* closeButton = new QPushButton();
-		closeButton->setObjectName("closeButton");
-		closeButton->setFlat(true);
-		closeButton->setIcon(style()->standardIcon(QStyle::SP_TitleBarCloseButton));
-		closeButton->setToolTip(tr("Close"));
-		closeButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-		_titleLayout->addWidget(closeButton);
+    // Title + Controls
+    _titleLayout = new QHBoxLayout();
+    _titleLayout->addWidget(titleWidget, 1);
+    l->addLayout(_titleLayout, 0);
+    titleWidget->setActiveTab(false);
+
+    if (sc->flags().testFlag(SectionContent::Closeable))
+    {
+        QPushButton* closeButton = new QPushButton();
+        closeButton->setObjectName("closeButton");
+        closeButton->setFlat(true);
+        closeButton->setIcon(style()->standardIcon(QStyle::SP_TitleBarCloseButton));
+        closeButton->setToolTip(tr("Close"));
+        closeButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        _titleLayout->addWidget(closeButton);
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-		QObject::connect(closeButton, &QPushButton::clicked, this, &FloatingWidget::onCloseButtonClicked);
+        QObject::connect(closeButton, &QPushButton::clicked, this, &FloatingWidget::onCloseButtonClicked);
 #else
-		QObject::connect(closeButton, SIGNAL(clicked(bool)), this, SLOT(onCloseButtonClicked()));
+        QObject::connect(closeButton, SIGNAL(clicked(bool)), this, SLOT(onCloseButtonClicked()));
 #endif
-	}
+    }
 
-	// Content
-	l->addWidget(contentWidget, 1);
-	contentWidget->show();
-
-//	_container->_floatingWidgets.append(this);
+    // Content
+    l->addWidget(contentWidget, 1);
+    contentWidget->show();
+    //	_container->_floatingWidgets.append(this);
 }
 
 FloatingWidget::~FloatingWidget()
 {
-	_container->_floatings.removeAll(this); // Note: I don't like this here, but we have to remove it from list...
+    _container->_floatings.removeAll(this);  // Note: I don't like this here, but we have to remove it from list...
 }
 
 bool FloatingWidget::takeContent(InternalContentData& data)
 {
-	data.content = _content;
-	data.titleWidget = _titleWidget;
-	data.contentWidget = _contentWidget;
+    data.content       = _content;
+    data.titleWidget   = _titleWidget;
+    data.contentWidget = _contentWidget;
 
-	_titleLayout->removeWidget(_titleWidget);
-	_titleWidget->setParent(_container);
-	_titleWidget = NULL;
+    _titleLayout->removeWidget(_titleWidget);
+    _titleWidget->setParent(_container);
+    _titleWidget = NULL;
 
-	layout()->removeWidget(_contentWidget);
-	_contentWidget->setParent(_container);
-	_contentWidget = NULL;
+    layout()->removeWidget(_contentWidget);
+    _contentWidget->setParent(_container);
+    _contentWidget = NULL;
 
-	return true;
+    return true;
 }
 
 void FloatingWidget::onCloseButtonClicked()
 {
-	_container->hideSectionContent(_content);
+    _container->hideSectionContent(_content);
 }
 
 ADS_NAMESPACE_END

@@ -1,8 +1,6 @@
 ﻿
-#define CUSTOM_WINDOW
-#define ENABLE_TEST
-
-
+#define CUSTOM_WINDOW  // 是否启用自定义窗口
+// #define ENABLE_TEST    // 是否启用单元测试
 
 #ifdef CUSTOM_WINDOW
 #include "CustomWindow.h"
@@ -15,13 +13,16 @@
 int main(int argc, char* argv[])
 {
 
-#ifdef _DEBUG
+    /* Debug模式下启用调试输出 */
+    // #ifdef _DEBUG
     AllocConsole();
     freopen("CONOUT$", "w", stdout);
     freopen("CONOUT$", "w", stderr);
-#endif
+    // #endif
 
     QApplication a(argc, argv);
+    a.setQuitOnLastWindowClosed(true);
+
 #ifdef CUSTOM_WINDOW
     CustomWindow w;
     MainWindow   mainWindow(&w);
