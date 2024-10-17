@@ -26,4 +26,5 @@ target("ADS")
     if is_plat("windows") then
         add_cxflags("/Zc:__cplusplus")
         add_defines("ADS_EXPORT")
+        add_links("Dwmapi","User32", "UxTheme")
     end

@@ -743,3 +743,9 @@ QPushButton::menu-indicator {
   image: none;
   width: 0px;
 }
+
+FloatingWidget {
+  border: 1px solid #808080;
+  border-radius: 5px;
+  background-color: #1f2020;
+}

@@ -182,7 +182,10 @@ void SectionTitleWidget::mouseMoveEvent(QMouseEvent* ev)
     {
         ev->accept();
 
-        const QPoint moveToPos = ev->globalPos() - (_dragStartPos + QPoint(ADS_WINDOW_FRAME_BORDER_WIDTH, ADS_WINDOW_FRAME_BORDER_WIDTH));
+        QPoint moveToPos = ev->globalPos() - (_dragStartPos + QPoint(ADS_WINDOW_FRAME_BORDER_WIDTH, ADS_WINDOW_FRAME_BORDER_WIDTH));
+        // 设置为完全无装饰/边框窗口后，顶部有6像素的空隙，需要调整
+        moveToPos.setX(moveToPos.x() + 6);
+        moveToPos.setY(moveToPos.y() + 6);
         _fw->move(moveToPos);
 
         // Show drop indicator
@@ -242,7 +245,7 @@ void SectionTitleWidget::mouseMoveEvent(QMouseEvent* ev)
         _fw->resize(section->size());
         cw->_floatings.append(_fw);  // Note: I don't like this...
 
-        const QPoint moveToPos = ev->globalPos() - (_dragStartPos + QPoint(ADS_WINDOW_FRAME_BORDER_WIDTH, ADS_WINDOW_FRAME_BORDER_WIDTH));
+        QPoint moveToPos = ev->globalPos() - (_dragStartPos + QPoint(ADS_WINDOW_FRAME_BORDER_WIDTH, ADS_WINDOW_FRAME_BORDER_WIDTH));
         _fw->move(moveToPos);
         _fw->show();
 

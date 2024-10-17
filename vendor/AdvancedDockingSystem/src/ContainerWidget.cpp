@@ -17,7 +17,6 @@
 #include "ads/SectionContentWidget.h"
 #include "ads/DropOverlay.h"
 #include "ads/Serialization.h"
-
 ADS_NAMESPACE_BEGIN
 
 // Static Helper //////////////////////////////////////////////////////
