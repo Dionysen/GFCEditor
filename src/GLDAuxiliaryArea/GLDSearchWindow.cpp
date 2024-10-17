@@ -17,14 +17,15 @@ GLDSearchWindow::GLDSearchWindow(QWidget* parent)
     QHBoxLayout* replaceLayout = new QHBoxLayout;
 
     // 放大镜图标
-    m_pSearchIcon = new QLabel;
-
-    // 查找文本
-    m_pSearchLabel = new QLabel("Find");
-
+    m_pSearchIcon = new QLabel(this);
+    m_pSearchIcon->setFixedSize(m_LineHeight - 5, m_LineHeight);
+    // 替换图标
+    m_pReplaceIcon = new QLabel(this);
+    m_pReplaceIcon->setFixedSize(m_LineHeight - 5, m_LineHeight);
     // 搜索框
-    m_pSearchEdit = new QLineEdit;
+    m_pSearchEdit = new QLineEdit(this);
     m_pSearchEdit->setPlaceholderText("Enter text to search...");
+    m_pSearchEdit->setMinimumHeight(m_LineHeight);
 
     // 区分大小写
     m_pCaseSensitiveCheckBox = new QCheckBox(QStringLiteral("Match Case"), this);
@@ -32,27 +33,27 @@ GLDSearchWindow::GLDSearchWindow(QWidget* parent)
     m_pWholeWordCheckBox = new QCheckBox(QStringLiteral("Match Whole Word"), this);
 
     // 查找上一个按钮
-    m_pPrevButton = new QPushButton("Previous");
-
+    m_pPrevButton = new QPushButton("Previous", this);
+    m_pPrevButton->setMinimumHeight(m_LineHeight);
+    m_pPrevButton->setMinimumWidth(m_BtnWidth);
     // 查找下一个按钮
-    m_pNextButton = new QPushButton("Next");
+    m_pNextButton = new QPushButton("Next", this);
+    m_pNextButton->setMinimumHeight(m_LineHeight);
+    m_pNextButton->setMinimumWidth(m_BtnWidth);
 
-    // 替换图标
-    m_pReplaceIcon = new QLabel;
-
-
-    // 替换文本
-    m_pReplaceLabel = new QLabel(QStringLiteral("Replace"));
     // 替换框
-    m_pReplaceEdit = new QLineEdit;
+    m_pReplaceEdit = new QLineEdit(this);
     m_pReplaceEdit->setPlaceholderText("Enter text to replace...");
+    m_pReplaceEdit->setMinimumHeight(m_LineHeight);
+
 
     // 替换按钮
-    m_pReplaceButton = new QPushButton("Replace");
-
+    m_pReplaceButton = new QPushButton("Replace", this);
+    m_pReplaceButton->setMinimumHeight(m_LineHeight);
+    m_pReplaceButton->setMinimumWidth(m_BtnWidth);
     // 将控件添加到布局中
+    searchLayout->addSpacing(10);
     searchLayout->addWidget(m_pSearchIcon);
-    searchLayout->addWidget(m_pSearchLabel);
     searchLayout->addWidget(m_pSearchEdit);
     searchLayout->addWidget(m_pCaseSensitiveCheckBox);
     searchLayout->addWidget(m_pWholeWordCheckBox);
@@ -61,15 +62,15 @@ GLDSearchWindow::GLDSearchWindow(QWidget* parent)
 
     searchLayout->setContentsMargins(0, 0, 0, 0);
 
+    replaceLayout->addSpacing(10);
     replaceLayout->addWidget(m_pReplaceIcon);
-    replaceLayout->addWidget(m_pReplaceLabel);
     replaceLayout->addWidget(m_pReplaceEdit);
     replaceLayout->addWidget(m_pReplaceButton);
 
     // 第三行布局：查找结果列表
     m_pResultList = new QListWidget(this);
-    m_pResultList->setFocusPolicy(Qt::NoFocus);  // 取消鼠标点击时的虚线框
-
+    m_pResultList->setFocusPolicy(Qt::NoFocus);                       // 取消鼠标点击时的虚线框
+    m_pResultList->setSelectionMode(QAbstractItemView::NoSelection);  // 取消鼠标点击时的选中效果
 
     // 将布局添加到主布局中
     mainLayout->addSpacing(7);
@@ -163,9 +164,9 @@ GLDSearchWindow::GLDSearchWindow(QWidget* parent)
 
 void GLDSearchWindow::setIcon()
 {
-    QPixmap searchIconPixmap(GLDStyleManager::StyleManager()->getIcon("find").pixmap(10, 10));
+    QPixmap searchIconPixmap(GLDStyleManager::StyleManager()->getIcon("find").pixmap(m_LineHeight / 2, m_LineHeight / 2));
     m_pSearchIcon->setPixmap(searchIconPixmap);
-    QPixmap replaceIconPixmap(GLDStyleManager::StyleManager()->getIcon("replace").pixmap(10, 10));
+    QPixmap replaceIconPixmap(GLDStyleManager::StyleManager()->getIcon("replace").pixmap(m_LineHeight / 2, m_LineHeight / 2));
     m_pReplaceIcon->setPixmap(replaceIconPixmap);
 }
 

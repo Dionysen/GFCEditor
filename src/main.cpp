@@ -13,12 +13,12 @@
 int main(int argc, char* argv[])
 {
 
-    /* Debug模式下启用调试输出 */
-    // #ifdef _DEBUG
+/* Debug模式下启用调试输出 */
+#ifdef _DEBUG
     AllocConsole();
     freopen("CONOUT$", "w", stdout);
     freopen("CONOUT$", "w", stderr);
-    // #endif
+#endif
 
     QApplication a(argc, argv);
     a.setQuitOnLastWindowClosed(true);

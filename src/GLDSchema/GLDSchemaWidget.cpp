@@ -9,7 +9,6 @@ GLDSchemaWidget::GLDSchemaWidget(QWidget* parent)
     p_GfcReader->LoadGfcFile("./res/test.gfc");
     // p_GfcReader->PrintGfc();
 
-
     p_schemaModel = new GLDTreeModel(this);
     createSchemaModel();
 

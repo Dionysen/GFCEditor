@@ -22,8 +22,6 @@ class GLDSearchWindow : public QWidget
     // 更新搜索结果的槽函数（供外部调用）
     void setSearchResults(const QMap<QPair<int, int>, QString>& results);
 
-
-
   signals:
     // 参数列表（搜索文本， 是否向前搜索， 是否选择区分大小写， 是否选择全字匹配）
     void signalPrevSearch(const QString& searchText, const bool caseSensitive, const bool wholeWord);
@@ -43,9 +41,7 @@ class GLDSearchWindow : public QWidget
     QString m_searchText;  // 要搜索的文本
 
     QLabel* m_pSearchIcon;
-    QLabel* m_pSearchLabel;
     QLabel* m_pReplaceIcon;
-    QLabel* m_pReplaceLabel;
 
     QLineEdit* m_pSearchEdit;
     QLineEdit* m_pReplaceEdit;
@@ -62,6 +58,9 @@ class GLDSearchWindow : public QWidget
     QVBoxLayout* mainLayout;
 
     QVector<int> m_RowsList;  // 查找结果行号
+
+    const int m_LineHeight = 24;
+    const int m_BtnWidth   = 70;
 };
 
 #endif  // GLDSEARCHWINDOW_H

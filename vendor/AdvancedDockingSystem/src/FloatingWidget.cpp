@@ -39,7 +39,7 @@ FloatingWidget::FloatingWidget(ContainerWidget* container, SectionContent::RefPt
         QPushButton* closeButton = new QPushButton();
         closeButton->setObjectName("closeButton");
         closeButton->setFlat(true);
-        closeButton->setIcon(style()->standardIcon(QStyle::SP_TitleBarCloseButton));
+        // closeButton->setIcon(GLDStyleManager::StyleManager()->getIcon("close").pixmap(10, 10));
         closeButton->setToolTip(tr("Close"));
         closeButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         _titleLayout->addWidget(closeButton);

@@ -31,10 +31,11 @@
         <file alias="statusbar">../icon/statusbar.svg</file>
         <file alias="toolbar">../icon/toolbar.svg</file>
         <file alias="font">../icon/font.svg</file>
-        <file alias="editor">../icon/editor.svg</file>    
+        <file alias="editor">../icon/editor.svg</file>
+        <file alias="close">../icon/close.svg</file> 
+        <file alias="branchOpen">../images/branchOpen.svg</file>
     </qresource>
     <qresource prefix="/image_dark">
-        <file alias="branchOpen">../images/branchOpen.svg</file>
         <file alias="drag">../images/drag.svg</file>
         <file alias="dragVer">../images/dragVer.svg</file>
         <file alias="check">../images/check.svg</file>

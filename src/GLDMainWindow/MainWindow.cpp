@@ -222,7 +222,7 @@ void MainWindow::setupMenuBar()
     refresh->setText("Refresh");
 
     connect(refresh, &QAction::triggered, this, [this]() {
-        QFile file(":/qss/dark.qss");
+        QFile file("assets/themes/dark/stylesheet/dark.qss");
 
         if (file.open(QFile::ReadOnly))
         {
@@ -331,7 +331,7 @@ void MainWindow::setupToolBar()
     });
 
     connect(this->p_toolBar->p_refresh, &QAction::triggered, this, [this]() {
-        QFile file("vendor/QtCustomTitlebarWindow/assets/qss/dark.qss");
+        QFile file("assets/themes/dark/stylesheet/dark.qss");
         if (file.open(QFile::ReadOnly))
         {
             QString style = file.readAll();

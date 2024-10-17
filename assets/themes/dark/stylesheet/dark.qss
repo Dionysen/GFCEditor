@@ -159,14 +159,13 @@ QLineEdit {
 QPlainTextEdit {
   color: #d3dae3;
   background-color: #1f2020;
-  border-width: 1px;
-  border-style: solid;
-  border-color: #343434;
+  border-top: 1px solid #151515;
 }
 
 QLabel {
   color: #d3dae3;
-  background-color: #1f2020;
+  padding-left: 2px;
+  /* padding-right: 2px; */
 }
 QLCDNumber {
   color: #ffffff;
@@ -224,6 +223,7 @@ QMenu::item:selected {
 QTabWidget {
   color: rgb(0, 0, 0);
   background-color: #000000;
+  border: none;
 }
 
 /* QTabWidget 的 pane 区域样式 */
@@ -235,7 +235,7 @@ QTabWidget::pane {
   margin: 0px;
 }
 
-/* 向在移动 */
+/* 向左移动 */
 QTabWidget::tab-bar {
   top: 1px;
   left: 1px;
@@ -247,19 +247,22 @@ QTabBar::tab {
   border: 1px solid #131313;
   min-width: 8px;
   padding: 3px;
+  border-right: none; /* 移除右边框 */
+}
+
+QTabBar::tab:last {
+  border-right: 1px solid #131313; /* 为最后一个标签添加右边框 */
 }
 
 /* 标签被选中时或鼠标悬浮时 */
 QTabBar::tab:selected,
 QTabBar::tab:hover {
   background: #585858;
-  border: 1px solid #131313;
 }
 
 /* 标签被选中时 */
 QTabBar::tab:selected {
   background: #585858;
-  border: 1px solid #131313;
 }
 
 /* 标签未被选中时 */
@@ -294,7 +297,7 @@ QCheckBox::indicator:checked {
   border-color: #000000;
   color: #000000;
   background-color: #0080ff;
-  image: url(":/image_dark/check.png");
+  image: url(":/image_dark/check_png");
 }
 QCheckBox::indicator:unchecked {
   height: 14px;
@@ -675,17 +678,37 @@ QListView::item:hover {
 
 QListView::item:selected {
   background-color: #4a4a4a;
+  outline: none;
+}
+
+/* QListWidget 样式 */
+QListWidget {
+  background-color: #2b2b2b;
+  border: 1px solid #1f2020;
+  outline: none;
+}
+
+QListWidget::item {
+  color: #d3dae3; /* 设置取消聚焦后的字体颜色 */
+}
+
+QListWidget::item:hover {
+  background-color: #3c3c3c;
+  outline: none;
+}
+
+QListWidget::item:selected {
+  background-color: #4a4a4a;
+  outline: none;
 }
 
 QSplitter {
   background-color: #333333;
   color: #d3dae3;
-  border: 1px solid #1f2020;
 }
 
 QSplitter::handle {
   background-color: #333333;
-  border: 1px solid #1f2020;
 }
 
 QSplitter::handle:hover {
@@ -706,14 +729,14 @@ FloatingWidget {
   border: 0px solid #1f2020;
   border-radius: 0px;
   color: #b0b0b0;
-  padding-right: 2px;
+  padding-right: 0px;
 }
 
 #closeButton {
   border: 0px solid #1f2020;
   border-radius: 0px;
   color: #b0b0b0;
-  padding: 2px;
+  padding: 0px;
 }
 
 QPushButton::menu-indicator {
