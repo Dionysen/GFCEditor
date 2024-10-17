@@ -34,6 +34,7 @@
         <file alias="editor">../icon/editor.svg</file>
         <file alias="close">../icon/close.svg</file> 
         <file alias="branchOpen">../images/branchOpen.svg</file>
+        <file alias="branchClose">../images/branchClose.svg</file>
     </qresource>
     <qresource prefix="/image_dark">
         <file alias="drag">../images/drag.svg</file>

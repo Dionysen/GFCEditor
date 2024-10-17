@@ -592,13 +592,13 @@ QTreeView::branch {
 QTreeView::branch:has-children:!has-siblings:closed,
 QTreeView::branch:closed:has-children:has-siblings {
   border-image: none;
-  image: url(:/image_dark/branchClose);
+  image: url(:/icon_dark/branchClose);
 }
 
 QTreeView::branch:open:has-children:!has-siblings,
 QTreeView::branch:open:has-children:has-siblings {
   border-image: none;
-  image: url(:/image_dark/branchOpen);
+  image: url(:/icon_dark/branchOpen);
 }
 
 /* TableView 样式 */

@@ -1,5 +1,6 @@
 ﻿#include "GLDSchemaWidget.h"
 #include "GLDTreeModel.h"
+#include "GLDStyleManager.h"
 
 GLDSchemaWidget::GLDSchemaWidget(QWidget* parent)
     : QTabWidget(parent)
