@@ -1,6 +1,6 @@
 ﻿
-#define CUSTOM_WINDOW  // 是否启用自定义窗口
-// #define ENABLE_TEST    // 是否启用单元测试
+// #define CUSTOM_WINDOW  // 是否启用自定义窗口
+#define ENABLE_TEST  // 是否启用单元测试
 
 #ifdef CUSTOM_WINDOW
 #include "CustomWindow.h"
@@ -8,16 +8,26 @@
 
 #include <QApplication>
 #include "MainWindow.h"
-#include <windows.h>
 #include <gtest/gtest.h>
+
+#ifdef _WIN32
+#ifdef _DEBUG
+#include <windows.h>
+#endif
+#endif
+
+
 int main(int argc, char* argv[])
 {
 
-/* Debug模式下启用调试输出 */
+    /* Debug模式下启用调试输出 */
+
+#ifdef _WIN32
 #ifdef _DEBUG
     AllocConsole();
     freopen("CONOUT$", "w", stdout);
     freopen("CONOUT$", "w", stderr);
+#endif
 #endif
 
     QApplication a(argc, argv);

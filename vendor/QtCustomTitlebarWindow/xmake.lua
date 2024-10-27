@@ -12,11 +12,15 @@ target("CustomWindow")
 
     add_frameworks("QtGui", "QtWidgets")
 
-    set_toolchains("msvc", {vs="2022"})
-    add_cxxflags("/utf-8") 
-
     set_languages("cxx17")
 
     add_defines("CTW_EXPORT")
 
     add_files("assets/images/image.qrc")
+
+    if is_plat("windows") then
+        set_toolchains("msvc", {vs="2022"})
+        add_cxxflags("/utf-8")  
+    end
+
+

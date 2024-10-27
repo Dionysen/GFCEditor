@@ -57,6 +57,8 @@ end
 
 add_rules("mode.debug", "mode.release")
 
+add_requires("gtest", {configs = {shared = true}})
+
 target("GFCEditor")
     add_rules("qt.widgetapp")
     
@@ -67,20 +69,11 @@ target("GFCEditor")
 
     -- normal config
     set_rundir(".")
-    set_toolchains("msvc", {vs="2022"})
-    add_cxxflags("/utf-8", "/std::c++17")
     set_languages("cxx17")
 
-    -- gtest
-    add_includedirs("vendor/gtest/include")
-    add_links("gtest")
-    if is_mode("debug") then
-        add_linkdirs("vendor/gtest/lib/Debug", "vendor/gtest/bin/Debug")
-    else
-        add_linkdirs("vendor/gtest/lib/Release", "vendor/gtest/bin/Release")
-    end
-
     -- add deps
+    add_packages("gtest") 
+
     includes("vendor/QtCustomTitlebarWindow")
     add_deps("CustomWindow")
 
@@ -90,4 +83,7 @@ target("GFCEditor")
     -- add resources
     add_qrc_files_recursively("assets")
 
-
+    if is_plat("windows") then
+        set_toolchains("msvc", {vs="2022"})
+        add_cxxflags("/utf-8", "/std::c++17")
+    end

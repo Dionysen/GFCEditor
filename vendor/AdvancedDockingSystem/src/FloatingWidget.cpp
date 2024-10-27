@@ -7,8 +7,6 @@
 #include <QStyle>
 #include <QPainter>
 
-#include <Dwmapi.h>
-
 #include "ads/ContainerWidget.h"
 #include "ads/SectionTitleWidget.h"
 #include "ads/SectionContentWidget.h"

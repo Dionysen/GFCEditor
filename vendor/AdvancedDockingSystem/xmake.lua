@@ -17,14 +17,12 @@ target("ADS")
     -- Add qt frameworks
     add_frameworks("QtGui", "QtWidgets")
 
-    -- Config
-    set_toolchains("msvc", {vs="2022"})
-    add_cxxflags("/utf-8") 
-
     set_languages("cxx17")
 
     if is_plat("windows") then
         add_cxflags("/Zc:__cplusplus")
         add_defines("ADS_EXPORT")
         add_links("Dwmapi","User32", "UxTheme")
+        set_toolchains("msvc", {vs="2022"})
+        add_cxxflags("/utf-8")  
     end
