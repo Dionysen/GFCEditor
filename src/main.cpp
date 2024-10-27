@@ -1,6 +1,6 @@
 ﻿
-// #define CUSTOM_WINDOW  // 是否启用自定义窗口
-#define ENABLE_TEST  // 是否启用单元测试
+#define CUSTOM_WINDOW  // 是否启用自定义窗口
+#define ENABLE_TEST    // 是否启用单元测试
 
 #ifdef CUSTOM_WINDOW
 #include "CustomWindow.h"
@@ -29,6 +29,7 @@ int main(int argc, char* argv[])
     freopen("CONOUT$", "w", stderr);
 #endif
 #endif
+
 
     QApplication a(argc, argv);
     a.setQuitOnLastWindowClosed(true);

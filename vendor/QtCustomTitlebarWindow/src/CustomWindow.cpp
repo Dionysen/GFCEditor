@@ -189,11 +189,21 @@ void CustomWindow::mouseMoveEvent(QMouseEvent* event)
             m_StartWindowPos = this->pos();
         }
 
+// 防止Mac系统下拖动时鼠标移动过快，无法拖动
+#ifdef __APPLE__
+        if (p_TitleBar->underMouse() || m_IsPressedTitleBar)
+        {
+            QPoint globalPos = event->globalPosition().toPoint();
+            QPoint diff      = globalPos - m_StartMousePos;
+            move(m_StartWindowPos + diff);
+        }
+#else
         if (p_TitleBar->underMouse() && !p_MinimumBtn->underMouse() && !p_MaximumBtn->underMouse() && !p_CloseBtn->underMouse())
         {
             QPoint diffPos = m_StartMousePos - event->globalPosition().toPoint();
             this->move(m_StartWindowPos - diffPos);
         }
+#endif
     }
 
     if (!this->isMaximized())

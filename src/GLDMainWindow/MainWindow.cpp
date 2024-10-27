@@ -123,25 +123,25 @@ void MainWindow::setupDockingLayout()
 {
     // ================= Use Advanced Docking System =================
     p_container = new ADS_NS::ContainerWidget();
-    // setCentralWidget(p_container);
+    setCentralWidget(p_container);
 
-    // ADS_NS::SectionContent::RefPtr p_EditorContent =
-    //     ADS_NS::SectionContent::newSectionContent(QString("Editor"), p_container, new QLabel("Editor"), p_editorWidget);
-    // p_container->addSectionContent(p_EditorContent, NULL, ADS_NS::CenterDropArea);
+    ADS_NS::SectionContent::RefPtr p_EditorContent =
+        ADS_NS::SectionContent::newSectionContent(QString("Editor"), p_container, new QLabel("Editor"), p_editorWidget);
+    p_container->addSectionContent(p_EditorContent, NULL, ADS_NS::CenterDropArea);
 
 
-    // ADS_NS::SectionContent::RefPtr p_AuxiliaryContent =
-    //     ADS_NS::SectionContent::newSectionContent(QString("Auxiliary"), p_container, new QLabel("Auxiliary"), p_auxiliaryArea);
+    ADS_NS::SectionContent::RefPtr p_AuxiliaryContent =
+        ADS_NS::SectionContent::newSectionContent(QString("Auxiliary"), p_container, new QLabel("Auxiliary"), p_auxiliaryArea);
 
-    // p_container->addSectionContent(p_AuxiliaryContent, NULL, ADS_NS::BottomDropArea);
+    p_container->addSectionContent(p_AuxiliaryContent, NULL, ADS_NS::BottomDropArea);
 
-    // ADS_NS::SectionContent::RefPtr p_AttributeContent =
-    //     ADS_NS::SectionContent::newSectionContent(QString("Attribute"), p_container, new QLabel("Attribute"), p_attributeArea);
-    // p_container->addSectionContent(p_AttributeContent, NULL, ADS_NS::RightDropArea);
+    ADS_NS::SectionContent::RefPtr p_AttributeContent =
+        ADS_NS::SectionContent::newSectionContent(QString("Attribute"), p_container, new QLabel("Attribute"), p_attributeArea);
+    p_container->addSectionContent(p_AttributeContent, NULL, ADS_NS::RightDropArea);
 
-    // ADS_NS::SectionContent::RefPtr p_SchemaContent =
-    //     ADS_NS::SectionContent::newSectionContent(QString("Schema"), p_container, new QLabel("Schema"), p_schemaWiddget);
-    // p_container->addSectionContent(p_SchemaContent, NULL, ADS_NS::LeftDropArea);
+    ADS_NS::SectionContent::RefPtr p_SchemaContent =
+        ADS_NS::SectionContent::newSectionContent(QString("Schema"), p_container, new QLabel("Schema"), p_schemaWiddget);
+    p_container->addSectionContent(p_SchemaContent, NULL, ADS_NS::LeftDropArea);
 
 
 
@@ -186,22 +186,22 @@ void MainWindow::setupDockingLayout()
 
     // =============== Disable DockWidget ==============
     // 设置布局
-    QSplitter* vSplitter = new QSplitter(Qt::Vertical, this);
-    vSplitter->addWidget(p_editorWidget);
-    vSplitter->addWidget(p_auxiliaryArea);
+    // QSplitter* vSplitter = new QSplitter(Qt::Vertical, this);
+    // vSplitter->addWidget(p_editorWidget);
+    // vSplitter->addWidget(p_auxiliaryArea);
 
-    QSplitter* splitter = new QSplitter(Qt::Horizontal, this);
-    splitter->addWidget(p_schemaWiddget);
-    splitter->addWidget(vSplitter);
-    splitter->addWidget(p_attributeArea);
+    // QSplitter* splitter = new QSplitter(Qt::Horizontal, this);
+    // splitter->addWidget(p_schemaWiddget);
+    // splitter->addWidget(vSplitter);
+    // splitter->addWidget(p_attributeArea);
 
-    vSplitter->setHandleWidth(0);
-    splitter->setHandleWidth(0);
+    // vSplitter->setHandleWidth(0);
+    // splitter->setHandleWidth(0);
 
-    this->setCentralWidget(splitter);
+    // this->setCentralWidget(splitter);
 
-    // 设置dock的初始大小
-    splitter->setSizes(QList<int>({ 150, 300, 150, 150 }));
+    // // 设置dock的初始大小
+    // splitter->setSizes(QList<int>({ 150, 300, 150, 150 }));
 }
 
 

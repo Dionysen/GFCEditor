@@ -54,15 +54,20 @@ function include_deps(dir)
     end
 end
 
-
+-- Add modes
 add_rules("mode.debug", "mode.release")
 
+-- Add requires
 add_requires("gtest", {configs = {shared = true}})
 
+-- Auto build when run
+set_policy("run.autobuild", true)
+
 target("GFCEditor")
+    -- set as qt widget app
     add_rules("qt.widgetapp")
     
-    -- add src and test files
+    -- add src and test files recursively
     add_includedirs_recursively("src")
     add_files_recursively("src")
     add_files_recursively("test")
@@ -83,6 +88,7 @@ target("GFCEditor")
     -- add resources
     add_qrc_files_recursively("assets")
 
+    -- for different platforms
     if is_plat("windows") then
         set_toolchains("msvc", {vs="2022"})
         add_cxxflags("/utf-8", "/std::c++17")
